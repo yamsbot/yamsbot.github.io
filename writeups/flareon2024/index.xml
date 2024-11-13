@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Flare-On 2024 on 🍠 yamsbot</title>
+    <link>https://yams.bot/writeups/flareon2024/</link>
+    <description>Recent content in Flare-On 2024 on 🍠 yamsbot</description>
+    <generator>Hugo -- 0.138.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 12 Nov 2024 20:01:48 -0500</lastBuildDate>
+    <atom:link href="https://yams.bot/writeups/flareon2024/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>sshd</title>
+      <link>https://yams.bot/writeups/flareon2024/sshd/</link>
+      <pubDate>Tue, 12 Nov 2024 20:01:48 -0500</pubDate>
+      <guid>https://yams.bot/writeups/flareon2024/sshd/</guid>
+      <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
+&lt;h2 id=&#34;writeup&#34;&gt;writeup&lt;/h2&gt;</description>
+    </item>
+  </channel>
+</rss>
