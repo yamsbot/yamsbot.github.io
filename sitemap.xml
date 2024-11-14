@@ -3,10 +3,16 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yams.bot/</loc>
-    <lastmod>2024-11-12T22:22:47-05:00</lastmod>
+    <lastmod>2024-11-13T00:00:48-05:00</lastmod>
   </url><url>
     <loc>https://yams.bot/writeups/</loc>
-    <lastmod>2024-11-12T22:22:47-05:00</lastmod>
+    <lastmod>2024-11-13T00:00:48-05:00</lastmod>
+  </url><url>
+    <loc>https://yams.bot/writeups/flareon2024/</loc>
+    <lastmod>2024-11-13T00:00:48-05:00</lastmod>
+  </url><url>
+    <loc>https://yams.bot/writeups/flareon2024/sshd/</loc>
+    <lastmod>2024-11-13T00:00:48-05:00</lastmod>
   </url><url>
     <loc>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</loc>
     <lastmod>2024-11-12T22:22:47-05:00</lastmod>
@@ -22,12 +28,6 @@
   </url><url>
     <loc>https://yams.bot/writeups/defcon32/tufctf/</loc>
     <lastmod>2024-11-12T20:50:10-05:00</lastmod>
-  </url><url>
-    <loc>https://yams.bot/writeups/flareon2024/</loc>
-    <lastmod>2024-11-12T20:01:48-05:00</lastmod>
-  </url><url>
-    <loc>https://yams.bot/writeups/flareon2024/sshd/</loc>
-    <lastmod>2024-11-12T20:01:48-05:00</lastmod>
   </url><url>
     <loc>https://yams.bot/about/</loc>
     <lastmod>2024-11-12T19:48:38-05:00</lastmod>

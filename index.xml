@@ -6,8 +6,19 @@
     <description>Recent content on 🍠 yamsbot</description>
     <generator>Hugo -- 0.138.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 12 Nov 2024 22:22:47 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 13 Nov 2024 00:00:48 -0500</lastBuildDate>
     <atom:link href="https://yams.bot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>sshd (extended writeup)</title>
+      <link>https://yams.bot/writeups/flareon2024/sshd/</link>
+      <pubDate>Wed, 13 Nov 2024 00:00:48 -0500</pubDate>
+      <guid>https://yams.bot/writeups/flareon2024/sshd/</guid>
+      <description>&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
+&lt;p&gt;sshd was the 5th challenge in this years flare-on competition, Flare-On 11&lt;/p&gt;
+&lt;p&gt;i am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;some hackers broke into our server and stole some data&amp;hellip; they crashed our server&amp;hellip; blah blah blah find the data&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;competitors are given the &amp;ldquo;full&amp;rdquo; file system dump of the server that was compromised&lt;/p&gt;</description>
+    </item>
     <item>
       <title>NADCOMMMuseum</title>
       <link>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</link>
@@ -40,14 +51,6 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
 &lt;p&gt;The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.&lt;/p&gt;
 &lt;h2 id=&#34;local-setup--general-overview&#34;&gt;Local setup &amp;amp; General overview&lt;/h2&gt;
 &lt;p&gt;Host &amp;ldquo;TUF&amp;rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>sshd</title>
-      <link>https://yams.bot/writeups/flareon2024/sshd/</link>
-      <pubDate>Tue, 12 Nov 2024 20:01:48 -0500</pubDate>
-      <guid>https://yams.bot/writeups/flareon2024/sshd/</guid>
-      <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
-&lt;h2 id=&#34;writeup&#34;&gt;writeup&lt;/h2&gt;</description>
     </item>
     <item>
       <title>About me</title>

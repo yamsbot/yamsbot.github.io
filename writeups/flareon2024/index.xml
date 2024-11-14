@@ -6,15 +6,18 @@
     <description>Recent content in Flare-On 2024 on 🍠 yamsbot</description>
     <generator>Hugo -- 0.138.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 12 Nov 2024 20:01:48 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 13 Nov 2024 00:00:48 -0500</lastBuildDate>
     <atom:link href="https://yams.bot/writeups/flareon2024/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>sshd</title>
+      <title>sshd (extended writeup)</title>
       <link>https://yams.bot/writeups/flareon2024/sshd/</link>
-      <pubDate>Tue, 12 Nov 2024 20:01:48 -0500</pubDate>
+      <pubDate>Wed, 13 Nov 2024 00:00:48 -0500</pubDate>
       <guid>https://yams.bot/writeups/flareon2024/sshd/</guid>
-      <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
-&lt;h2 id=&#34;writeup&#34;&gt;writeup&lt;/h2&gt;</description>
+      <description>&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
+&lt;p&gt;sshd was the 5th challenge in this years flare-on competition, Flare-On 11&lt;/p&gt;
+&lt;p&gt;i am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;some hackers broke into our server and stole some data&amp;hellip; they crashed our server&amp;hellip; blah blah blah find the data&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;competitors are given the &amp;ldquo;full&amp;rdquo; file system dump of the server that was compromised&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
