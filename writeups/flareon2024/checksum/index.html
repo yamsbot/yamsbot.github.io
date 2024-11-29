@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>checksum | 🍠 yamsbot</title>
+<meta name="keywords" content="">
+<meta name="description" content="
+just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)
+running the solve script satisfies all the constraints then drops the flag image in os.UserCacheDir
+the programs asks users to solve some simple equations then asks for the calculated checksum. for better golang symbol resolution and decompilation we use the following Ghidra extension: https://github.com/mooncat-greenpy/Ghidra_GolangAnalyzerExtension/releases
+here are relevant screenshots, read the code">
+<meta name="author" content="">
+<link rel="canonical" href="https://yams.bot/writeups/flareon2024/checksum/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yams.bot/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yams.bot/writeups/flareon2024/checksum/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yams.bot/writeups/flareon2024/checksum/">
+  <meta property="og:site_name" content="🍠 yamsbot">
+  <meta property="og:title" content="checksum">
+  <meta property="og:description" content=" just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)
+running the solve script satisfies all the constraints then drops the flag image in os.UserCacheDir
+the programs asks users to solve some simple equations then asks for the calculated checksum. for better golang symbol resolution and decompilation we use the following Ghidra extension: https://github.com/mooncat-greenpy/Ghidra_GolangAnalyzerExtension/releases
+here are relevant screenshots, read the code">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2024-11-13T10:23:10-05:00">
+    <meta property="article:modified_time" content="2024-11-13T10:23:10-05:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="checksum">
+<meta name="twitter:description" content="
+just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)
+running the solve script satisfies all the constraints then drops the flag image in os.UserCacheDir
+the programs asks users to solve some simple equations then asks for the calculated checksum. for better golang symbol resolution and decompilation we use the following Ghidra extension: https://github.com/mooncat-greenpy/Ghidra_GolangAnalyzerExtension/releases
+here are relevant screenshots, read the code">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "writeups",
+      "item": "https://yams.bot/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Flare-On 2024",
+      "item": "https://yams.bot/writeups/flareon2024/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "checksum",
+      "item": "https://yams.bot/writeups/flareon2024/checksum/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "checksum",
+  "name": "checksum",
+  "description": " just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)\nrunning the solve script satisfies all the constraints then drops the flag image in os.UserCacheDir\nthe programs asks users to solve some simple equations then asks for the calculated checksum. for better golang symbol resolution and decompilation we use the following Ghidra extension: https://github.com/mooncat-greenpy/Ghidra_GolangAnalyzerExtension/releases\nhere are relevant screenshots, read the code\n",
+  "keywords": [
+    
+  ],
+  "articleBody": " just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)\nrunning the solve script satisfies all the constraints then drops the flag image in os.UserCacheDir\nthe programs asks users to solve some simple equations then asks for the calculated checksum. for better golang symbol resolution and decompilation we use the following Ghidra extension: https://github.com/mooncat-greenpy/Ghidra_GolangAnalyzerExtension/releases\nhere are relevant screenshots, read the code\nsolve.py\n#!/usr/bin/env python3 from pwn import * from hashlib import sha256 from base64 import b64decode, b64encode win = \"cQoFRQErX1YAVw1zVQdFUSxfAQNRBXUNAxBSe15QCVRVJ1pQEwd/WFBUAlElCFBFUnlaB1ULByRdBEFdfVtWVA==\" t = b64decode(win) xorv = \"FlareOn2024\" csb = bytearray() p = process(\"checksum.exe\") context.log_level = \"critical\" i = 0 while True: try: p.recvuntil(b\"Check sum: \",timeout=0.5) v = p.recvuntil(b\"=\",timeout=0.3)[:-2].split(b\" + \") p.sendline(str(int(v[0])+int(v[1])).encode(\"utf-8\")) if v != []: i += 1 print(f\"Solved {i}\") else: break except: break print(p.recvuntil(b\"Checksum:\")) for i in range(len(t)): csb.append(t[i] ^ ord(xorv[i % 11])) x = b\"\" for i in range(len(csb)): x += int(csb[i] ^ ord(xorv[i % 11])).to_bytes(1, byteorder=\"little\") x = b64encode(x).decode() if win == x: print(\"match\") m = sha256() m.update(csb) w = m.hexdigest() print(csb) print(csb.hex()) p.sendline(csb) p.interactive() ",
+  "wordCount" : "182",
+  "inLanguage": "en",
+  "datePublished": "2024-11-13T10:23:10-05:00",
+  "dateModified": "2024-11-13T10:23:10-05:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yams.bot/writeups/flareon2024/checksum/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "🍠 yamsbot",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yams.bot/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yams.bot/about/" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/writeups/" title="writeups">
+                    <span>writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      checksum
+    </h1>
+    <div class="post-meta"><span title='2024-11-13 10:23:10 -0500 EST'>November 13, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;182 words
+
+</div>
+  </header> 
+  <div class="post-content"><hr>
+<p>just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)</p>
+<p>running the solve script satisfies all the constraints then drops the flag image in <a href="https://pkg.go.dev/os#UserCacheDir"><code>os.UserCacheDir</code></a></p>
+<p>the programs asks users to solve some simple equations then asks for the calculated checksum. for better golang symbol resolution and decompilation we use the following Ghidra extension: <a href="https://github.com/mooncat-greenpy/Ghidra_GolangAnalyzerExtension/releases">https://github.com/mooncat-greenpy/Ghidra_GolangAnalyzerExtension/releases</a></p>
+<p>here are relevant screenshots, read the code</p>
+<p><img loading="lazy" src="/images/flare2024/checksum_decomp.png">
+<img loading="lazy" src="/images/flare2024/checksum_main-a.png"></p>
+<p><strong>solve.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> hashlib <span style="color:#f92672">import</span> sha256
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> base64 <span style="color:#f92672">import</span> b64decode, b64encode
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>win <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cQoFRQErX1YAVw1zVQdFUSxfAQNRBXUNAxBSe15QCVRVJ1pQEwd/WFBUAlElCFBFUnlaB1ULByRdBEFdfVtWVA==&#34;</span>
+</span></span><span style="display:flex;"><span>t <span style="color:#f92672">=</span> b64decode(win)
+</span></span><span style="display:flex;"><span>xorv <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;FlareOn2024&#34;</span>
+</span></span><span style="display:flex;"><span>csb <span style="color:#f92672">=</span> bytearray()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> process(<span style="color:#e6db74">&#34;checksum.exe&#34;</span>)
+</span></span><span style="display:flex;"><span>context<span style="color:#f92672">.</span>log_level <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;critical&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Check sum: &#34;</span>,timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>)
+</span></span><span style="display:flex;"><span>        v <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;=&#34;</span>,timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>)[:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>split(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34; + &#34;</span>)
+</span></span><span style="display:flex;"><span>        p<span style="color:#f92672">.</span>sendline(str(int(v[<span style="color:#ae81ff">0</span>])<span style="color:#f92672">+</span>int(v[<span style="color:#ae81ff">1</span>]))<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#34;utf-8&#34;</span>))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> v <span style="color:#f92672">!=</span> []:
+</span></span><span style="display:flex;"><span>            i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Solved </span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Checksum:&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(t)):
+</span></span><span style="display:flex;"><span>    csb<span style="color:#f92672">.</span>append(t[i] <span style="color:#f92672">^</span> ord(xorv[i <span style="color:#f92672">%</span> <span style="color:#ae81ff">11</span>]))
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(csb)):
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">+=</span> int(csb[i] <span style="color:#f92672">^</span> ord(xorv[i <span style="color:#f92672">%</span> <span style="color:#ae81ff">11</span>]))<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">1</span>, byteorder<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;little&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> b64encode(x)<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> win <span style="color:#f92672">==</span> x:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;match&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>m <span style="color:#f92672">=</span> sha256()
+</span></span><span style="display:flex;"><span>m<span style="color:#f92672">.</span>update(csb)
+</span></span><span style="display:flex;"><span>w <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>hexdigest()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(csb)
+</span></span><span style="display:flex;"><span>print(csb<span style="color:#f92672">.</span>hex())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>sendline(csb)
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share checksum on x"
+            href="https://x.com/intent/tweet/?text=checksum&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fflareon2024%2fchecksum%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share checksum on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fflareon2024%2fchecksum%2f&amp;title=checksum&amp;summary=checksum&amp;source=https%3a%2f%2fyams.bot%2fwriteups%2fflareon2024%2fchecksum%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

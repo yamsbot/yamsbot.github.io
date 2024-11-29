@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>PinkPonyHash | 🍠 yamsbot</title>
+<meta name="keywords" content="">
+<meta name="description" content="description
+pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: hlextend which makes this attack trivial
+source code
+&lt;!DOCTYPE html&gt;
+
+&lt;?php
+    $secret = &#34;testing_testing_123&#34;;
+    assert(strlen($secret) == 19);
+
+    //make a new cookie for the user
+    function make_cookie() {
+        global $secret;
+
+        $payload = &#34;kitty_cat&#34;;
+        setcookie(&#34;token&#34;, base64_encode($payload) . &#34;.&#34; . sha1($secret . $payload));
+        header(&#34;Location: /&#34;); //reload page
+        exit(); //we&#39;re done
+    }
+
+    //if no cookie token, set it
+    if(!isset($_COOKIE[&#34;token&#34;])) {
+
+        echo &#34;no cookie, setting!\n&#34;;
+        make_cookie();
+    }
+
+    //if there is a cookie, parse it
+    echo &#34;parsing cookie\n\n&#34;;
+    $parsed = explode(&#34;.&#34;, $_COOKIE[&#34;token&#34;]);
+
+    //check sanity
+    if(count($parsed) !== 2) {
+        make_cookie();
+    }
+
+    //verify the hash is sane
+    //also make sure the payload is base64 encoded
+    $payload = base64_decode($parsed[0]);
+    $hash = $parsed[1];
+    if($payload === false) {
+        make_cookie();
+    }
+
+    if(sha1($secret . $payload) !== $hash) {
+        make_cookie();
+    }
+
+    //check if we&#39;re in the pink pony club
+    if(strstr($payload, &#34;pink_pony&#34;)) {
+        $flag = &#34;FFCTF{Th!\$_iS_4_Fl@g}&#34;;
+        echo &#34;&lt;h1&gt;OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: $flag&lt;/h1&gt;&#34;;
+    }else{
+        echo &#34;&lt;h1&gt;sry we only give flags to members of the pink pony club, not $payload :c&lt;/h1&gt;&#34;;
+    }
+?&gt;
+writeup
+solve.py">
+<meta name="author" content="">
+<link rel="canonical" href="https://yams.bot/writeups/uscyber2024/pinkponyhash/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yams.bot/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yams.bot/writeups/uscyber2024/pinkponyhash/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yams.bot/writeups/uscyber2024/pinkponyhash/">
+  <meta property="og:site_name" content="🍠 yamsbot">
+  <meta property="og:title" content="PinkPonyHash">
+  <meta property="og:description" content="description pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: hlextend which makes this attack trivial
+source code &lt;!DOCTYPE html&gt; &lt;?php $secret = &#34;testing_testing_123&#34;; assert(strlen($secret) == 19); //make a new cookie for the user function make_cookie() { global $secret; $payload = &#34;kitty_cat&#34;; setcookie(&#34;token&#34;, base64_encode($payload) . &#34;.&#34; . sha1($secret . $payload)); header(&#34;Location: /&#34;); //reload page exit(); //we&#39;re done } //if no cookie token, set it if(!isset($_COOKIE[&#34;token&#34;])) { echo &#34;no cookie, setting!\n&#34;; make_cookie(); } //if there is a cookie, parse it echo &#34;parsing cookie\n\n&#34;; $parsed = explode(&#34;.&#34;, $_COOKIE[&#34;token&#34;]); //check sanity if(count($parsed) !== 2) { make_cookie(); } //verify the hash is sane //also make sure the payload is base64 encoded $payload = base64_decode($parsed[0]); $hash = $parsed[1]; if($payload === false) { make_cookie(); } if(sha1($secret . $payload) !== $hash) { make_cookie(); } //check if we&#39;re in the pink pony club if(strstr($payload, &#34;pink_pony&#34;)) { $flag = &#34;FFCTF{Th!\$_iS_4_Fl@g}&#34;; echo &#34;&lt;h1&gt;OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: $flag&lt;/h1&gt;&#34;; }else{ echo &#34;&lt;h1&gt;sry we only give flags to members of the pink pony club, not $payload :c&lt;/h1&gt;&#34;; } ?&gt; writeup solve.py">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2024-11-12T19:23:12-05:00">
+    <meta property="article:modified_time" content="2024-11-12T19:23:12-05:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PinkPonyHash">
+<meta name="twitter:description" content="description
+pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: hlextend which makes this attack trivial
+source code
+&lt;!DOCTYPE html&gt;
+
+&lt;?php
+    $secret = &#34;testing_testing_123&#34;;
+    assert(strlen($secret) == 19);
+
+    //make a new cookie for the user
+    function make_cookie() {
+        global $secret;
+
+        $payload = &#34;kitty_cat&#34;;
+        setcookie(&#34;token&#34;, base64_encode($payload) . &#34;.&#34; . sha1($secret . $payload));
+        header(&#34;Location: /&#34;); //reload page
+        exit(); //we&#39;re done
+    }
+
+    //if no cookie token, set it
+    if(!isset($_COOKIE[&#34;token&#34;])) {
+
+        echo &#34;no cookie, setting!\n&#34;;
+        make_cookie();
+    }
+
+    //if there is a cookie, parse it
+    echo &#34;parsing cookie\n\n&#34;;
+    $parsed = explode(&#34;.&#34;, $_COOKIE[&#34;token&#34;]);
+
+    //check sanity
+    if(count($parsed) !== 2) {
+        make_cookie();
+    }
+
+    //verify the hash is sane
+    //also make sure the payload is base64 encoded
+    $payload = base64_decode($parsed[0]);
+    $hash = $parsed[1];
+    if($payload === false) {
+        make_cookie();
+    }
+
+    if(sha1($secret . $payload) !== $hash) {
+        make_cookie();
+    }
+
+    //check if we&#39;re in the pink pony club
+    if(strstr($payload, &#34;pink_pony&#34;)) {
+        $flag = &#34;FFCTF{Th!\$_iS_4_Fl@g}&#34;;
+        echo &#34;&lt;h1&gt;OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: $flag&lt;/h1&gt;&#34;;
+    }else{
+        echo &#34;&lt;h1&gt;sry we only give flags to members of the pink pony club, not $payload :c&lt;/h1&gt;&#34;;
+    }
+?&gt;
+writeup
+solve.py">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "writeups",
+      "item": "https://yams.bot/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "US CyberGames Flag Fest 2024",
+      "item": "https://yams.bot/writeups/uscyber2024/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "PinkPonyHash",
+      "item": "https://yams.bot/writeups/uscyber2024/pinkponyhash/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PinkPonyHash",
+  "name": "PinkPonyHash",
+  "description": "description pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: hlextend which makes this attack trivial\nsource code \u0026lt;!DOCTYPE html\u0026gt; \u0026lt;?php $secret = \u0026#34;testing_testing_123\u0026#34;; assert(strlen($secret) == 19); //make a new cookie for the user function make_cookie() { global $secret; $payload = \u0026#34;kitty_cat\u0026#34;; setcookie(\u0026#34;token\u0026#34;, base64_encode($payload) . \u0026#34;.\u0026#34; . sha1($secret . $payload)); header(\u0026#34;Location: /\u0026#34;); //reload page exit(); //we\u0026#39;re done } //if no cookie token, set it if(!isset($_COOKIE[\u0026#34;token\u0026#34;])) { echo \u0026#34;no cookie, setting!\\n\u0026#34;; make_cookie(); } //if there is a cookie, parse it echo \u0026#34;parsing cookie\\n\\n\u0026#34;; $parsed = explode(\u0026#34;.\u0026#34;, $_COOKIE[\u0026#34;token\u0026#34;]); //check sanity if(count($parsed) !== 2) { make_cookie(); } //verify the hash is sane //also make sure the payload is base64 encoded $payload = base64_decode($parsed[0]); $hash = $parsed[1]; if($payload === false) { make_cookie(); } if(sha1($secret . $payload) !== $hash) { make_cookie(); } //check if we\u0026#39;re in the pink pony club if(strstr($payload, \u0026#34;pink_pony\u0026#34;)) { $flag = \u0026#34;FFCTF{Th!\\$_iS_4_Fl@g}\u0026#34;; echo \u0026#34;\u0026lt;h1\u0026gt;OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: $flag\u0026lt;/h1\u0026gt;\u0026#34;; }else{ echo \u0026#34;\u0026lt;h1\u0026gt;sry we only give flags to members of the pink pony club, not $payload :c\u0026lt;/h1\u0026gt;\u0026#34;; } ?\u0026gt; writeup solve.py\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "description pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: hlextend which makes this attack trivial\nsource code \u003c!DOCTYPE html\u003e \u003c?php $secret = \"testing_testing_123\"; assert(strlen($secret) == 19); //make a new cookie for the user function make_cookie() { global $secret; $payload = \"kitty_cat\"; setcookie(\"token\", base64_encode($payload) . \".\" . sha1($secret . $payload)); header(\"Location: /\"); //reload page exit(); //we're done } //if no cookie token, set it if(!isset($_COOKIE[\"token\"])) { echo \"no cookie, setting!\\n\"; make_cookie(); } //if there is a cookie, parse it echo \"parsing cookie\\n\\n\"; $parsed = explode(\".\", $_COOKIE[\"token\"]); //check sanity if(count($parsed) !== 2) { make_cookie(); } //verify the hash is sane //also make sure the payload is base64 encoded $payload = base64_decode($parsed[0]); $hash = $parsed[1]; if($payload === false) { make_cookie(); } if(sha1($secret . $payload) !== $hash) { make_cookie(); } //check if we're in the pink pony club if(strstr($payload, \"pink_pony\")) { $flag = \"FFCTF{Th!\\$_iS_4_Fl@g}\"; echo \"OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: $flag\"; }else{ echo \"sry we only give flags to members of the pink pony club, not $payload :c\"; } ?\u003e writeup solve.py\n#!/usr/bin/env python3 from base64 import b64encode import hlextend import requests import re sha = hlextend.new(\"sha1\") payload = sha.extend(b\"pink_pony\", b\"kitty_cat\", 19, \"8665c860a93878c794775cafcafeea6e9f05476a\") _hash = sha.hexdigest() token = b64encode(payload) + b\".\" + _hash.encode() print(\"token=\" + token.decode()) url = \"https://uscybercombine-s4-ffctf-pink-pony-hash.chals.io/\" cookies = {'token': token.decode()} r = requests.get(url, cookies=cookies) print(re.search(r\"FFCTF\\{.*\\}\", r.text).group()) ",
+  "wordCount" : "269",
+  "inLanguage": "en",
+  "datePublished": "2024-11-12T19:23:12-05:00",
+  "dateModified": "2024-11-12T19:23:12-05:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yams.bot/writeups/uscyber2024/pinkponyhash/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "🍠 yamsbot",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yams.bot/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yams.bot/about/" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/writeups/" title="writeups">
+                    <span>writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      PinkPonyHash
+    </h1>
+    <div class="post-meta"><span title='2024-11-12 19:23:12 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;269 words
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="description">description<a hidden class="anchor" aria-hidden="true" href="#description">#</a></h2>
+<p>pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: <a href="https://github.com/stephenbradshaw/hlextend">hlextend</a> which makes this attack trivial</p>
+<h2 id="source-code">source code<a hidden class="anchor" aria-hidden="true" href="#source-code">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;!</span><span style="color:#a6e22e">DOCTYPE</span> <span style="color:#a6e22e">html</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span>    $secret <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;testing_testing_123&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">assert</span>(<span style="color:#a6e22e">strlen</span>($secret) <span style="color:#f92672">==</span> <span style="color:#ae81ff">19</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//make a new cookie for the user
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">make_cookie</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">global</span> $secret;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        $payload <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;kitty_cat&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">setcookie</span>(<span style="color:#e6db74">&#34;token&#34;</span>, <span style="color:#a6e22e">base64_encode</span>($payload) <span style="color:#f92672">.</span> <span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#f92672">.</span> <span style="color:#a6e22e">sha1</span>($secret <span style="color:#f92672">.</span> $payload));
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">header</span>(<span style="color:#e6db74">&#34;Location: /&#34;</span>); <span style="color:#75715e">//reload page
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">exit</span>(); <span style="color:#75715e">//we&#39;re done
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//if no cookie token, set it
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">isset</span>($_COOKIE[<span style="color:#e6db74">&#34;token&#34;</span>])) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;no cookie, setting!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">make_cookie</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//if there is a cookie, parse it
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;parsing cookie</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>    $parsed <span style="color:#f92672">=</span> <span style="color:#a6e22e">explode</span>(<span style="color:#e6db74">&#34;.&#34;</span>, $_COOKIE[<span style="color:#e6db74">&#34;token&#34;</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//check sanity
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">count</span>($parsed) <span style="color:#f92672">!==</span> <span style="color:#ae81ff">2</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">make_cookie</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//verify the hash is sane
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//also make sure the payload is base64 encoded
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    $payload <span style="color:#f92672">=</span> <span style="color:#a6e22e">base64_decode</span>($parsed[<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>    $hash <span style="color:#f92672">=</span> $parsed[<span style="color:#ae81ff">1</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>($payload <span style="color:#f92672">===</span> <span style="color:#66d9ef">false</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">make_cookie</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">sha1</span>($secret <span style="color:#f92672">.</span> $payload) <span style="color:#f92672">!==</span> $hash) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">make_cookie</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//check if we&#39;re in the pink pony club
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">strstr</span>($payload, <span style="color:#e6db74">&#34;pink_pony&#34;</span>)) {
+</span></span><span style="display:flex;"><span>        $flag <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;FFCTF{Th!</span><span style="color:#ae81ff">\$</span><span style="color:#e6db74">_iS_4_Fl@g}&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;&lt;h1&gt;OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: </span><span style="color:#e6db74">$flag</span><span style="color:#e6db74">&lt;/h1&gt;&#34;</span>;
+</span></span><span style="display:flex;"><span>    }<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;&lt;h1&gt;sry we only give flags to members of the pink pony club, not </span><span style="color:#e6db74">$payload</span><span style="color:#e6db74"> :c&lt;/h1&gt;&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><h2 id="writeup">writeup<a hidden class="anchor" aria-hidden="true" href="#writeup">#</a></h2>
+<p><strong>solve.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> base64 <span style="color:#f92672">import</span> b64encode
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> hlextend
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sha <span style="color:#f92672">=</span> hlextend<span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;sha1&#34;</span>)
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> sha<span style="color:#f92672">.</span>extend(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;pink_pony&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;kitty_cat&#34;</span>, <span style="color:#ae81ff">19</span>, <span style="color:#e6db74">&#34;8665c860a93878c794775cafcafeea6e9f05476a&#34;</span>)
+</span></span><span style="display:flex;"><span>_hash <span style="color:#f92672">=</span> sha<span style="color:#f92672">.</span>hexdigest()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>token <span style="color:#f92672">=</span> b64encode(payload) <span style="color:#f92672">+</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#f92672">+</span> _hash<span style="color:#f92672">.</span>encode()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;token=&#34;</span> <span style="color:#f92672">+</span> token<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://uscybercombine-s4-ffctf-pink-pony-hash.chals.io/&#34;</span>
+</span></span><span style="display:flex;"><span>cookies <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;token&#39;</span>: token<span style="color:#f92672">.</span>decode()}
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url, cookies<span style="color:#f92672">=</span>cookies)
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;FFCTF\{.*\}&#34;</span>, r<span style="color:#f92672">.</span>text)<span style="color:#f92672">.</span>group())
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share PinkPonyHash on x"
+            href="https://x.com/intent/tweet/?text=PinkPonyHash&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fuscyber2024%2fpinkponyhash%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share PinkPonyHash on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fuscyber2024%2fpinkponyhash%2f&amp;title=PinkPonyHash&amp;summary=PinkPonyHash&amp;source=https%3a%2f%2fyams.bot%2fwriteups%2fuscyber2024%2fpinkponyhash%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

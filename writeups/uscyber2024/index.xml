@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>US CyberGames Flag Fest 2024 on 🍠 yamsbot</title>
+    <link>https://yams.bot/writeups/uscyber2024/</link>
+    <description>Recent content in US CyberGames Flag Fest 2024 on 🍠 yamsbot</description>
+    <generator>Hugo -- 0.138.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 12 Nov 2024 22:22:47 -0500</lastBuildDate>
+    <atom:link href="https://yams.bot/writeups/uscyber2024/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>NADCOMMMuseum</title>
+      <link>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</link>
+      <pubDate>Tue, 12 Nov 2024 22:22:47 -0500</pubDate>
+      <guid>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</guid>
+      <description>&lt;h2 id=&#34;details&#34;&gt;Details&lt;/h2&gt;
+&lt;p&gt;Users are provided with file &lt;code&gt;evidence.flac&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The challenge description reads:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;&amp;#34;There&amp;#39;s been a murder, and we need to solve it. We&amp;#39;ve just received a critical communication... from the PAST?!
+Help us decode this. We know the killer is from the mid 19th century, but somehow he got a hold of a Bell 202! We need to know what it says to crack this case!&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Armed with this information we gather what we can about Bell 202. Wikipedia lets us know it useds AFSK1200 / AFSK2400&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Crystal Clear</title>
+      <link>https://yams.bot/writeups/uscyber2024/crystalclear/</link>
+      <pubDate>Tue, 12 Nov 2024 22:20:21 -0500</pubDate>
+      <guid>https://yams.bot/writeups/uscyber2024/crystalclear/</guid>
+      <description>&lt;h1 id=&#34;details&#34;&gt;Details&lt;/h1&gt;
+&lt;p&gt;Crystal Clear was a reversing CTF where we had to reverse a program compiled in Crystal, a completely unknown language to me.&lt;/p&gt;
+&lt;p&gt;Anyways we find two separate arrays of bytes in memory that are xor&amp;rsquo;d against our input, byte by byte
+the result of the xor is stored in some cpu register and if != 0 at the end of the check the &amp;ldquo;password&amp;rdquo; was no good&lt;/p&gt;
+&lt;p&gt;So, we throw those byte arrays into z3 and solve away:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>PinkPonyHash</title>
+      <link>https://yams.bot/writeups/uscyber2024/pinkponyhash/</link>
+      <pubDate>Tue, 12 Nov 2024 19:23:12 -0500</pubDate>
+      <guid>https://yams.bot/writeups/uscyber2024/pinkponyhash/</guid>
+      <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
+&lt;p&gt;pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: &lt;a href=&#34;https://github.com/stephenbradshaw/hlextend&#34;&gt;hlextend&lt;/a&gt; which makes this attack trivial&lt;/p&gt;
+&lt;h2 id=&#34;source-code&#34;&gt;source code&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;!&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;DOCTYPE&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;html&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;php&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $secret &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;testing_testing_123&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;assert&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;strlen&lt;/span&gt;($secret) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;19&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//make a new cookie for the user
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;make_cookie&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;global&lt;/span&gt; $secret;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        $payload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;kitty_cat&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;setcookie&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;token&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;base64_encode&lt;/span&gt;($payload) &lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;.&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sha1&lt;/span&gt;($secret &lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt; $payload));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;header&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Location: /&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;//reload page
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;exit&lt;/span&gt;(); &lt;span style=&#34;color:#75715e&#34;&gt;//we&amp;#39;re done
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//if no cookie token, set it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;isset&lt;/span&gt;($_COOKIE[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;token&amp;#34;&lt;/span&gt;])) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;no cookie, setting!&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;make_cookie&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//if there is a cookie, parse it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;parsing cookie&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $parsed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;explode&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;.&amp;#34;&lt;/span&gt;, $_COOKIE[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;token&amp;#34;&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//check sanity
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;count&lt;/span&gt;($parsed) &lt;span style=&#34;color:#f92672&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;make_cookie&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//verify the hash is sane
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//also make sure the payload is base64 encoded
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    $payload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;base64_decode&lt;/span&gt;($parsed[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $hash &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $parsed[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;($payload &lt;span style=&#34;color:#f92672&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;make_cookie&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;sha1&lt;/span&gt;($secret &lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt; $payload) &lt;span style=&#34;color:#f92672&#34;&gt;!==&lt;/span&gt; $hash) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;make_cookie&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//check if we&amp;#39;re in the pink pony club
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;strstr&lt;/span&gt;($payload, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;pink_pony&amp;#34;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        $flag &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;FFCTF{Th!&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\$&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;_iS_4_Fl@g}&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;lt;h1&amp;gt;OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$flag&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;lt;/h1&amp;gt;&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;lt;h1&amp;gt;sry we only give flags to members of the pink pony club, not &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$payload&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; :c&amp;lt;/h1&amp;gt;&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;writeup&#34;&gt;writeup&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;solve.py&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>PandaJail</title>
+      <link>https://yams.bot/writeups/uscyber2024/pandajail/</link>
+      <pubDate>Tue, 12 Nov 2024 19:04:41 -0500</pubDate>
+      <guid>https://yams.bot/writeups/uscyber2024/pandajail/</guid>
+      <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
+&lt;p&gt;the actual description reads: &amp;ldquo;im stuck in a Pickle, can you help me out of jail?&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;this challenge was pretty fun and took me a while to solve due to the challenge being completely blackbox. the challenge gave users a python shell and the ability to execute one command. there is a strict whitelist that only allowed for the sys and pandas module to be executed, anything else would be denied. there was also a blacklist on the amount of special characters that could be used.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Scrabble</title>
+      <link>https://yams.bot/writeups/uscyber2024/scrabble/</link>
+      <pubDate>Tue, 12 Nov 2024 18:57:04 -0500</pubDate>
+      <guid>https://yams.bot/writeups/uscyber2024/scrabble/</guid>
+      <description>&lt;p&gt;this is being written a few months after the CTF so bare with me&lt;/p&gt;
+&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
+&lt;p&gt;we are given a file named enc.raw and a program called scrammbler that is a custom form of &amp;ldquo;encryption&amp;rdquo; (?) the goal of the ctf is to unscrammble the bytes in enc.raw. i dont have the source program anymore, but attached is the reverse of the algorithm used to generate the enc.raw file.&lt;/p&gt;
+&lt;h2 id=&#34;writeup&#34;&gt;writeup&lt;/h2&gt;
+&lt;p&gt;srand() is seeded with the size of the file&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Flag Terminal</title>
+      <link>https://yams.bot/writeups/uscyber2024/flagterminal/</link>
+      <pubDate>Tue, 12 Nov 2024 18:31:11 -0500</pubDate>
+      <guid>https://yams.bot/writeups/uscyber2024/flagterminal/</guid>
+      <description>&lt;p&gt;this writeup is created months after the ctf, so bare with me&lt;/p&gt;
+&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
+&lt;p&gt;this writeup is very similar to my cache money writeup, except for starters it is not very pretty to look at. this was done during the CTF and i havent cleaned it up, and i dont plan on cleaning it up. anyways the main differences from this challenge and cache money is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;we can only allocate 4 chunks, this time up to 64 bytes in size
+&lt;ul&gt;
+&lt;li&gt;we can overflow into the next chunk by creating a chunk of size X and writing &amp;gt;X into the chunk&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;this uses glibc 2.27&lt;/li&gt;
+&lt;li&gt;we use a one_gadget in glibc 2.27 to pop the shell instead of calling system with sh&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;writeup&#34;&gt;writeup&lt;/h2&gt;
+&lt;p&gt;when running the program we are greeted with an interesting string:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Cache Money</title>
+      <link>https://yams.bot/writeups/uscyber2024/cachemoney/</link>
+      <pubDate>Tue, 12 Nov 2024 17:03:11 -0500</pubDate>
+      <guid>https://yams.bot/writeups/uscyber2024/cachemoney/</guid>
+      <description>&lt;p&gt;i am writing this a few months after the CTF ended, so bare with me&lt;/p&gt;
+&lt;h3 id=&#34;description&#34;&gt;description&lt;/h3&gt;
+&lt;p&gt;dynamic allocated misuse vulnerability using glibc version 2.31
+full exploitation is achieved using tcache poisioning, overwriting &lt;code&gt;__free_hook&lt;/code&gt; with a pointer to &lt;code&gt;system&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;writeup&#34;&gt;writeup&lt;/h3&gt;
+&lt;p&gt;without dropping the entire source code of the challenge, users have the option to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;allocate a chunk (0-10) of size 0x10&lt;/li&gt;
+&lt;li&gt;free a chunk&lt;/li&gt;
+&lt;li&gt;edit the contents of a chunk&lt;/li&gt;
+&lt;li&gt;view a chunk&lt;/li&gt;
+&lt;li&gt;exit the program&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;here we see free_chunk():&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
