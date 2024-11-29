@@ -158,36 +158,6 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">NADCOMMMuseum
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Details Users are provided with file evidence.flac
-The challenge description reads:
-&#34;There&#39;s been a murder, and we need to solve it. We&#39;ve just received a critical communication... from the PAST?! Help us decode this. We know the killer is from the mid 19th century, but somehow he got a hold of a Bell 202! We need to know what it says to crack this case!&#34; Armed with this information we gather what we can about Bell 202. Wikipedia lets us know it useds AFSK1200 / AFSK2400
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-11-12 22:22:47 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;169 words</footer>
-  <a class="entry-link" aria-label="post link to NADCOMMMuseum" href="https://yams.bot/writeups/uscyber2024/nadcommmuseum/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Crystal Clear
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Details Crystal Clear was a reversing CTF where we had to reverse a program compiled in Crystal, a completely unknown language to me.
-Anyways we find two separate arrays of bytes in memory that are xor’d against our input, byte by byte the result of the xor is stored in some cpu register and if != 0 at the end of the check the “password” was no good
-So, we throw those byte arrays into z3 and solve away:
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-11-12 22:20:21 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;226 words</footer>
-  <a class="entry-link" aria-label="post link to Crystal Clear" href="https://yams.bot/writeups/uscyber2024/crystalclear/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2 class="entry-hint-parent">TUF CTF
     </h2>
   </header>
@@ -202,76 +172,11 @@ Local setup &amp; General overview Host “TUF” web server locally, in this ca
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">PinkPonyHash
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>description pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: hlextend which makes this attack trivial
-source code &lt;!DOCTYPE html&gt; &lt;?php $secret = &#34;testing_testing_123&#34;; assert(strlen($secret) == 19); //make a new cookie for the user function make_cookie() { global $secret; $payload = &#34;kitty_cat&#34;; setcookie(&#34;token&#34;, base64_encode($payload) . &#34;.&#34; . sha1($secret . $payload)); header(&#34;Location: /&#34;); //reload page exit(); //we&#39;re done } //if no cookie token, set it if(!isset($_COOKIE[&#34;token&#34;])) { echo &#34;no cookie, setting!\n&#34;; make_cookie(); } //if there is a cookie, parse it echo &#34;parsing cookie\n\n&#34;; $parsed = explode(&#34;.&#34;, $_COOKIE[&#34;token&#34;]); //check sanity if(count($parsed) !== 2) { make_cookie(); } //verify the hash is sane //also make sure the payload is base64 encoded $payload = base64_decode($parsed[0]); $hash = $parsed[1]; if($payload === false) { make_cookie(); } if(sha1($secret . $payload) !== $hash) { make_cookie(); } //check if we&#39;re in the pink pony club if(strstr($payload, &#34;pink_pony&#34;)) { $flag = &#34;FFCTF{Th!\$_iS_4_Fl@g}&#34;; echo &#34;&lt;h1&gt;OMG A MEMBER OF THE PINK PONY CLUB?! HERES UR FLAG: $flag&lt;/h1&gt;&#34;; }else{ echo &#34;&lt;h1&gt;sry we only give flags to members of the pink pony club, not $payload :c&lt;/h1&gt;&#34;; } ?&gt; writeup solve.py
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-11-12 19:23:12 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;269 words</footer>
-  <a class="entry-link" aria-label="post link to PinkPonyHash" href="https://yams.bot/writeups/uscyber2024/pinkponyhash/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2 class="entry-hint-parent">PandaJail
     </h2>
   </header>
-  <div class="entry-content">
-    <p>description the actual description reads: “im stuck in a Pickle, can you help me out of jail?”
-this challenge was pretty fun and took me a while to solve due to the challenge being completely blackbox. the challenge gave users a python shell and the ability to execute one command. there is a strict whitelist that only allowed for the sys and pandas module to be executed, anything else would be denied. there was also a blacklist on the amount of special characters that could be used.
-...</p>
-  </div>
   <footer class="entry-footer"><span title='2024-11-12 19:04:41 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;199 words</footer>
   <a class="entry-link" aria-label="post link to PandaJail" href="https://yams.bot/writeups/uscyber2024/pandajail/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Scrabble
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>this is being written a few months after the CTF so bare with me
-description we are given a file named enc.raw and a program called scrammbler that is a custom form of “encryption” (?) the goal of the ctf is to unscrammble the bytes in enc.raw. i dont have the source program anymore, but attached is the reverse of the algorithm used to generate the enc.raw file.
-writeup srand() is seeded with the size of the file
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-11-12 18:57:04 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;193 words</footer>
-  <a class="entry-link" aria-label="post link to Scrabble" href="https://yams.bot/writeups/uscyber2024/scrabble/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Flag Terminal
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>this writeup is created months after the ctf, so bare with me
-description this writeup is very similar to my cache money writeup, except for starters it is not very pretty to look at. this was done during the CTF and i havent cleaned it up, and i dont plan on cleaning it up. anyways the main differences from this challenge and cache money is:
-we can only allocate 4 chunks, this time up to 64 bytes in size we can overflow into the next chunk by creating a chunk of size X and writing &gt;X into the chunk this uses glibc 2.27 we use a one_gadget in glibc 2.27 to pop the shell instead of calling system with sh writeup when running the program we are greeted with an interesting string:
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-11-12 18:31:11 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;516 words</footer>
-  <a class="entry-link" aria-label="post link to Flag Terminal" href="https://yams.bot/writeups/uscyber2024/flagterminal/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Cache Money
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>i am writing this a few months after the CTF ended, so bare with me
-description dynamic allocated misuse vulnerability using glibc version 2.31 full exploitation is achieved using tcache poisioning, overwriting __free_hook with a pointer to system
-writeup without dropping the entire source code of the challenge, users have the option to:
-allocate a chunk (0-10) of size 0x10 free a chunk edit the contents of a chunk view a chunk exit the program here we see free_chunk():
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-11-12 17:03:11 -0500 EST'>November 12, 2024</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;302 words</footer>
-  <a class="entry-link" aria-label="post link to Cache Money" href="https://yams.bot/writeups/uscyber2024/cachemoney/"></a>
 </article>
     </main>
     
