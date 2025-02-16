@@ -9,7 +9,7 @@
     <lastBuildDate>Wed, 13 Nov 2024 10:23:10 -0500</lastBuildDate>
     <atom:link href="https://yams.bot/writeups/flareon2024/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>checksum</title>
+      <title>[Flare] checksum</title>
       <link>https://yams.bot/writeups/flareon2024/checksum/</link>
       <pubDate>Wed, 13 Nov 2024 10:23:10 -0500</pubDate>
       <guid>https://yams.bot/writeups/flareon2024/checksum/</guid>
@@ -20,7 +20,7 @@
 &lt;p&gt;here are relevant screenshots, read the code&lt;/p&gt;</description>
     </item>
     <item>
-      <title>sshd (extended writeup)</title>
+      <title>[Flare] sshd (extended writeup)</title>
       <link>https://yams.bot/writeups/flareon2024/sshd/</link>
       <pubDate>Wed, 13 Nov 2024 00:00:48 -0500</pubDate>
       <guid>https://yams.bot/writeups/flareon2024/sshd/</guid>

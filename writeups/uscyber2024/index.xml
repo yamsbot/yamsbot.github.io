@@ -95,7 +95,7 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
 &lt;p&gt;&lt;strong&gt;solve.py&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
     <item>
-      <title>PandaJail</title>
+      <title>[USC 2024] PandaJail</title>
       <link>https://yams.bot/writeups/uscyber2024/pandajail/</link>
       <pubDate>Tue, 12 Nov 2024 19:04:41 -0500</pubDate>
       <guid>https://yams.bot/writeups/uscyber2024/pandajail/</guid>

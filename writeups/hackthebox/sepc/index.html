@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[HTB] SEPC | 🍠 yamsbot</title>
+<meta name="keywords" content="">
+<meta name="description" content="Description
+SEPC is a &ldquo;medium&rdquo; linux kernel based reversing challege. SEPC stands for &ldquo;Secure Enclave Password Checker&rdquo;, with the challenge being featured in the 2023 HTB Business CTF.
+Players are given three files:
+bzImage             (kernel image)
+initramfs.cpio.gz   (file system)
+run.sh              (a helper script to run the program)
+Flag
+Initially I was under the impression that I was going to need to debug the kernel of the virtual machine to better understand what was happening under the hood. But simply reversing and dumping some data from the kernel module was all that was needed!">
+<meta name="author" content="">
+<link rel="canonical" href="https://yams.bot/writeups/hackthebox/sepc/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yams.bot/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yams.bot/writeups/hackthebox/sepc/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yams.bot/writeups/hackthebox/sepc/">
+  <meta property="og:site_name" content="🍠 yamsbot">
+  <meta property="og:title" content="[HTB] SEPC">
+  <meta property="og:description" content="Description SEPC is a “medium” linux kernel based reversing challege. SEPC stands for “Secure Enclave Password Checker”, with the challenge being featured in the 2023 HTB Business CTF.
+Players are given three files:
+bzImage (kernel image) initramfs.cpio.gz (file system) run.sh (a helper script to run the program) Flag Initially I was under the impression that I was going to need to debug the kernel of the virtual machine to better understand what was happening under the hood. But simply reversing and dumping some data from the kernel module was all that was needed!">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2025-01-22T00:16:47-05:00">
+    <meta property="article:modified_time" content="2025-01-22T00:16:47-05:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[HTB] SEPC">
+<meta name="twitter:description" content="Description
+SEPC is a &ldquo;medium&rdquo; linux kernel based reversing challege. SEPC stands for &ldquo;Secure Enclave Password Checker&rdquo;, with the challenge being featured in the 2023 HTB Business CTF.
+Players are given three files:
+bzImage             (kernel image)
+initramfs.cpio.gz   (file system)
+run.sh              (a helper script to run the program)
+Flag
+Initially I was under the impression that I was going to need to debug the kernel of the virtual machine to better understand what was happening under the hood. But simply reversing and dumping some data from the kernel module was all that was needed!">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "writeups",
+      "item": "https://yams.bot/writeups/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "HackTheBox",
+      "item": "https://yams.bot/writeups/hackthebox/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "[HTB] SEPC",
+      "item": "https://yams.bot/writeups/hackthebox/sepc/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[HTB] SEPC",
+  "name": "[HTB] SEPC",
+  "description": "Description SEPC is a \u0026ldquo;medium\u0026rdquo; linux kernel based reversing challege. SEPC stands for \u0026ldquo;Secure Enclave Password Checker\u0026rdquo;, with the challenge being featured in the 2023 HTB Business CTF.\nPlayers are given three files:\nbzImage (kernel image) initramfs.cpio.gz (file system) run.sh (a helper script to run the program) Flag Initially I was under the impression that I was going to need to debug the kernel of the virtual machine to better understand what was happening under the hood. But simply reversing and dumping some data from the kernel module was all that was needed!\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Description SEPC is a “medium” linux kernel based reversing challege. SEPC stands for “Secure Enclave Password Checker”, with the challenge being featured in the 2023 HTB Business CTF.\nPlayers are given three files:\nbzImage (kernel image) initramfs.cpio.gz (file system) run.sh (a helper script to run the program) Flag Initially I was under the impression that I was going to need to debug the kernel of the virtual machine to better understand what was happening under the hood. But simply reversing and dumping some data from the kernel module was all that was needed!\nWe can extract the file system from the provided gzip with the following command:\n$ gunzip -c initramfs.cpio.gz | cpio -id After extracting the file system we can:\nTest the “checker” binary for system calls Reverse engineer the usermode application and the kernel module “checker.ko” Exectuing strace against the usermode application we see that it reads in a password from the user, tries to open a fd to the kernel module, tries to write each letter of the password to the opened fd and then read the response. For me, this is enough to start reverse engineering the kernel module.\nGhidra does not automatically find all of the kernel functions on its own, so we begin to manually search. Eventually we come across the following function:\nIf we look closely, we see that this function is mimicing the exact behavior that the user mode application is adhering to. I’ve left out the _copy_from_user call, but the user input is being populated in DAT_00100c40.\nThe user input is then being compared to the result of a simple xor operation between data in the .rodata section.. To copy out the .rodata we can use objcopy:\n$ objcopy checker.ko --dump-section .rodata=rodata Then we can manually write out the xor operation against the data:\n#!/usr/bin/env python3 with open(\"rodata\", \"rb\") as f: data = f.read() f.close() s1 = data[0x20:0x60] s2 = data[0x60:] for i in range(len(s2)): print(chr(s1[i]^s2[i]), end=\"\") print() Running the script we get the flag:\n",
+  "wordCount" : "334",
+  "inLanguage": "en",
+  "datePublished": "2025-01-22T00:16:47-05:00",
+  "dateModified": "2025-01-22T00:16:47-05:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yams.bot/writeups/hackthebox/sepc/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "🍠 yamsbot",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yams.bot/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yams.bot/about/" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/writeups/" title="writeups">
+                    <span>writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      [HTB] SEPC
+    </h1>
+    <div class="post-meta"><span title='2025-01-22 00:16:47 -0500 EST'>January 22, 2025</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;334 words
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="description">Description<a hidden class="anchor" aria-hidden="true" href="#description">#</a></h2>
+<p>SEPC is a &ldquo;medium&rdquo; linux kernel based reversing challege. SEPC stands for &ldquo;Secure Enclave Password Checker&rdquo;, with the challenge being featured in the 2023 HTB Business CTF.</p>
+<p>Players are given three files:</p>
+<pre tabindex="0"><code>bzImage             (kernel image)
+initramfs.cpio.gz   (file system)
+run.sh              (a helper script to run the program)
+</code></pre><h2 id="flag">Flag<a hidden class="anchor" aria-hidden="true" href="#flag">#</a></h2>
+<p>Initially I was under the impression that I was going to need to debug the kernel of the virtual machine to better understand what was happening under the hood. But simply reversing and dumping some data from the kernel module was all that was needed!</p>
+<p>We can extract the file system from the provided gzip with the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ gunzip -c initramfs.cpio.gz | cpio -id
+</span></span></code></pre></div><p>After extracting the file system we can:</p>
+<ol>
+<li>Test the &ldquo;checker&rdquo; binary for system calls</li>
+<li>Reverse engineer the usermode application and the kernel module &ldquo;checker.ko&rdquo;</li>
+</ol>
+<p>Exectuing strace against the usermode application we see that it reads in a password from the user, tries to open a fd to the kernel module, tries to write each letter of the password to the opened fd and then read the response. For me, this is enough to start reverse engineering the kernel module.</p>
+<p><img loading="lazy" src="/images/hackthebox/SEPC/strace.png"></p>
+<p>Ghidra does not automatically find all of the kernel functions on its own, so we begin to manually search. Eventually we come across the following function:</p>
+<p><img loading="lazy" src="/images/hackthebox/SEPC/gfunc.png"></p>
+<p>If we look closely, we see that this function is mimicing the exact behavior that the user mode application is adhering to. I&rsquo;ve left out the <code>_copy_from_user</code> call, but the user input is being populated in <code>DAT_00100c40</code>.</p>
+<p>The user input is then being compared to the result of a simple xor operation between data in the <code>.rodata</code> section.. To copy out the <code>.rodata</code> we can use objcopy:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ objcopy checker.ko --dump-section .rodata<span style="color:#f92672">=</span>rodata
+</span></span></code></pre></div><p>Then we can manually write out the xor operation against the data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;rodata&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s1 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0x20</span>:<span style="color:#ae81ff">0x60</span>]
+</span></span><span style="display:flex;"><span>s2 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0x60</span>:]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(s2)):
+</span></span><span style="display:flex;"><span>    print(chr(s1[i]<span style="color:#f92672">^</span>s2[i]), end<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print()
+</span></span></code></pre></div><p>Running the script we get the flag:</p>
+<p><img loading="lazy" src="/images/hackthebox/SEPC/flag.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [HTB] SEPC on x"
+            href="https://x.com/intent/tweet/?text=%5bHTB%5d%20SEPC&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fhackthebox%2fsepc%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [HTB] SEPC on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fhackthebox%2fsepc%2f&amp;title=%5bHTB%5d%20SEPC&amp;summary=%5bHTB%5d%20SEPC&amp;source=https%3a%2f%2fyams.bot%2fwriteups%2fhackthebox%2fsepc%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

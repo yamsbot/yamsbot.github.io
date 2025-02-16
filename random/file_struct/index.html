@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>FILE struct exploitation | 🍠 yamsbot</title>
+<meta name="keywords" content="">
+<meta name="description" content="FILE struct exploitation
+(this section is a very high level draft, wip)
+for full compromise the general idea in file struct exploits is:
+
+we have some sort of arbitrary write where we can overwrite data in the file structure
+
+What does a FILE struct look like?
+{ 
+
+ flags: 0x0
+ _IO_read_ptr: 0x0
+ _IO_read_end: 0x0
+ _IO_read_base: 0x0
+ _IO_write_base: 0x0
+ _IO_write_ptr: 0x0
+ _IO_write_end: 0x0
+ _IO_buf_base: 0x0
+ _IO_buf_end: 0x0
+ _IO_save_base: 0x0
+ _IO_backup_base: 0x0
+ _IO_save_end: 0x0
+ markers: 0x0
+ chain: 0x0
+ fileno: 0x0
+ _flags2: 0x0
+ _old_offset: 0xffffffff
+ _cur_column: 0x0
+ _vtable_offset: 0x0
+ _shortbuf: 0x0
+ unknown1: 0x0
+ _lock: 0x0
+ _offset: 0xffffffffffffffff
+ _codecvt: 0x0
+ _wide_data: 0x0
+ unknown2: 0x0
+ vtable: 0x0
+
+}
+
+Arbitrary write
+scenario: a file is opened, we cannot read the contents. we want to read the contents. we can control where that file is read to in memory">
+<meta name="author" content="">
+<link rel="canonical" href="https://yams.bot/random/file_struct/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yams.bot/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yams.bot/random/file_struct/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yams.bot/random/file_struct/">
+  <meta property="og:site_name" content="🍠 yamsbot">
+  <meta property="og:title" content="FILE struct exploitation">
+  <meta property="og:description" content="FILE struct exploitation (this section is a very high level draft, wip)
+for full compromise the general idea in file struct exploits is:
+we have some sort of arbitrary write where we can overwrite data in the file structure What does a FILE struct look like?
+{ flags: 0x0 _IO_read_ptr: 0x0 _IO_read_end: 0x0 _IO_read_base: 0x0 _IO_write_base: 0x0 _IO_write_ptr: 0x0 _IO_write_end: 0x0 _IO_buf_base: 0x0 _IO_buf_end: 0x0 _IO_save_base: 0x0 _IO_backup_base: 0x0 _IO_save_end: 0x0 markers: 0x0 chain: 0x0 fileno: 0x0 _flags2: 0x0 _old_offset: 0xffffffff _cur_column: 0x0 _vtable_offset: 0x0 _shortbuf: 0x0 unknown1: 0x0 _lock: 0x0 _offset: 0xffffffffffffffff _codecvt: 0x0 _wide_data: 0x0 unknown2: 0x0 vtable: 0x0 } Arbitrary write scenario: a file is opened, we cannot read the contents. we want to read the contents. we can control where that file is read to in memory">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="random">
+    <meta property="article:published_time" content="2024-12-10T12:09:27-05:00">
+    <meta property="article:modified_time" content="2024-12-10T12:09:27-05:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FILE struct exploitation">
+<meta name="twitter:description" content="FILE struct exploitation
+(this section is a very high level draft, wip)
+for full compromise the general idea in file struct exploits is:
+
+we have some sort of arbitrary write where we can overwrite data in the file structure
+
+What does a FILE struct look like?
+{ 
+
+ flags: 0x0
+ _IO_read_ptr: 0x0
+ _IO_read_end: 0x0
+ _IO_read_base: 0x0
+ _IO_write_base: 0x0
+ _IO_write_ptr: 0x0
+ _IO_write_end: 0x0
+ _IO_buf_base: 0x0
+ _IO_buf_end: 0x0
+ _IO_save_base: 0x0
+ _IO_backup_base: 0x0
+ _IO_save_end: 0x0
+ markers: 0x0
+ chain: 0x0
+ fileno: 0x0
+ _flags2: 0x0
+ _old_offset: 0xffffffff
+ _cur_column: 0x0
+ _vtable_offset: 0x0
+ _shortbuf: 0x0
+ unknown1: 0x0
+ _lock: 0x0
+ _offset: 0xffffffffffffffff
+ _codecvt: 0x0
+ _wide_data: 0x0
+ unknown2: 0x0
+ vtable: 0x0
+
+}
+
+Arbitrary write
+scenario: a file is opened, we cannot read the contents. we want to read the contents. we can control where that file is read to in memory">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "random",
+      "item": "https://yams.bot/random/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "FILE struct exploitation",
+      "item": "https://yams.bot/random/file_struct/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "FILE struct exploitation",
+  "name": "FILE struct exploitation",
+  "description": "FILE struct exploitation (this section is a very high level draft, wip)\nfor full compromise the general idea in file struct exploits is:\nwe have some sort of arbitrary write where we can overwrite data in the file structure What does a FILE struct look like?\n{ flags: 0x0 _IO_read_ptr: 0x0 _IO_read_end: 0x0 _IO_read_base: 0x0 _IO_write_base: 0x0 _IO_write_ptr: 0x0 _IO_write_end: 0x0 _IO_buf_base: 0x0 _IO_buf_end: 0x0 _IO_save_base: 0x0 _IO_backup_base: 0x0 _IO_save_end: 0x0 markers: 0x0 chain: 0x0 fileno: 0x0 _flags2: 0x0 _old_offset: 0xffffffff _cur_column: 0x0 _vtable_offset: 0x0 _shortbuf: 0x0 unknown1: 0x0 _lock: 0x0 _offset: 0xffffffffffffffff _codecvt: 0x0 _wide_data: 0x0 unknown2: 0x0 vtable: 0x0 } Arbitrary write scenario: a file is opened, we cannot read the contents. we want to read the contents. we can control where that file is read to in memory\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "FILE struct exploitation (this section is a very high level draft, wip)\nfor full compromise the general idea in file struct exploits is:\nwe have some sort of arbitrary write where we can overwrite data in the file structure What does a FILE struct look like?\n{ flags: 0x0 _IO_read_ptr: 0x0 _IO_read_end: 0x0 _IO_read_base: 0x0 _IO_write_base: 0x0 _IO_write_ptr: 0x0 _IO_write_end: 0x0 _IO_buf_base: 0x0 _IO_buf_end: 0x0 _IO_save_base: 0x0 _IO_backup_base: 0x0 _IO_save_end: 0x0 markers: 0x0 chain: 0x0 fileno: 0x0 _flags2: 0x0 _old_offset: 0xffffffff _cur_column: 0x0 _vtable_offset: 0x0 _shortbuf: 0x0 unknown1: 0x0 _lock: 0x0 _offset: 0xffffffffffffffff _codecvt: 0x0 _wide_data: 0x0 unknown2: 0x0 vtable: 0x0 } Arbitrary write scenario: a file is opened, we cannot read the contents. we want to read the contents. we can control where that file is read to in memory\nin the file structure we can basically NULL out every single value except for:\nchar *_IO_buf_base char *_IO_buf_end _IO_buf_base being the start address of where we want to read the data, _IO_buf_end being the end\nArbitrary read scenario: there is data in memory that we want to write to a file\nsimilar to before, nearly everything in the file struct can be null’d out, the main focus now is instead:\nchar *_IO_read_end char *_IO_write_base char *_IO_write_ptr read_end and write_base being the same ptr value, write_ptr being the end of the data we want to write\nControl flow scenario: we want to instead, take control of the program and execute our own stuffs\nsomething to talk about is FILE_plus, which is an extension of FILE struct. the only difference between the two is the new ptr:\nconst struct _IO_jump_t *vtable;\na virtual table for address resolution! wow!\nnow our FILE structure looks something like this\nstruct _IO_FILE_plus { FILE file; const struct _IO_jump_t *vtable; }; if you are unfamiliar with virtual function tables; they are commonly found in C++ binaries and are used for dynamic address resolution during runtime\na call to a function in the vtable will look something like this\n# vtable moved into r15 call QWORD PTR [r15+0x38] 0x38 being the offset in the vtable that is to be called, so whatever function resides at offset 0x38 will be called\nOkay, so how do we exploit it?\nthe simple answer is overwrite the vtable pointer to a malicious vtable that we have constructed!\nwhat we have to keep in mind is, the _lock value in the FILE struct needs to point to a writeable region in memory that contains a NULL value. i dont need to explain why here\nwhat we also need to keep in mind is security mitigations.. modern libc performs a vtable validation to step to ensure that the vtable is pointing to a validated memory region for the vtable :(\nso to get passed this, we want to force the application to perform the following call chain:\n_IO_wfile_overflow -\u003e _IO_wdoallocbuf\nwhen this happens, _IO_wdoallocbuf calls the vtable pointed to in wide_data which does NOT perform the validation step mentioned above!\nhere we can see the definiton of wide_data link\nif we look at _IO_wfile_jumps table\n(gdb) p _IO_wfile_overflow $13 = {} 0x7cbfae576ce0 \u003c_IO_wfile_overflow\u003e ... 0x7cbfae6d5f60 \u003c_IO_wfile_jumps\u003e: 0x0000000000000000 0x0000000000000000 0x7cbfae6d5f70 \u003c_IO_wfile_jumps+16\u003e: 0x00007cbfae57cf50 0x00007cbfae576ce0 0x7cbfae6d5f80 \u003c_IO_wfile_jumps+32\u003e: 0x00007cbfae5758e0 0x00007cbfae574160 0x7cbfae6d5f90 \u003c_IO_wfile_jumps+48\u003e: 0x00007cbfae573f20 0x00007cbfae577160 0x7cbfae6d5fa0 \u003c_IO_wfile_jumps+64\u003e: 0x00007cbfae57c240 0x00007cbfae5760a0 we see that the address of _IO_wfile_overflow is at *_IO_wfile_jumps + 0x18\nto perform the full exploit we need to overwrite the vtable, we need to overwrite wide_data, and we can hijack the control flow from there\nnote that offsets can and will change between glibc versions!!\nA working exploit would look like:\nOverwrite FILE *vtable to point to _IO_wfile_jumps + 0x08 instead of _IO_file_jumps Overwrite *FILE-\u003e_wide_data to our malicious FILE struct, I usually just overwrite this with the current *FILE to save space Execute fclose() on the FILE struct =\u003e 0x704eba2a2e3e : call QWORD PTR [rbx+0x10] $rbx is now set to _IO_wfile_jumps. fclose() is going to call _IO_wfile_jumps+0x10 which now points to _IO_wdoallocbuf\nduring execution of _IO_wdoallocbuf:\n=\u003e 0x7a4bd69ec4b4 \u003c_IO_wdoallocbuf+36\u003e: mov rax,QWORD PTR [rax+0xe0] 0x7a4bd69ec4bb \u003c_IO_wdoallocbuf+43\u003e: call QWORD PTR [rax+0x68] $rax being (*_wide_data) *FILE. the way i typically exploit this is by setting *FILE+0xe0 to *FILE, then *FILE-\u003e_chain to the function we want to call! (0x68 is _chain)\nArbitrary read/write while the above read and writes may seem very limiting, we can actually make a much better use of the FILE struct explotation. having control over the FILE struct and vtable pointer gives us full control over the functions executed. a file stream could be opened with a file that we couldnt care less about. we can still abuse this file stream to say, read data from one location to another. we could even print this data to stdout even when the file was only opened with “r” permissions. this all has to do with the initial vtable pointer. by manipulating the vtable pointer we can effectively choose what function we call. for example if we have a buffer of data that we want to print out, but we only have access to the fread() call. by crafting the call\nfread(buffer, 1, size, fp); _IO_fread (void *buf, size_t size, size_t count, FILE *fp) { size_t bytes_requested = size * count; size_t bytes_read; CHECK_FILE (fp, 0); if (bytes_requested == 0) return 0; _IO_acquire_lock (fp); bytes_read = _IO_sgetn (fp, (char *) buf, bytes_requested); _IO_release_lock (fp); return bytes_requested == bytes_read ? count : bytes_read / size; } fread will call _IO_sgetn\n_IO_default_xsgetn (FILE *fp, void *data, size_t n) { size_t more = n; char *s = (char*) data; for (;;) { /* Data available. */ if (fp-\u003e_IO_read_ptr \u003c fp-\u003e_IO_read_end) { size_t count = fp-\u003e_IO_read_end - fp-\u003e_IO_read_ptr; if (count \u003e more) count = more; if (count \u003e 20) { s = __mempcpy (s, fp-\u003e_IO_read_ptr, count); fp-\u003e_IO_read_ptr += count; } else if (count) { char *p = fp-\u003e_IO_read_ptr; int i = (int) count; while (--i \u003e= 0) *s++ = *p++; fp-\u003e_IO_read_ptr = p; } more -= count; } if (more == 0 || __underflow (fp) == EOF) break; } return n - more; } if we increment the vtable pointer precisely we can force the control flow to execute _IO_file_write() which will instead print the contents of the buffer to the _fileno in the FILE struct\na loose example is when calling fread, sgetn is called and then retrieves a pointer from the vtable _IO_file_jumps\n=\u003e 0x731dbce1b16a \u003c_IO_sgetn+26\u003e: mov rbx,QWORD PTR [rdi+0xd8] ; *FILE-\u003evtable 0x731dbce1b171 \u003c_IO_sgetn+33\u003e: mov r8,rbx 0x731dbce1b174 \u003c_IO_sgetn+36\u003e: sub r8,rcx 0x731dbce1b177 \u003c_IO_sgetn+39\u003e: cmp rax,r8 0x731dbce1b17a \u003c_IO_sgetn+42\u003e: jbe 0x731dbce1b190 \u003c_IO_sgetn+64\u003e 0x731dbce1b17c \u003c_IO_sgetn+44\u003e: mov rax,QWORD PTR [rbx+0x40] ; *vtable-\u003e0x40 0x731dbce1b180 \u003c_IO_sgetn+48\u003e: add rsp,0x20 0x731dbce1b184 \u003c_IO_sgetn+52\u003e: pop rbx 0x731dbce1b185 \u003c_IO_sgetn+53\u003e: jmp rax _IO_file_jumps\n0x701452b064a0 \u003c_IO_file_jumps\u003e: 0x0000000000000000 0x0000000000000000 0x701452b064b0 \u003c_IO_file_jumps+16\u003e: 0x00007014529acf50 0x00007014529add80 0x701452b064c0 \u003c_IO_file_jumps+32\u003e: 0x00007014529ada20 0x00007014529aef50 0x701452b064d0 \u003c_IO_file_jumps+48\u003e: 0x00007014529b0680 0x00007014529ac5d0 0x701452b064e0 \u003c_IO_file_jumps+64\u003e: 0x00007014529ac240 0x00007014529ab860 0x701452b064f0 \u003c_IO_file_jumps+80\u003e: 0x00007014529af600 0x00007014529ab530 0x701452b06500 \u003c_IO_file_jumps+96\u003e: 0x00007014529ab3c0 0x000070145299ec70 0x701452b06510 \u003c_IO_file_jumps+112\u003e: 0x00007014529ac5a0 0x00007014529abe60 0x701452b06520 \u003c_IO_file_jumps+128\u003e: 0x00007014529ab600 0x00007014529ab520 0x701452b06530 \u003c_IO_file_jumps+144\u003e: 0x00007014529abe40 0x00007014529b0810 what we want is _IO_file_write, located at *vtable+120\nif we take that address and subtract 0x40:\n(gdb) p/x 0x701452b06518 - 0x40 $1 = 0x701452b064d8 this is a simple 1 byte overwrite, overwriting *FILE+0xd8 with 0xd8\nnow in _IO_sgetn, if we reference the assembly above, will instead call _IO_file_write :)\n",
+  "wordCount" : "1192",
+  "inLanguage": "en",
+  "datePublished": "2024-12-10T12:09:27-05:00",
+  "dateModified": "2024-12-10T12:09:27-05:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yams.bot/random/file_struct/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "🍠 yamsbot",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yams.bot/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yams.bot/about/" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/writeups/" title="writeups">
+                    <span>writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/research/" title="research">
+                    <span>research</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yams.bot/random/" title="random">
+                    <span>random</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      FILE struct exploitation
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2024-12-10 12:09:27 -0500 EST'>December 10, 2024</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;1192 words
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#file-struct-exploitation" aria-label="FILE struct exploitation">FILE struct exploitation</a><ul>
+                        
+                <li>
+                    <a href="#arbitrary-write" aria-label="Arbitrary write">Arbitrary write</a></li>
+                <li>
+                    <a href="#arbitrary-read" aria-label="Arbitrary read">Arbitrary read</a></li>
+                <li>
+                    <a href="#control-flow" aria-label="Control flow">Control flow</a></li>
+                <li>
+                    <a href="#arbitrary-readwrite" aria-label="Arbitrary read/write">Arbitrary read/write</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="file-struct-exploitation">FILE struct exploitation<a hidden class="anchor" aria-hidden="true" href="#file-struct-exploitation">#</a></h2>
+<p>(this section is a very high level draft, wip)</p>
+<p>for full compromise the general idea in file struct exploits is:</p>
+<ul>
+<li>we have some sort of arbitrary write where we can overwrite data in the file structure</li>
+</ul>
+<p><em>What does a FILE struct look like?</em></p>
+<pre tabindex="0"><code>{ 
+
+ flags: 0x0
+ _IO_read_ptr: 0x0
+ _IO_read_end: 0x0
+ _IO_read_base: 0x0
+ _IO_write_base: 0x0
+ _IO_write_ptr: 0x0
+ _IO_write_end: 0x0
+ _IO_buf_base: 0x0
+ _IO_buf_end: 0x0
+ _IO_save_base: 0x0
+ _IO_backup_base: 0x0
+ _IO_save_end: 0x0
+ markers: 0x0
+ chain: 0x0
+ fileno: 0x0
+ _flags2: 0x0
+ _old_offset: 0xffffffff
+ _cur_column: 0x0
+ _vtable_offset: 0x0
+ _shortbuf: 0x0
+ unknown1: 0x0
+ _lock: 0x0
+ _offset: 0xffffffffffffffff
+ _codecvt: 0x0
+ _wide_data: 0x0
+ unknown2: 0x0
+ vtable: 0x0
+
+}
+</code></pre><hr>
+<h3 id="arbitrary-write">Arbitrary write<a hidden class="anchor" aria-hidden="true" href="#arbitrary-write">#</a></h3>
+<p><strong>scenario:</strong> a file is opened, we cannot read the contents. we want to read the contents. we can control where that file is read to in memory</p>
+<p>in the file structure we can basically NULL out every single value except for:</p>
+<ul>
+<li><code>char *_IO_buf_base</code></li>
+<li><code>char *_IO_buf_end</code></li>
+</ul>
+<p><code>_IO_buf_base</code> being the start address of where we want to read the data, <code>_IO_buf_end</code> being the end</p>
+<hr>
+<h3 id="arbitrary-read">Arbitrary read<a hidden class="anchor" aria-hidden="true" href="#arbitrary-read">#</a></h3>
+<p><strong>scenario:</strong> there is data in memory that we want to write to a file</p>
+<p>similar to before, nearly everything in the file struct can be null&rsquo;d out, the main focus now is instead:</p>
+<ul>
+<li><code>char *_IO_read_end</code></li>
+<li><code>char *_IO_write_base</code></li>
+<li><code>char *_IO_write_ptr</code></li>
+</ul>
+<p>read_end and write_base being the same ptr value, write_ptr being the end of the data we want to write</p>
+<hr>
+<h3 id="control-flow">Control flow<a hidden class="anchor" aria-hidden="true" href="#control-flow">#</a></h3>
+<p><strong>scenario:</strong> we want to instead, take control of the program and execute our own stuffs</p>
+<p>something to talk about is FILE_plus, which is an extension of FILE struct. the only difference between the two is the new ptr:</p>
+<p><code>const struct _IO_jump_t *vtable;</code></p>
+<p>a virtual table for address resolution! wow!</p>
+<p>now our FILE structure looks something like this</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> _IO_FILE_plus {
+</span></span><span style="display:flex;"><span>    FILE file;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> _IO_jump_t <span style="color:#f92672">*</span>vtable;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>if you are unfamiliar with virtual function tables; they are commonly found in C++ binaries and are used for dynamic address resolution during runtime</p>
+<p>a call to a function in the vtable will look something like this</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#75715e"># vtable moved into r15
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">call</span> <span style="color:#66d9ef">QWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">r15</span><span style="color:#960050;background-color:#1e0010">+</span><span style="color:#ae81ff">0x38</span>]
+</span></span></code></pre></div><p>0x38 being the offset in the vtable that is to be called, so whatever function resides at offset 0x38 will be called</p>
+<p><em>Okay, so how do we exploit it?</em></p>
+<p>the simple answer is overwrite the vtable pointer to a malicious vtable that we have constructed!<br>
+what we have to keep in mind is, the _lock value in the FILE struct needs to point to a writeable region in memory that contains a NULL value. i dont need to explain why here<br>
+what we also need to keep in mind is security mitigations.. modern libc performs a vtable validation to step to ensure that the vtable is pointing to a validated memory region for the vtable :(</p>
+<p>so to get passed this, we want to force the application to perform the following call chain:</p>
+<p><code>_IO_wfile_overflow -&gt; _IO_wdoallocbuf</code></p>
+<p>when this happens, <code>_IO_wdoallocbuf</code> calls the vtable pointed to in <code>wide_data</code> which does NOT perform the validation step mentioned above!</p>
+<p>here we can see the definiton of <code>wide_data</code> <a href="https://elixir.bootlin.com/glibc/glibc-2.31/source/libio/libio.h#L121">link</a></p>
+<p>if we look at <code>_IO_wfile_jumps</code> table</p>
+<pre tabindex="0"><code>(gdb) p _IO_wfile_overflow
+$13 = {&lt;text variable, no debug info&gt;} 0x7cbfae576ce0 &lt;_IO_wfile_overflow&gt;
+
+...
+
+0x7cbfae6d5f60 &lt;_IO_wfile_jumps&gt;:       0x0000000000000000      0x0000000000000000
+0x7cbfae6d5f70 &lt;_IO_wfile_jumps+16&gt;:    0x00007cbfae57cf50      0x00007cbfae576ce0
+0x7cbfae6d5f80 &lt;_IO_wfile_jumps+32&gt;:    0x00007cbfae5758e0      0x00007cbfae574160
+0x7cbfae6d5f90 &lt;_IO_wfile_jumps+48&gt;:    0x00007cbfae573f20      0x00007cbfae577160
+0x7cbfae6d5fa0 &lt;_IO_wfile_jumps+64&gt;:    0x00007cbfae57c240      0x00007cbfae5760a0
+</code></pre><p>we see that the address of <code>_IO_wfile_overflow</code> is at <code>*_IO_wfile_jumps + 0x18</code></p>
+<p>to perform the full exploit we need to overwrite the vtable, we need to overwrite wide_data, and we can hijack the control flow from there</p>
+<p><strong>note that offsets can and will change between glibc versions!!</strong></p>
+<p>A working exploit would look like:</p>
+<ul>
+<li>Overwrite FILE *vtable to point to <code>_IO_wfile_jumps + 0x08</code> instead of <code>_IO_file_jumps</code></li>
+<li>Overwrite <code>*FILE-&gt;_wide_data</code> to our malicious FILE struct, I usually just overwrite this with the current *FILE to save space</li>
+<li>Execute <code>fclose()</code> on the FILE struct</li>
+</ul>
+<pre tabindex="0"><code>=&gt; 0x704eba2a2e3e &lt;fclose+110&gt;: call   QWORD PTR [rbx+0x10]
+</code></pre><p>$rbx is now set to <code>_IO_wfile_jumps</code>. <code>fclose()</code> is going to call <code>_IO_wfile_jumps+0x10</code> which now points to <code>_IO_wdoallocbuf</code></p>
+<p>during execution of <code>_IO_wdoallocbuf</code>:</p>
+<pre tabindex="0"><code>=&gt; 0x7a4bd69ec4b4 &lt;_IO_wdoallocbuf+36&gt;: mov    rax,QWORD PTR [rax+0xe0]
+   0x7a4bd69ec4bb &lt;_IO_wdoallocbuf+43&gt;: call   QWORD PTR [rax+0x68]
+</code></pre><p>$rax being (*_wide_data) *FILE. the way i typically exploit this is by setting *FILE+0xe0 to *FILE, then *FILE-&gt;_chain to the function we want to call! (0x68 is _chain)</p>
+<hr>
+<h3 id="arbitrary-readwrite">Arbitrary read/write<a hidden class="anchor" aria-hidden="true" href="#arbitrary-readwrite">#</a></h3>
+<p>while the above read and writes may seem very limiting, we can actually make a much better use of the FILE struct explotation. having control over the FILE struct and vtable pointer gives us full control over the functions executed. a file stream could be opened with a file that we couldnt care less about. we can still abuse this file stream to say, read data from one location to another. we could even print this data to stdout even when the file was only opened with &ldquo;r&rdquo; permissions. this all has to do with the initial vtable pointer. by manipulating the vtable pointer we can effectively choose what function we call. for example if we have a buffer of data that we want to print out, but we only have access to the <code>fread()</code> call. by crafting the call</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#a6e22e">fread</span>(buffer, <span style="color:#ae81ff">1</span>, size, fp);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#a6e22e">_IO_fread</span> (<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>buf, <span style="color:#66d9ef">size_t</span> size, <span style="color:#66d9ef">size_t</span> count, FILE <span style="color:#f92672">*</span>fp)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">size_t</span> bytes_requested <span style="color:#f92672">=</span> size <span style="color:#f92672">*</span> count;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">size_t</span> bytes_read;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CHECK_FILE</span> (fp, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (bytes_requested <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_IO_acquire_lock</span> (fp);
+</span></span><span style="display:flex;"><span>  bytes_read <span style="color:#f92672">=</span> <span style="color:#a6e22e">_IO_sgetn</span> (fp, (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>) buf, bytes_requested);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_IO_release_lock</span> (fp);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> bytes_requested <span style="color:#f92672">==</span> bytes_read <span style="color:#f92672">?</span> count : bytes_read <span style="color:#f92672">/</span> size;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>fread will call <code>_IO_sgetn</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#a6e22e">_IO_default_xsgetn</span> (FILE <span style="color:#f92672">*</span>fp, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>data, <span style="color:#66d9ef">size_t</span> n)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">size_t</span> more <span style="color:#f92672">=</span> n;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>s <span style="color:#f92672">=</span> (<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>) data;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> (;;)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">/* Data available. */</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (fp<span style="color:#f92672">-&gt;</span>_IO_read_ptr <span style="color:#f92672">&lt;</span> fp<span style="color:#f92672">-&gt;</span>_IO_read_end)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>	  <span style="color:#66d9ef">size_t</span> count <span style="color:#f92672">=</span> fp<span style="color:#f92672">-&gt;</span>_IO_read_end <span style="color:#f92672">-</span> fp<span style="color:#f92672">-&gt;</span>_IO_read_ptr;
+</span></span><span style="display:flex;"><span>	  <span style="color:#66d9ef">if</span> (count <span style="color:#f92672">&gt;</span> more)
+</span></span><span style="display:flex;"><span>	    count <span style="color:#f92672">=</span> more;
+</span></span><span style="display:flex;"><span>	  <span style="color:#66d9ef">if</span> (count <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span>	    {
+</span></span><span style="display:flex;"><span>	      s <span style="color:#f92672">=</span> <span style="color:#a6e22e">__mempcpy</span> (s, fp<span style="color:#f92672">-&gt;</span>_IO_read_ptr, count);
+</span></span><span style="display:flex;"><span>	      fp<span style="color:#f92672">-&gt;</span>_IO_read_ptr <span style="color:#f92672">+=</span> count;
+</span></span><span style="display:flex;"><span>	    }
+</span></span><span style="display:flex;"><span>	  <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (count)
+</span></span><span style="display:flex;"><span>	    {
+</span></span><span style="display:flex;"><span>	      <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>p <span style="color:#f92672">=</span> fp<span style="color:#f92672">-&gt;</span>_IO_read_ptr;
+</span></span><span style="display:flex;"><span>	      <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> (<span style="color:#66d9ef">int</span>) count;
+</span></span><span style="display:flex;"><span>	      <span style="color:#66d9ef">while</span> (<span style="color:#f92672">--</span>i <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">*</span>s<span style="color:#f92672">++</span> <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>p<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>	      fp<span style="color:#f92672">-&gt;</span>_IO_read_ptr <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>	    }
+</span></span><span style="display:flex;"><span>	    more <span style="color:#f92672">-=</span> count;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (more <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">__underflow</span> (fp) <span style="color:#f92672">==</span> EOF)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> n <span style="color:#f92672">-</span> more;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>if we increment the vtable pointer precisely we can force the control flow to execute <code>_IO_file_write()</code> which will instead print the contents of the buffer to the <code>_fileno</code> in the FILE struct</p>
+<p>a loose example is when calling fread, sgetn is called and then retrieves a pointer from the vtable <code>_IO_file_jumps</code></p>
+<pre tabindex="0"><code>=&gt; 0x731dbce1b16a &lt;_IO_sgetn+26&gt;:       mov    rbx,QWORD PTR [rdi+0xd8]         ; *FILE-&gt;vtable
+   0x731dbce1b171 &lt;_IO_sgetn+33&gt;:       mov    r8,rbx
+   0x731dbce1b174 &lt;_IO_sgetn+36&gt;:       sub    r8,rcx
+   0x731dbce1b177 &lt;_IO_sgetn+39&gt;:       cmp    rax,r8
+   0x731dbce1b17a &lt;_IO_sgetn+42&gt;:       jbe    0x731dbce1b190 &lt;_IO_sgetn+64&gt;
+   0x731dbce1b17c &lt;_IO_sgetn+44&gt;:       mov    rax,QWORD PTR [rbx+0x40]         ; *vtable-&gt;0x40
+   0x731dbce1b180 &lt;_IO_sgetn+48&gt;:       add    rsp,0x20
+   0x731dbce1b184 &lt;_IO_sgetn+52&gt;:       pop    rbx
+   0x731dbce1b185 &lt;_IO_sgetn+53&gt;:       jmp    rax                              
+</code></pre><p><code>_IO_file_jumps</code></p>
+<pre tabindex="0"><code>0x701452b064a0 &lt;_IO_file_jumps&gt;:        0x0000000000000000      0x0000000000000000
+0x701452b064b0 &lt;_IO_file_jumps+16&gt;:     0x00007014529acf50      0x00007014529add80
+0x701452b064c0 &lt;_IO_file_jumps+32&gt;:     0x00007014529ada20      0x00007014529aef50
+0x701452b064d0 &lt;_IO_file_jumps+48&gt;:     0x00007014529b0680      0x00007014529ac5d0
+0x701452b064e0 &lt;_IO_file_jumps+64&gt;:     0x00007014529ac240      0x00007014529ab860
+0x701452b064f0 &lt;_IO_file_jumps+80&gt;:     0x00007014529af600      0x00007014529ab530
+0x701452b06500 &lt;_IO_file_jumps+96&gt;:     0x00007014529ab3c0      0x000070145299ec70
+0x701452b06510 &lt;_IO_file_jumps+112&gt;:    0x00007014529ac5a0      0x00007014529abe60
+0x701452b06520 &lt;_IO_file_jumps+128&gt;:    0x00007014529ab600      0x00007014529ab520
+0x701452b06530 &lt;_IO_file_jumps+144&gt;:    0x00007014529abe40      0x00007014529b0810
+</code></pre><p>what we want is <code>_IO_file_write</code>, located at <code>*vtable+120</code></p>
+<p>if we take that address and subtract 0x40:</p>
+<pre tabindex="0"><code>(gdb) p/x 0x701452b06518 - 0x40
+$1 = 0x701452b064d8
+</code></pre><p>this is a simple 1 byte overwrite, overwriting <code>*FILE+0xd8</code> with <code>0xd8</code></p>
+<p>now in <code>_IO_sgetn</code>, if we reference the assembly above, will instead call <code>_IO_file_write</code> :)</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share FILE struct exploitation on x"
+            href="https://x.com/intent/tweet/?text=FILE%20struct%20exploitation&amp;url=https%3a%2f%2fyams.bot%2frandom%2ffile_struct%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share FILE struct exploitation on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2frandom%2ffile_struct%2f&amp;title=FILE%20struct%20exploitation&amp;summary=FILE%20struct%20exploitation&amp;source=https%3a%2f%2fyams.bot%2frandom%2ffile_struct%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

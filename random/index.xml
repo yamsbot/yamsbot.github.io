@@ -6,8 +6,24 @@
     <description>Recent content in random on 🍠 yamsbot</description>
     <generator>Hugo -- 0.138.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 22 Nov 2024 02:01:24 -0500</lastBuildDate>
+    <lastBuildDate>Tue, 28 Jan 2025 13:28:56 -0500</lastBuildDate>
     <atom:link href="https://yams.bot/random/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Phishing Email Analysis</title>
+      <link>https://yams.bot/random/phishingemails/</link>
+      <pubDate>Tue, 28 Jan 2025 13:28:56 -0500</pubDate>
+      <guid>https://yams.bot/random/phishingemails/</guid>
+      <description>&lt;h2 id=&#34;what-is-a-phishing-email&#34;&gt;What is a phishing email?&lt;/h2&gt;
+&lt;p&gt;In my words, a phishing email, or phish in general, is an attackers attempt to persuade the victim user into doing some action. This could be anything, but typically attackers are looking to persuade the victim into:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Purchasing something for the attacker&lt;/li&gt;
+&lt;li&gt;Navigate to a malicious website&lt;/li&gt;
+&lt;li&gt;Disclose information&lt;/li&gt;
+&lt;li&gt;Download and run an application&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;how-do-attackers-persuade-victims&#34;&gt;How do attackers persuade victims?&lt;/h2&gt;
+&lt;p&gt;Think back to primary school. At least in my case, this was my first exposure to what is called the &amp;ldquo;rhetorical triangle&amp;rdquo;. The rhetorical triangle consists of the three rhetoritcal devices:&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Exploitation</title>
       <link>https://yams.bot/random/exploitation/</link>

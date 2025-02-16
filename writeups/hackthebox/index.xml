@@ -6,7 +6,69 @@
     <description>Recent content in HackTheBox on 🍠 yamsbot</description>
     <generator>Hugo -- 0.138.0</generator>
     <language>en-us</language>
-    <lastBuildDate></lastBuildDate>
+    <lastBuildDate>Fri, 24 Jan 2025 03:00:11 -0500</lastBuildDate>
     <atom:link href="https://yams.bot/writeups/hackthebox/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[HTB] vvm</title>
+      <link>https://yams.bot/writeups/hackthebox/vvm/</link>
+      <pubDate>Fri, 24 Jan 2025 03:00:11 -0500</pubDate>
+      <guid>https://yams.bot/writeups/hackthebox/vvm/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yams.bot/images/hackthebox/vvm/banner.png&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
+&lt;p&gt;&amp;ldquo;Hard&amp;rdquo; reversing challenge released about half a year ago at time of writing.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;A new startup claims to have developed an unbreakable client-side password validation system. VCs have invested millions, but I&#39;m a bit skeptical of their claim. Can you prove them wrong?&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;initial-investigation&#34;&gt;Initial investigation&lt;/h2&gt;
+&lt;p&gt;Before we begin static analysis we will run ltrace against the binary to see whats going on:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ltrace ./vvm
+puts(&amp;#34;=======================&amp;#34;=======================
+)                          = 24
+puts(&amp;#34;vvm v0.0.3&amp;#34;vvm v0.0.3
+)                                       = 11
+puts(&amp;#34;=======================&amp;#34;=======================
+)                          = 24
+malloc(224)                                              = 0x61c7243906b0
+mmap(0, 27, 7, 34)                                       = 0x71de16538000
+mmap(0, 42, 7, 34)                                       = 0x71de164fe000
+mmap(0, 25, 7, 34)                                       = 0x71de164fd000
+mmap(0, 18, 7, 34)                                       = 0x71de164fc000
+mmap(0, 56, 7, 34)                                       = 0x71de164fb000
+mmap(0, 179, 7, 34)                                      = 0x71de164fa000
+mmap(0, 37, 7, 34)                                       = 0x71de164f9000
+mmap(0, 20, 7, 34)                                       = 0x71de164f8000
+mmap(0, 59, 7, 34)                                       = 0x71de164f7000
+mmap(0, 53, 7, 34)                                       = 0x71de164f6000
+mmap(0, 40, 7, 34)                                       = 0x71de164f5000
+mmap(0, 32, 7, 34)                                       = 0x71de164f4000
+mmap(0, 20, 7, 34)                                       = 0x71de164f3000
+mmap(0, 37, 7, 34)                                       = 0x71de164f2000
+mmap(0, 50, 7, 34)                                       = 0x71de164f1000
+mmap(0, 33, 7, 34)                                       = 0x71de164f0000
+mmap(0, 37, 7, 34)                                       = 0x71de164ef000
+mmap(0, 36, 7, 34)                                       = 0x71de164ee000
+mmap(0, 21, 7, 34)                                       = 0x71de164ed000
+mmap(0, 37, 7, 34)                                       = 0x71de164ec000
+mmap(0, 36, 7, 34)                                       = 0x71de164eb000
+mmap(0, 25, 7, 34)                                       = 0x71de164ea000
+mmap(0, 27, 7, 34)                                       = 0x71de164e9000
+mmap(0, 32, 7, 34)                                       = 0x71de164e8000
+ptrace(0, 0, 0, 0)                                       = -1
+exit(1 &amp;lt;no return ...&amp;gt;
++++ exited (status 1) +++
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The program allocates and maps a few memory regions, calls &lt;code&gt;ptrace()&lt;/code&gt; and then exits. Based on experience we can confidently say that the &lt;code&gt;ptrace()&lt;/code&gt; call is a simple anti-debugging measure. If the ptrace call returns a failure, the program is being debugged in some way and will exit. Based on this information we can start static analysis of the binary in Ghidra.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>[HTB] SEPC</title>
+      <link>https://yams.bot/writeups/hackthebox/sepc/</link>
+      <pubDate>Wed, 22 Jan 2025 00:16:47 -0500</pubDate>
+      <guid>https://yams.bot/writeups/hackthebox/sepc/</guid>
+      <description>&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
+&lt;p&gt;SEPC is a &amp;ldquo;medium&amp;rdquo; linux kernel based reversing challege. SEPC stands for &amp;ldquo;Secure Enclave Password Checker&amp;rdquo;, with the challenge being featured in the 2023 HTB Business CTF.&lt;/p&gt;
+&lt;p&gt;Players are given three files:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;bzImage             (kernel image)
+initramfs.cpio.gz   (file system)
+run.sh              (a helper script to run the program)
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;flag&#34;&gt;Flag&lt;/h2&gt;
+&lt;p&gt;Initially I was under the impression that I was going to need to debug the kernel of the virtual machine to better understand what was happening under the hood. But simply reversing and dumping some data from the kernel module was all that was needed!&lt;/p&gt;</description>
+    </item>
   </channel>
 </rss>
