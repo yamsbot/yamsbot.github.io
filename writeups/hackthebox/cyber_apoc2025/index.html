@@ -406,6 +406,7 @@ iVar1 = (*pcVar2)();
 <p>after the patched file is created we replace the .text in the singlestep binary with the next .text:</p>
 <p><code>objcopy --update-section .text=patched singlestep patchedstep</code></p>
 <p>now we can statically reverse engineer the program</p>
+<p><img loading="lazy" src="/images/hackthebox/singlestep/singlestep.png"></p>
 <p>high level:</p>
 <ul>
 <li>checks the input length is 0x13 (19)</li>
