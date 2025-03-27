@@ -6,8 +6,33 @@
     <description>Recent content in HackTheBox on 🍠 yamsbot</description>
     <generator>Hugo -- 0.138.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 Jan 2025 03:00:11 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 24 Mar 2025 21:53:04 -0400</lastBuildDate>
     <atom:link href="https://yams.bot/writeups/hackthebox/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[HTB] Cyber Apocalypse 2025</title>
+      <link>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</link>
+      <pubDate>Mon, 24 Mar 2025 21:53:04 -0400</pubDate>
+      <guid>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</guid>
+      <description>&lt;h1 id=&#34;reversing&#34;&gt;Reversing&lt;/h1&gt;
+&lt;h2 id=&#34;sealedrune&#34;&gt;Sealedrune&lt;/h2&gt;
+&lt;p&gt;strings and base64 decode for flag&lt;/p&gt;
+&lt;p&gt;flag: &lt;code&gt;HTB{run3_m4g1c_r3v34l3d}&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;encryptedscroll&#34;&gt;EncryptedScroll&lt;/h2&gt;
+&lt;p&gt;debug in gdb or just take the char array from ghidra and &amp;ldquo;decrypt&amp;rdquo; the flag&lt;/p&gt;
+&lt;p&gt;flag: &lt;code&gt;HTB{s1mpl3_fl4g_4r1thm3t1c}&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;endlesscycle&#34;&gt;EndlessCycle&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;pcVar2 = (code *)mmap((void *)0x0,158,7,0x21,-1,0);
+srand(seed);
+for (i = 0; i &amp;lt; 158; i = i + 1) {
+    for (ii = 0; ii &amp;lt; (ulong)(long)*(int *)(&amp;amp;DAT_00104040 + i * 4); ii = ii + 1) {
+        rand();
+    }
+    iVar1 = rand();
+    pcVar2[i] = SUB41(iVar1,0);
+}
+iVar1 = (*pcVar2)();
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;seeds rand with a static value defined in .data: 5b bc d2 cf&lt;/p&gt;</description>
+    </item>
     <item>
       <title>[HTB] vvm</title>
       <link>https://yams.bot/writeups/hackthebox/vvm/</link>
