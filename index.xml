@@ -6,8 +6,18 @@
     <description>Recent content on 🍠 yamsbot</description>
     <generator>Hugo -- 0.138.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 24 Mar 2025 21:53:04 -0400</lastBuildDate>
+    <lastBuildDate>Sat, 12 Apr 2025 11:24:20 -0400</lastBuildDate>
     <atom:link href="https://yams.bot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[HTB] ARMs Race</title>
+      <link>https://yams.bot/writeups/hackthebox/arms_race/</link>
+      <pubDate>Sat, 12 Apr 2025 11:24:20 -0400</pubDate>
+      <guid>https://yams.bot/writeups/hackthebox/arms_race/</guid>
+      <description>&lt;h1 id=&#34;arms-race&#34;&gt;ARMs Race&lt;/h1&gt;
+&lt;p&gt;Just wanted to make a quick writeup for this challenge because easy challenges structured in this way are pretty fun to me. Although not too challenging, it was fun to solve. This challenge also wraps up the &amp;ldquo;Easy&amp;rdquo; challenges in the active reversing category for HTB.&lt;/p&gt;
+&lt;p&gt;The challenges name is &amp;ldquo;ARMs Race&amp;rdquo;, which gives us a strong hint that the architecture is ARM. There are no files to download, just an instance to spawn and connect to.&lt;br&gt;
+Connecting to the instance the end user is greeted with:&lt;/p&gt;</description>
+    </item>
     <item>
       <title>[HTB] Cyber Apocalypse 2025</title>
       <link>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</link>
