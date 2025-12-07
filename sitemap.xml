@@ -2,83 +2,83 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://yams.bot/</loc>
+    <loc>https://yamsbot.github.io/</loc>
+    <lastmod>2025-04-21T10:38:36-04:00</lastmod>
+  </url><url>
+    <loc>https://yamsbot.github.io/writeups/hackthebox/</loc>
+    <lastmod>2025-04-21T10:38:36-04:00</lastmod>
+  </url><url>
+    <loc>https://yamsbot.github.io/writeups/</loc>
+    <lastmod>2025-04-21T10:38:36-04:00</lastmod>
+  </url><url>
+    <loc>https://yamsbot.github.io/writeups/hackthebox/arms_race/</loc>
     <lastmod>2025-04-12T11:24:20-04:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/hackthebox/arms_race/</loc>
-    <lastmod>2025-04-12T11:24:20-04:00</lastmod>
-  </url><url>
-    <loc>https://yams.bot/writeups/hackthebox/</loc>
-    <lastmod>2025-04-12T11:24:20-04:00</lastmod>
-  </url><url>
-    <loc>https://yams.bot/writeups/</loc>
-    <lastmod>2025-04-12T11:24:20-04:00</lastmod>
-  </url><url>
-    <loc>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</loc>
+    <loc>https://yamsbot.github.io/writeups/hackthebox/cyber_apoc2025/</loc>
     <lastmod>2025-03-24T21:53:04-04:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/random/phishingemails/</loc>
+    <loc>https://yamsbot.github.io/random/phishingemails/</loc>
     <lastmod>2025-01-28T13:28:56-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/random/</loc>
+    <loc>https://yamsbot.github.io/random/</loc>
     <lastmod>2025-01-28T13:28:56-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/hackthebox/vvm/</loc>
+    <loc>https://yamsbot.github.io/writeups/hackthebox/vvm/</loc>
     <lastmod>2025-01-24T03:00:11-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/hackthebox/sepc/</loc>
+    <loc>https://yamsbot.github.io/writeups/hackthebox/sepc/</loc>
     <lastmod>2025-01-22T00:16:47-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/random/exploitation/</loc>
+    <loc>https://yamsbot.github.io/random/exploitation/</loc>
     <lastmod>2024-11-22T02:01:24-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/flareon2024/checksum/</loc>
+    <loc>https://yamsbot.github.io/writeups/flareon2024/checksum/</loc>
     <lastmod>2024-11-13T10:23:10-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/flareon2024/</loc>
+    <loc>https://yamsbot.github.io/writeups/flareon2024/</loc>
     <lastmod>2024-11-13T10:23:10-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/flareon2024/sshd/</loc>
+    <loc>https://yamsbot.github.io/writeups/flareon2024/sshd/</loc>
     <lastmod>2024-11-13T00:00:48-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/nadcommmuseum/</loc>
     <lastmod>2024-11-12T22:22:47-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/</loc>
     <lastmod>2024-11-12T22:22:47-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/crystalclear/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/crystalclear/</loc>
     <lastmod>2024-11-12T22:20:21-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/defcon32/tufctf/</loc>
+    <loc>https://yamsbot.github.io/writeups/defcon32/tufctf/</loc>
     <lastmod>2024-11-12T20:50:10-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/defcon32/</loc>
+    <loc>https://yamsbot.github.io/writeups/defcon32/</loc>
     <lastmod>2024-11-12T20:50:10-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/about/</loc>
+    <loc>https://yamsbot.github.io/about/</loc>
     <lastmod>2024-11-12T19:48:38-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/pinkponyhash/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/pinkponyhash/</loc>
     <lastmod>2024-11-12T19:23:12-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/pandajail/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/pandajail/</loc>
     <lastmod>2024-11-12T19:04:41-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/scrabble/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/scrabble/</loc>
     <lastmod>2024-11-12T18:57:04-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/flagterminal/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/flagterminal/</loc>
     <lastmod>2024-11-12T18:31:11-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/writeups/uscyber2024/cachemoney/</loc>
+    <loc>https://yamsbot.github.io/writeups/uscyber2024/cachemoney/</loc>
     <lastmod>2024-11-12T17:03:11-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/research/</loc>
+    <loc>https://yamsbot.github.io/research/</loc>
     <lastmod>2024-11-12T16:45:17-05:00</lastmod>
   </url><url>
-    <loc>https://yams.bot/categories/</loc>
+    <loc>https://yamsbot.github.io/categories/</loc>
   </url><url>
-    <loc>https://yams.bot/tags/</loc>
+    <loc>https://yamsbot.github.io/tags/</loc>
   </url>
 </urlset>

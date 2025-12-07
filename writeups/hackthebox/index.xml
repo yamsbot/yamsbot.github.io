@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>HackTheBox on 🍠 yamsbot</title>
-    <link>https://yams.bot/writeups/hackthebox/</link>
+    <link>https://yamsbot.github.io/writeups/hackthebox/</link>
     <description>Recent content in HackTheBox on 🍠 yamsbot</description>
-    <generator>Hugo -- 0.138.0</generator>
+    <generator>Hugo -- 0.148.1</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 12 Apr 2025 11:24:20 -0400</lastBuildDate>
-    <atom:link href="https://yams.bot/writeups/hackthebox/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://yamsbot.github.io/writeups/hackthebox/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[HTB] ARMs Race</title>
-      <link>https://yams.bot/writeups/hackthebox/arms_race/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/arms_race/</link>
       <pubDate>Sat, 12 Apr 2025 11:24:20 -0400</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/arms_race/</guid>
+      <guid>https://yamsbot.github.io/writeups/hackthebox/arms_race/</guid>
       <description>&lt;h1 id=&#34;arms-race&#34;&gt;ARMs Race&lt;/h1&gt;
 &lt;p&gt;Just wanted to make a quick writeup for this challenge because easy challenges structured in this way are pretty fun to me. Although not too challenging, it was fun to solve. This challenge also wraps up the &amp;ldquo;Easy&amp;rdquo; challenges in the active reversing category for HTB.&lt;/p&gt;
 &lt;p&gt;The challenges name is &amp;ldquo;ARMs Race&amp;rdquo;, which gives us a strong hint that the architecture is ARM. There are no files to download, just an instance to spawn and connect to.&lt;br&gt;
@@ -20,9 +20,9 @@ Connecting to the instance the end user is greeted with:&lt;/p&gt;</description>
     </item>
     <item>
       <title>[HTB] Cyber Apocalypse 2025</title>
-      <link>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/cyber_apoc2025/</link>
       <pubDate>Mon, 24 Mar 2025 21:53:04 -0400</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</guid>
+      <guid>https://yamsbot.github.io/writeups/hackthebox/cyber_apoc2025/</guid>
       <description>&lt;h1 id=&#34;reversing&#34;&gt;Reversing&lt;/h1&gt;
 &lt;h2 id=&#34;sealedrune&#34;&gt;Sealedrune&lt;/h2&gt;
 &lt;p&gt;strings and base64 decode for flag&lt;/p&gt;
@@ -45,10 +45,10 @@ iVar1 = (*pcVar2)();
     </item>
     <item>
       <title>[HTB] vvm</title>
-      <link>https://yams.bot/writeups/hackthebox/vvm/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/vvm/</link>
       <pubDate>Fri, 24 Jan 2025 03:00:11 -0500</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/vvm/</guid>
-      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yams.bot/images/hackthebox/vvm/banner.png&#34;&gt;&lt;/p&gt;
+      <guid>https://yamsbot.github.io/writeups/hackthebox/vvm/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yamsbot.github.io/images/hackthebox/vvm/banner.png&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
 &lt;p&gt;&amp;ldquo;Hard&amp;rdquo; reversing challenge released about half a year ago at time of writing.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;A new startup claims to have developed an unbreakable client-side password validation system. VCs have invested millions, but I&#39;m a bit skeptical of their claim. Can you prove them wrong?&lt;/code&gt;&lt;/p&gt;
@@ -93,9 +93,9 @@ exit(1 &amp;lt;no return ...&amp;gt;
     </item>
     <item>
       <title>[HTB] SEPC</title>
-      <link>https://yams.bot/writeups/hackthebox/sepc/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/sepc/</link>
       <pubDate>Wed, 22 Jan 2025 00:16:47 -0500</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/sepc/</guid>
+      <guid>https://yamsbot.github.io/writeups/hackthebox/sepc/</guid>
       <description>&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
 &lt;p&gt;SEPC is a &amp;ldquo;medium&amp;rdquo; linux kernel based reversing challege. SEPC stands for &amp;ldquo;Secure Enclave Password Checker&amp;rdquo;, with the challenge being featured in the 2023 HTB Business CTF.&lt;/p&gt;
 &lt;p&gt;Players are given three files:&lt;/p&gt;

@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>US CyberGames Flag Fest 2024 on 🍠 yamsbot</title>
-    <link>https://yams.bot/writeups/uscyber2024/</link>
+    <link>https://yamsbot.github.io/writeups/uscyber2024/</link>
     <description>Recent content in US CyberGames Flag Fest 2024 on 🍠 yamsbot</description>
-    <generator>Hugo -- 0.138.0</generator>
+    <generator>Hugo -- 0.148.1</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 12 Nov 2024 22:22:47 -0500</lastBuildDate>
-    <atom:link href="https://yams.bot/writeups/uscyber2024/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://yamsbot.github.io/writeups/uscyber2024/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>NADCOMMMuseum</title>
-      <link>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/nadcommmuseum/</link>
       <pubDate>Tue, 12 Nov 2024 22:22:47 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/nadcommmuseum/</guid>
       <description>&lt;h2 id=&#34;details&#34;&gt;Details&lt;/h2&gt;
 &lt;p&gt;Users are provided with file &lt;code&gt;evidence.flac&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;The challenge description reads:&lt;/p&gt;
@@ -22,9 +22,9 @@ Help us decode this. We know the killer is from the mid 19th century, but someho
     </item>
     <item>
       <title>Crystal Clear</title>
-      <link>https://yams.bot/writeups/uscyber2024/crystalclear/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/crystalclear/</link>
       <pubDate>Tue, 12 Nov 2024 22:20:21 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/crystalclear/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/crystalclear/</guid>
       <description>&lt;h1 id=&#34;details&#34;&gt;Details&lt;/h1&gt;
 &lt;p&gt;Crystal Clear was a reversing CTF where we had to reverse a program compiled in Crystal, a completely unknown language to me.&lt;/p&gt;
 &lt;p&gt;Anyways we find two separate arrays of bytes in memory that are xor&amp;rsquo;d against our input, byte by byte
@@ -33,9 +33,9 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>PinkPonyHash</title>
-      <link>https://yams.bot/writeups/uscyber2024/pinkponyhash/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/pinkponyhash/</link>
       <pubDate>Tue, 12 Nov 2024 19:23:12 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/pinkponyhash/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/pinkponyhash/</guid>
       <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: &lt;a href=&#34;https://github.com/stephenbradshaw/hlextend&#34;&gt;hlextend&lt;/a&gt; which makes this attack trivial&lt;/p&gt;
 &lt;h2 id=&#34;source-code&#34;&gt;source code&lt;/h2&gt;
@@ -96,18 +96,18 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>[USC 2024] PandaJail</title>
-      <link>https://yams.bot/writeups/uscyber2024/pandajail/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/pandajail/</link>
       <pubDate>Tue, 12 Nov 2024 19:04:41 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/pandajail/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/pandajail/</guid>
       <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;the actual description reads: &amp;ldquo;im stuck in a Pickle, can you help me out of jail?&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;this challenge was pretty fun and took me a while to solve due to the challenge being completely blackbox. the challenge gave users a python shell and the ability to execute one command. there is a strict whitelist that only allowed for the sys and pandas module to be executed, anything else would be denied. there was also a blacklist on the amount of special characters that could be used.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Scrabble</title>
-      <link>https://yams.bot/writeups/uscyber2024/scrabble/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/scrabble/</link>
       <pubDate>Tue, 12 Nov 2024 18:57:04 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/scrabble/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/scrabble/</guid>
       <description>&lt;p&gt;this is being written a few months after the CTF so bare with me&lt;/p&gt;
 &lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;we are given a file named enc.raw and a program called scrammbler that is a custom form of &amp;ldquo;encryption&amp;rdquo; (?) the goal of the ctf is to unscrammble the bytes in enc.raw. i dont have the source program anymore, but attached is the reverse of the algorithm used to generate the enc.raw file.&lt;/p&gt;
@@ -116,9 +116,9 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>Flag Terminal</title>
-      <link>https://yams.bot/writeups/uscyber2024/flagterminal/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/flagterminal/</link>
       <pubDate>Tue, 12 Nov 2024 18:31:11 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/flagterminal/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/flagterminal/</guid>
       <description>&lt;p&gt;this writeup is created months after the ctf, so bare with me&lt;/p&gt;
 &lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;this writeup is very similar to my cache money writeup, except for starters it is not very pretty to look at. this was done during the CTF and i havent cleaned it up, and i dont plan on cleaning it up. anyways the main differences from this challenge and cache money is:&lt;/p&gt;
@@ -136,9 +136,9 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>Cache Money</title>
-      <link>https://yams.bot/writeups/uscyber2024/cachemoney/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/cachemoney/</link>
       <pubDate>Tue, 12 Nov 2024 17:03:11 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/cachemoney/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/cachemoney/</guid>
       <description>&lt;p&gt;i am writing this a few months after the CTF ended, so bare with me&lt;/p&gt;
 &lt;h3 id=&#34;description&#34;&gt;description&lt;/h3&gt;
 &lt;p&gt;dynamic allocated misuse vulnerability using glibc version 2.31

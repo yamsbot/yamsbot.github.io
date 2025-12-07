@@ -50,16 +50,16 @@ exit(1 &lt;no return ...&gt;
 &#43;&#43;&#43; exited (status 1) &#43;&#43;&#43;
 The program allocates and maps a few memory regions, calls ptrace() and then exits. Based on experience we can confidently say that the ptrace() call is a simple anti-debugging measure. If the ptrace call returns a failure, the program is being debugged in some way and will exit. Based on this information we can start static analysis of the binary in Ghidra.">
 <meta name="author" content="">
-<link rel="canonical" href="https://yams.bot/writeups/hackthebox/vvm/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://yams.bot/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
-<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<link rel="canonical" href="https://yamsbot.github.io/writeups/hackthebox/vvm/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.1d79e034ed3fae3cce466e1b13b697315f9998d1ba8d908def178611b372b49f.css" integrity="sha256-HXngNO0/rjzORm4bE7aXMV&#43;ZmNG6jZCN7xeGEbNytJ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yamsbot.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yamsbot.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yamsbot.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yamsbot.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yamsbot.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://yams.bot/writeups/hackthebox/vvm/">
+<link rel="alternate" hreflang="en" href="https://yamsbot.github.io/writeups/hackthebox/vvm/">
 <noscript>
     <style>
         #theme-toggle,
@@ -68,120 +68,7 @@ The program allocates and maps a few memory regions, calls ptrace() and then exi
         }
 
     </style>
-</noscript><meta property="og:url" content="https://yams.bot/writeups/hackthebox/vvm/">
-  <meta property="og:site_name" content="🍠 yamsbot">
-  <meta property="og:title" content="[HTB] vvm">
-  <meta property="og:description" content="
-Description “Hard” reversing challenge released about half a year ago at time of writing.
-A new startup claims to have developed an unbreakable client-side password validation system. VCs have invested millions, but I&#39;m a bit skeptical of their claim. Can you prove them wrong?
-Initial investigation Before we begin static analysis we will run ltrace against the binary to see whats going on:
-ltrace ./vvm puts(&#34;=======================&#34;======================= ) = 24 puts(&#34;vvm v0.0.3&#34;vvm v0.0.3 ) = 11 puts(&#34;=======================&#34;======================= ) = 24 malloc(224) = 0x61c7243906b0 mmap(0, 27, 7, 34) = 0x71de16538000 mmap(0, 42, 7, 34) = 0x71de164fe000 mmap(0, 25, 7, 34) = 0x71de164fd000 mmap(0, 18, 7, 34) = 0x71de164fc000 mmap(0, 56, 7, 34) = 0x71de164fb000 mmap(0, 179, 7, 34) = 0x71de164fa000 mmap(0, 37, 7, 34) = 0x71de164f9000 mmap(0, 20, 7, 34) = 0x71de164f8000 mmap(0, 59, 7, 34) = 0x71de164f7000 mmap(0, 53, 7, 34) = 0x71de164f6000 mmap(0, 40, 7, 34) = 0x71de164f5000 mmap(0, 32, 7, 34) = 0x71de164f4000 mmap(0, 20, 7, 34) = 0x71de164f3000 mmap(0, 37, 7, 34) = 0x71de164f2000 mmap(0, 50, 7, 34) = 0x71de164f1000 mmap(0, 33, 7, 34) = 0x71de164f0000 mmap(0, 37, 7, 34) = 0x71de164ef000 mmap(0, 36, 7, 34) = 0x71de164ee000 mmap(0, 21, 7, 34) = 0x71de164ed000 mmap(0, 37, 7, 34) = 0x71de164ec000 mmap(0, 36, 7, 34) = 0x71de164eb000 mmap(0, 25, 7, 34) = 0x71de164ea000 mmap(0, 27, 7, 34) = 0x71de164e9000 mmap(0, 32, 7, 34) = 0x71de164e8000 ptrace(0, 0, 0, 0) = -1 exit(1 &lt;no return ...&gt; &#43;&#43;&#43; exited (status 1) &#43;&#43;&#43; The program allocates and maps a few memory regions, calls ptrace() and then exits. Based on experience we can confidently say that the ptrace() call is a simple anti-debugging measure. If the ptrace call returns a failure, the program is being debugged in some way and will exit. Based on this information we can start static analysis of the binary in Ghidra.">
-  <meta property="og:locale" content="en-us">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="writeups">
-    <meta property="article:published_time" content="2025-01-24T03:00:11-05:00">
-    <meta property="article:modified_time" content="2025-01-24T03:00:11-05:00">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[HTB] vvm">
-<meta name="twitter:description" content="
-Description
-&ldquo;Hard&rdquo; reversing challenge released about half a year ago at time of writing.
-A new startup claims to have developed an unbreakable client-side password validation system. VCs have invested millions, but I&#39;m a bit skeptical of their claim. Can you prove them wrong?
-Initial investigation
-Before we begin static analysis we will run ltrace against the binary to see whats going on:
-ltrace ./vvm
-puts(&#34;=======================&#34;=======================
-)                          = 24
-puts(&#34;vvm v0.0.3&#34;vvm v0.0.3
-)                                       = 11
-puts(&#34;=======================&#34;=======================
-)                          = 24
-malloc(224)                                              = 0x61c7243906b0
-mmap(0, 27, 7, 34)                                       = 0x71de16538000
-mmap(0, 42, 7, 34)                                       = 0x71de164fe000
-mmap(0, 25, 7, 34)                                       = 0x71de164fd000
-mmap(0, 18, 7, 34)                                       = 0x71de164fc000
-mmap(0, 56, 7, 34)                                       = 0x71de164fb000
-mmap(0, 179, 7, 34)                                      = 0x71de164fa000
-mmap(0, 37, 7, 34)                                       = 0x71de164f9000
-mmap(0, 20, 7, 34)                                       = 0x71de164f8000
-mmap(0, 59, 7, 34)                                       = 0x71de164f7000
-mmap(0, 53, 7, 34)                                       = 0x71de164f6000
-mmap(0, 40, 7, 34)                                       = 0x71de164f5000
-mmap(0, 32, 7, 34)                                       = 0x71de164f4000
-mmap(0, 20, 7, 34)                                       = 0x71de164f3000
-mmap(0, 37, 7, 34)                                       = 0x71de164f2000
-mmap(0, 50, 7, 34)                                       = 0x71de164f1000
-mmap(0, 33, 7, 34)                                       = 0x71de164f0000
-mmap(0, 37, 7, 34)                                       = 0x71de164ef000
-mmap(0, 36, 7, 34)                                       = 0x71de164ee000
-mmap(0, 21, 7, 34)                                       = 0x71de164ed000
-mmap(0, 37, 7, 34)                                       = 0x71de164ec000
-mmap(0, 36, 7, 34)                                       = 0x71de164eb000
-mmap(0, 25, 7, 34)                                       = 0x71de164ea000
-mmap(0, 27, 7, 34)                                       = 0x71de164e9000
-mmap(0, 32, 7, 34)                                       = 0x71de164e8000
-ptrace(0, 0, 0, 0)                                       = -1
-exit(1 &lt;no return ...&gt;
-&#43;&#43;&#43; exited (status 1) &#43;&#43;&#43;
-The program allocates and maps a few memory regions, calls ptrace() and then exits. Based on experience we can confidently say that the ptrace() call is a simple anti-debugging measure. If the ptrace call returns a failure, the program is being debugged in some way and will exit. Based on this information we can start static analysis of the binary in Ghidra.">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "writeups",
-      "item": "https://yams.bot/writeups/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "HackTheBox",
-      "item": "https://yams.bot/writeups/hackthebox/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "[HTB] vvm",
-      "item": "https://yams.bot/writeups/hackthebox/vvm/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "[HTB] vvm",
-  "name": "[HTB] vvm",
-  "description": "\nDescription \u0026ldquo;Hard\u0026rdquo; reversing challenge released about half a year ago at time of writing.\nA new startup claims to have developed an unbreakable client-side password validation system. VCs have invested millions, but I'm a bit skeptical of their claim. Can you prove them wrong?\nInitial investigation Before we begin static analysis we will run ltrace against the binary to see whats going on:\nltrace ./vvm puts(\u0026#34;=======================\u0026#34;======================= ) = 24 puts(\u0026#34;vvm v0.0.3\u0026#34;vvm v0.0.3 ) = 11 puts(\u0026#34;=======================\u0026#34;======================= ) = 24 malloc(224) = 0x61c7243906b0 mmap(0, 27, 7, 34) = 0x71de16538000 mmap(0, 42, 7, 34) = 0x71de164fe000 mmap(0, 25, 7, 34) = 0x71de164fd000 mmap(0, 18, 7, 34) = 0x71de164fc000 mmap(0, 56, 7, 34) = 0x71de164fb000 mmap(0, 179, 7, 34) = 0x71de164fa000 mmap(0, 37, 7, 34) = 0x71de164f9000 mmap(0, 20, 7, 34) = 0x71de164f8000 mmap(0, 59, 7, 34) = 0x71de164f7000 mmap(0, 53, 7, 34) = 0x71de164f6000 mmap(0, 40, 7, 34) = 0x71de164f5000 mmap(0, 32, 7, 34) = 0x71de164f4000 mmap(0, 20, 7, 34) = 0x71de164f3000 mmap(0, 37, 7, 34) = 0x71de164f2000 mmap(0, 50, 7, 34) = 0x71de164f1000 mmap(0, 33, 7, 34) = 0x71de164f0000 mmap(0, 37, 7, 34) = 0x71de164ef000 mmap(0, 36, 7, 34) = 0x71de164ee000 mmap(0, 21, 7, 34) = 0x71de164ed000 mmap(0, 37, 7, 34) = 0x71de164ec000 mmap(0, 36, 7, 34) = 0x71de164eb000 mmap(0, 25, 7, 34) = 0x71de164ea000 mmap(0, 27, 7, 34) = 0x71de164e9000 mmap(0, 32, 7, 34) = 0x71de164e8000 ptrace(0, 0, 0, 0) = -1 exit(1 \u0026lt;no return ...\u0026gt; +++ exited (status 1) +++ The program allocates and maps a few memory regions, calls ptrace() and then exits. Based on experience we can confidently say that the ptrace() call is a simple anti-debugging measure. If the ptrace call returns a failure, the program is being debugged in some way and will exit. Based on this information we can start static analysis of the binary in Ghidra.\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "\nDescription “Hard” reversing challenge released about half a year ago at time of writing.\nA new startup claims to have developed an unbreakable client-side password validation system. VCs have invested millions, but I'm a bit skeptical of their claim. Can you prove them wrong?\nInitial investigation Before we begin static analysis we will run ltrace against the binary to see whats going on:\nltrace ./vvm puts(\"=======================\"======================= ) = 24 puts(\"vvm v0.0.3\"vvm v0.0.3 ) = 11 puts(\"=======================\"======================= ) = 24 malloc(224) = 0x61c7243906b0 mmap(0, 27, 7, 34) = 0x71de16538000 mmap(0, 42, 7, 34) = 0x71de164fe000 mmap(0, 25, 7, 34) = 0x71de164fd000 mmap(0, 18, 7, 34) = 0x71de164fc000 mmap(0, 56, 7, 34) = 0x71de164fb000 mmap(0, 179, 7, 34) = 0x71de164fa000 mmap(0, 37, 7, 34) = 0x71de164f9000 mmap(0, 20, 7, 34) = 0x71de164f8000 mmap(0, 59, 7, 34) = 0x71de164f7000 mmap(0, 53, 7, 34) = 0x71de164f6000 mmap(0, 40, 7, 34) = 0x71de164f5000 mmap(0, 32, 7, 34) = 0x71de164f4000 mmap(0, 20, 7, 34) = 0x71de164f3000 mmap(0, 37, 7, 34) = 0x71de164f2000 mmap(0, 50, 7, 34) = 0x71de164f1000 mmap(0, 33, 7, 34) = 0x71de164f0000 mmap(0, 37, 7, 34) = 0x71de164ef000 mmap(0, 36, 7, 34) = 0x71de164ee000 mmap(0, 21, 7, 34) = 0x71de164ed000 mmap(0, 37, 7, 34) = 0x71de164ec000 mmap(0, 36, 7, 34) = 0x71de164eb000 mmap(0, 25, 7, 34) = 0x71de164ea000 mmap(0, 27, 7, 34) = 0x71de164e9000 mmap(0, 32, 7, 34) = 0x71de164e8000 ptrace(0, 0, 0, 0) = -1 exit(1 +++ exited (status 1) +++ The program allocates and maps a few memory regions, calls ptrace() and then exits. Based on experience we can confidently say that the ptrace() call is a simple anti-debugging measure. If the ptrace call returns a failure, the program is being debugged in some way and will exit. Based on this information we can start static analysis of the binary in Ghidra.\nStatic analysis No symbols of course, so lets navigate to entry and drop into the first argument. If you’re not familiar this will be main\nInside we see three functions:\nWe are going to ignore FUN_00102940(); as it calls puts() 3 times and returns. Dropping into FUN_00101540(); we can easily get overwhelmed. I wont attach a screenshot as there are over 780 lines in the decompilation. Reviewing this function we can identify that mmap() calls we observed from ltrace are called from this function. Further examination reveals that data is being decrypted and populated in these mapped regions.\nAt this point I am interested in what is being decrypted and populated in the mapped regions, so I wrote a small gnu debugger script that dumps the decrypted data out for us into files:\nset pagination off define dump_function python ipx = int(gdb.parse_and_eval(\"$ipx\")) addr = gdb.parse_and_eval(\"$addr_list[$ipx]\") len = gdb.parse_and_eval(\"$leng_list[$ipx]\") fn = f\"func_{ipx}\" gdb.execute(f\"dump memory {fn} {addr} {addr+len}\") end end starti break *$BASE+0x1198 break *$BASE+0x1191 c break mmap set $ipx = 0 set $addr_list = (long [24]) {0} set $leng_list = (int [24]) {0} c while ($ipx \u003c 24) set $len = $rsi finish set $addr_list[$ipx] = $rax set $leng_list[$ipx] = $len set $ipx=$ipx+1 c end set $ipx = 0 while ($ipx \u003c 24) dump_function set $ipx=$ipx+1 end In a gist, this script is setting a breakpoint each time that mmap() is called and extracting the length that was allocated and the address returned from mmap. Using the gdb python api we dump each mapped region to its own file.\nReviewing the dumped files, all of them start with a byte sequence that is equal to endbr64, signifying the start of a function. It’s safe to assume that each of these mapped regions contain a decrypted function that will later be called upon.\nUsing capstone we can disassemble these for further investigation:\n#!/usr/bin/env python3 import os from capstone import * l = sorted([int(x.split('_')[1]) for x in os.listdir(\"./functions\")]) for f in l: with open(f\"./functions/func_{f}\", \"rb\") as _f: CODE = _f.read() _f.close() print(f\"======= func_{f} =======\") md = Cs(CS_ARCH_X86, CS_MODE_64) for i in md.disasm(CODE,0x00): print(\"0x%x:\\t%s\\t%s\" %(i.address, i.mnemonic, i.op_str)) print() These functions are good to note, but currently by themselves they don’t help us out too much.\nMoving into FUN_001028a0();, this looks suspiciously similar to virtual machine execution loops I have seen in the past.\nAt this point in time we know:\nFunctions are being decrypted in stored in memory A virtual machine execution loop The next step is to find the actual vm code that is executed. This is pretty easy to identify, as we have the addresses right in front of us.\niVar2 = DAT_00105560;\nNavigating to DAT_00105560 in Ghidra we see a large amount of “random” bytes. Hint: these representinstructions and arguments\nIn this image we also identify how the functions are called in the execution loop.\nif (instruction != 0x1c) { do { (**(code **)(jmp_table + (long)instruction * 8)) (\u0026instruction,\u0026local_38,\u0026DAT_001063a0,\u0026DAT_00106380); piVar1 = local_38 + 1; instruction = *local_38; local_38 = piVar1; } while (instruction != 0x1c); } I’ve modified the above snippet slightly to give you an idea of how the functions are called. There is a jump table address used as a base, the instruction value is multiplied by 0x8, the result is added to the jump table address and the function is then called. Hopefully that makes sense.\nAt this point we have done as much static analysis as we can, or that I’d like to.\nDynamic analysis Sparing you from all of the testing and verifying done in the dynamic stage of analysis, overtime I built out a gdb script to automate the analysis of the program. Due to the size, I will include the scripts used at the bottom of the writeup.\nI broke the program down into sections based on “execution loops”. Function 0x11, when called, behaves similar to the higher level execution loop, but performs some additional steps including instruction pointer and rcx manipulation. In this case, I counted every execution of a vm function as an execution loop:\n000 - 071: strings setup 072: ptrace() call 073 - 098: strings setup and user input preparation 099: print string and read user input 100 - 102: calculate size of user input 103 - 120: math on user input length, generate compare value, check compare At this point, if the length of the password (with math applied) you entered does not equal the calculated value, the program will begin to build another string. If the values do match, the program continues with normal execution flow.\n121 - 284: disorganizes password input, example: ABCD -\u003e CABD 285 - 491: math against disorganized password 492: perform and operation against a post-math operation value At this point, if the AND operation does not return 0, the program will begin to build a string, print it and exit. If the AND operation does return 0, the program will continue with normal execution. It does not serve much purpose, the rest of the program performs the same action as execution loop 492, and the end result will print out a string “Incorrect :(” or “Correct!” based on the results.\nMy approach There are a few different ways you can go about this. The easiest way would be to reverse the math operations used against the password input. You need to identify the order the password was scrambled in, and the math applied to each section. You can reverse this process by hand to find the compare values, or you can use z3. I used z3.\nFor fun, I also scripted out my own emulation of the program. To do this I took the instructions from the program, diassembled each function call and implemented the functions in my emulator.\nAnyways, below is my emulator and my gdb analysis script. Enjoy!\nI left out some crucial parts of this program as to not feed you the flag Also note I am no computer scientist, I wrote this program on the fly with no optimization or anything in mind, just wanted a working emulator so I could see everything from a higher level.\nemulator.py #!/usr/bin/env python3 import z3 instructions = [\"add your own instructions :P\"] class colors: HEADER = '\\033[95m' OKBLUE = '\\033[94m' OKCYAN = '\\033[96m' OKGREEN = '\\033[92m' WARNING = '\\033[93m' FAIL = '\\033[91m' ENDC = '\\033[0m' BOLD = '\\033[1m' UNDERLINE = '\\033[4m' def parser(_list, password, _length): sb = [bytearray(8) for _x_ in range(32)] rcx = oi = i = loop = 0 password_indexes = [] subloop = False while i \u003c= _length: #print_zone(sb, rcx) #print() try: v = _list[i][3] except Exception: print(\"No more instructions!\") return password_indexes match v: case 0x00: # gets size of user input print(f\"{loop} [FN 0x00]: size of input calculated\\tRCX = {rcx}\") sb[1] = bytearray(len(password).to_bytes(8, \"big\")) i += 1 case 0x01: # shl print(f\"{loop} [FN 0x01]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} \u003c\u003c 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") sb[rcx-2] = bytearray(int((int.from_bytes(sb[rcx-2], \"big\") \u003c\u003c int.from_bytes(sb[rcx-1], \"big\")) \u0026 0xffffffff).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x02: # modulus print(f\"{loop} [FN 0x02]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} % 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") sb[rcx-2][-1] = sb[rcx-2][-1] % sb[rcx-1][-1] rcx -= 1 i += 1 case 0x03: # userinput # to simulate what the vm is doing, lets set ba[0] to a \"ptr\" sb[0] = bytearray(int(0x000055555555c860).to_bytes(8, \"big\")) rcx += 1 i += 2 case 0x04: # idiv print(f\"{loop} [FN 0x04]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} / 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") sb[rcx-2] = bytearray(idiv_func(int.from_bytes(sb[rcx-2], \"big\"), int.from_bytes(sb[rcx-1], \"big\")).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x05: # add print(f\"{loop} [FN 0x05]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} + 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") sb[rcx-2] = bytearray((int.from_bytes(sb[rcx-2], \"big\")+int.from_bytes(sb[rcx-1], \"big\")).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x06: # imul print(f\"{loop} [FN 0x05]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} * 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") sb[rcx-2] = bytearray(imul_func(int.from_bytes(sb[rcx-2], \"big\"), int.from_bytes(sb[rcx-1], \"big\")).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x07: # ptrace wrapper print(f\"{loop} [FN 0x07]: {colors.WARNING}ptrace() call{colors.ENDC}\\tRCX = {rcx}\") i += 1 case 0x08: print(f\"{loop} [FN 0x08]: 0x08\\tRCX = {rcx}\") sb[rcx-2] = bytearray(int(int.from_bytes(sb[rcx-2], \"big\")|int.from_bytes(sb[rcx-1], \"big\")).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x09: # more math print(f\"{loop} [FN 0x09]: silly maths\\tRCX = {rcx}\") if sb[rcx-1][-2] != 0: rax = (sb[rcx-1][-2] \u003c\u003c 8) + sb[rcx-1][-1] rax += 0x11 else: rax = sb[rcx-1][-1] + 0x11 _rcx = rax rdx = 0x5555555555555556 rdx = (rdx * rax) \u003e\u003e 64 rax = rax \u003e\u003e 0x3f rdx -= rax rax = rdx+rdx*2 sb[rcx-1][-1] = _rcx - rax i += 1 case 0x0a: # print_chk, free print(f\"{loop} [FN 0x0a]: print\\tRCX = {rcx}\") _out = \"\" for vv in sb: if vv[-1] != 0x0 and vv[-1] != 0x0a: _out += chr(vv[-1]) else: break print(f\"{colors.OKGREEN}[TXT]: \\\"{_out}\\\"{colors.ENDC}\") rcx -= 1 i += 1 case 0x0b: # jmp s = _list[i+1][3] i += s+1 print(f\"{loop} [FN 0x0b]: jmp $rip+{hex(s)}\\tRCX = {rcx}\") case 0x0c: # math print(f\"{loop} [FN 0x0c]: silly maths\\tRCX = {rcx}\") rax = sb[rcx-1][-1] rax = rax+rax*2-0x06 rax += rax if rax \u003e 0xff: sb[rcx-1][-1] = rax \u0026 0xff sb[rcx-1][-2] = rax \u003e\u003e 8 else: sb[rcx-1][-1] = rax i += 1 case 0x0d: # looping over password print(f\"{loop} [FN 0x0d]: password loop\\tRCX = {rcx}\") rcx = 1 i += 1 case 0x0e: # zero out chunk print(f\"{loop} [FN 0x0e]: zero out chunk\\tRCX = {rcx}\") sb[rcx-1] = bytearray((0).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x0f: # malloc to prep for user input print(f\"{loop} [FN 0x0f]: prep for user input\\tRCX = {rcx}\") rcx = 1 i += 2 case 0x10: # copy one 8 byte chunk to another print(f\"{loop} [FN 0x10]: \\tRCX = {rcx}\") _val = _list[i+1][3] _rcx = rcx-0x1 _rcx -= _val sb[rcx] = sb[_rcx] #check rcx += 1 i += 2 case 0x11: # internal loop, ensure this works subloop = True oi = i + 3 _st = _list[i+2][3] jmp_cond = _list[i+1][3] + (_list[i+2][0] \u003c\u003c 8) # sry print(f\"{loop} [FN 0x11]: next = {hex(jmp_cond)}\\tRCX = {rcx}\") i = jmp_cond case 0x12: # grab random char from user input _loc = _list[i+1][3] print(f\"{loop} [FN 0x12] password[{_loc}]: {chr(password[_loc])}\\tRCX = {rcx}\") password_indexes.append(_loc) _val = password[_loc] sb[rcx-1] = bytearray(int(_val).to_bytes(8, \"big\")) i += 2 case 0x13: # compare computed sizes print(f\"{loop} [FN 0x13]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} == 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") if sb[rcx-2] == sb[rcx-1]: print(f\"{colors.OKGREEN}true{colors.ENDC}\") sb[rcx-2] = bytearray((1).to_bytes(8, \"big\")) else: print(f\"{colors.FAIL}false{colors.ENDC}\") sb[rcx-2] = bytearray((0).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x14: print(f\"{colors.FAIL}! [FN 0x14] !{colors.ENDC}\") rcx -= 1 i += 1 case 0x15: # math, this might need to be fixed idk print(f\"{loop} [FN 0x15]: silly maths\\tRCX = {rcx}\") rdx = sb[rcx-1][-1] rdx = (rdx * 8) + 0x18 if rdx \u003e 0xff: sb[rcx-1][-1] = rdx \u0026 0xff sb[rcx-1][-2] = rdx \u003e\u003e 8 else: sb[rcx-1][-1] = rdx i += 1 case 0x16: # check compare result, jmp accordingly print(f\"{loop} [FN 0x16]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-1], 'big'):016x} \u0026 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") _tmp = int.from_bytes(sb[rcx-1], \"big\") _tmp = _tmp \u0026 _tmp if _tmp != 0: print(f\"adding {_list[i+1][3]} to instruction pointer\") i += int.from_bytes(_list[i+1], \"big\") i += 2 rcx -= 1 case 0x17: # relative move print(f\"{loop} [FN 0x17]: mov sb[{rcx}], 0x{int.from_bytes(sb[rcx-1], 'big'):016x}\\tRCX = {rcx}\") sb[rcx] = bytearray(int.from_bytes(sb[rcx-1], \"big\").to_bytes(8, \"big\")) rcx += 1 i += 1 case 0x18: # sub print(f\"{loop} [FN 0x18]: \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} -= 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") try: sb[rcx-2] = bytearray((int.from_bytes(sb[rcx-2], \"big\") - int.from_bytes(sb[rcx-1], \"big\") \u0026 (4**32-1)).to_bytes(8, \"big\")) except Exception as e: print(f\"{colors.FAIL}[!] {e}{colors.ENDC}\\nExiting..\\n\") print(sb[rcx-2], sb[rcx-1]) exit(1) rcx -= 1 i += 1 case 0x19: # immediate move print(f\"{loop} [FN 0x19]: imm sb[{rcx}], {hex(_list[i+1][3] + (_list[i+2][0] \u003c\u003c 8) + (_list[i+2][1] \u003c\u003c 16))}\") sb[rcx] = bytearray((_list[i+1][3] + (_list[i+2][0] \u003c\u003c 8) + (_list[i+2][1] \u003c\u003c 16)).to_bytes(8, \"big\")) rcx += 1 i += 2 case 0x1a: #shr print(f\"{loop} [FN 0x1a] \", end=\"\") print(f\"0x{int.from_bytes(sb[rcx-2], 'big'):016X} \u003e\u003e 0x{int.from_bytes(sb[rcx-1], 'big'):02x}\") sb[rcx-2] = bytearray(int((int.from_bytes(sb[rcx-2], \"big\") \u003e\u003e int.from_bytes(sb[rcx-1], \"big\")) \u0026 0xffffffff).to_bytes(8, \"big\")) rcx -= 1 i += 1 case 0x1c: if subloop: _val = sb[rcx-1] _rcx = rcx - _st - 1 sb[_rcx] = bytearray(int.from_bytes(_val, \"big\").to_bytes(8, \"big\")) rcx -= _st i = oi print(f\"{loop} [FN 0x1c] restore ip\\tRCX = {rcx}\") subloop = False continue else: print(f\"{loop} [FN 0x1c] EXIT\") return password_indexes case _: print(f\"{colors.FAIL}Hit an invalid instruction!!! [{hex(v)}]{colors.ENDC}\") exit() loop += 1 #print_zone(sb, rcx) #print() def print_zone(zone, rcx, i = 0): while i \u003c len(zone): if i == rcx-2: print(f\"{colors.OKCYAN}\", end=\"\") elif i == rcx-1: print(f\"{colors.OKGREEN}\", end=\"\") if i == 0 or i % 2 == 0: print(f\"0x{int.from_bytes(zone[i], 'big'):016x}\", end=\"\\t\") else: print(f\"0x{int.from_bytes(zone[i], 'big'):016x}\") print(f\"{colors.ENDC}\", end=\"\") i += 1 def imul_func(a, b): return int(a * b) def idiv_func(a, b): return int(a / b) def split_instructions(): count = 0 split_inst = [] cur = b\"\" for v in instructions: if count % 4 == 0 and count != 0: split_inst.append(cur) cur = v.to_bytes(1, \"little\") else: cur += v.to_bytes(1, \"little\") count += 1 return split_inst def more_fun(pw_index, password): pwd = [bytearray(b\"\\x00\" * 8) for i in range(8)] print(\"pw_index\") print(pw_index) c = d = 0 for i in range(0, len(pw_index)): if i % 4 != 0 or i == 0: pwd[c][~d] = password[pw_index[i]] d += 1 else: c += 1 d = 0 pwd[c][~d] = password[pw_index[i]] d += 1 i += 1 print(\"\\n[+] initial sorted password chunks\") for v in pwd: print(f\"0x{int.from_bytes(v, 'big'):016x}\") andv = 4**16-1 for i in range(7, ~0, -1): a = int.from_bytes(pwd[i], \"big\") match i: case 7: [redacted] case 6: [redacted] case 5: [redacted] case 4: [redacted] case 3: [redacted] case 2: [redacted] case 1: [redacted] case 0: [redacted] print(f\"chunk {i}: 0x{z \u0026 4**32-1:016x}\") if (z \u0026 z) == 0: print(f\"{colors.OKGREEN}match{colors.ENDC}\") else: print(f\"{colors.FAIL}!match{colors.ENDC}\") def gen_password(pw_index): # add yourself! pass def runner(password): _list = split_instructions() #print(_list) pw_index = parser(_list, password, len(_list)) more_fun(pw_index, password) #gen_password(pw_index) def main(): runner(b\"\") if __name__ == \"__main__\": main() analysis.gdb set pagination off set confirm off starti display/x $rax display/x $rdi display/x $rsi display/x $rdx display/x $rcx display/x $r8 display/x $r9 display/x $rsp display/x $rbp display/10i $rip set $str=0x55555555a3a0 set $ins=0x7fffffffdea0 set $analysisBp = 400 # break at call to execution loop break *$base+0x1198 c # ptrace break break *$base+0x13f7 commands set $rax=0x0 c end # break at each iteration of loop to identify which function is called set $loop=0 break *$base+0x2908 commands silent printf \"loop: %d\\n\", $loop printf \"call qword ptr [R8+R9*0x8] = 0x%llx\\n\", $r8+($r9*8) printf \"function = 0x%llx\\n\", *(long *)($r8+($r9*8)) printf \"[func] = 0x%lx\\n\", $r9 printf \"rcx = 0x%lx\\n\", *(long *)$rcx printf \"inst: 0x%lx\\n\\n\", *(long *)$ins set $loop=$loop+1 if $loop \u003c= $analysisBp c end end # break inside of 0x11 function loop break *0x00007ffff7fb6069 commands printf \"loop: %d\\n\", $loop printf \"[func] = 0x%lx\\n\", $r9 printf \"rcx = 0x%lx\\n\", *(long *)$rcx set $loop=$loop+1 end # start c ",
-  "wordCount" : "2688",
-  "inLanguage": "en",
-  "datePublished": "2025-01-24T03:00:11-05:00",
-  "dateModified": "2025-01-24T03:00:11-05:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://yams.bot/writeups/hackthebox/vvm/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "🍠 yamsbot",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://yams.bot/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class=" dark" id="top">
@@ -195,7 +82,7 @@ The program allocates and maps a few memory regions, calls ptrace() and then exi
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <a href="https://yamsbot.github.io/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -221,22 +108,22 @@ The program allocates and maps a few memory regions, calls ptrace() and then exi
         </div>
         <ul id="menu">
             <li>
-                <a href="https://yams.bot/about/" title="about">
+                <a href="https://yamsbot.github.io/about/" title="about">
                     <span>about</span>
                 </a>
             </li>
             <li>
-                <a href="https://yams.bot/writeups/" title="writeups">
+                <a href="https://yamsbot.github.io/writeups/" title="writeups">
                     <span>writeups</span>
                 </a>
             </li>
             <li>
-                <a href="https://yams.bot/research/" title="research">
+                <a href="https://yamsbot.github.io/research/" title="research">
                     <span>research</span>
                 </a>
             </li>
             <li>
-                <a href="https://yams.bot/random/" title="random">
+                <a href="https://yamsbot.github.io/random/" title="random">
                     <span>random</span>
                 </a>
             </li>
@@ -809,7 +696,7 @@ c
 <ul class="share-buttons">
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share [HTB] vvm on x"
-            href="https://x.com/intent/tweet/?text=%5bHTB%5d%20vvm&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fhackthebox%2fvvm%2f&amp;hashtags=">
+            href="https://x.com/intent/tweet/?text=%5bHTB%5d%20vvm&amp;url=https%3a%2f%2fyamsbot.github.io%2fwriteups%2fhackthebox%2fvvm%2f&amp;hashtags=">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
@@ -818,7 +705,7 @@ c
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share [HTB] vvm on linkedin"
-            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fhackthebox%2fvvm%2f&amp;title=%5bHTB%5d%20vvm&amp;summary=%5bHTB%5d%20vvm&amp;source=https%3a%2f%2fyams.bot%2fwriteups%2fhackthebox%2fvvm%2f">
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyamsbot.github.io%2fwriteups%2fhackthebox%2fvvm%2f&amp;title=%5bHTB%5d%20vvm&amp;summary=%5bHTB%5d%20vvm&amp;source=https%3a%2f%2fyamsbot.github.io%2fwriteups%2fhackthebox%2fvvm%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
@@ -832,7 +719,7 @@ c
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+        <span>&copy; 2025 <a href="https://yamsbot.github.io/">🍠 yamsbot</a></span> · 
 
     <span>
         Powered by

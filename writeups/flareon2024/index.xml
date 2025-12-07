@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Flare-On 2024 on 🍠 yamsbot</title>
-    <link>https://yams.bot/writeups/flareon2024/</link>
+    <link>https://yamsbot.github.io/writeups/flareon2024/</link>
     <description>Recent content in Flare-On 2024 on 🍠 yamsbot</description>
-    <generator>Hugo -- 0.138.0</generator>
+    <generator>Hugo -- 0.148.1</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 13 Nov 2024 10:23:10 -0500</lastBuildDate>
-    <atom:link href="https://yams.bot/writeups/flareon2024/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://yamsbot.github.io/writeups/flareon2024/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[Flare] checksum</title>
-      <link>https://yams.bot/writeups/flareon2024/checksum/</link>
+      <link>https://yamsbot.github.io/writeups/flareon2024/checksum/</link>
       <pubDate>Wed, 13 Nov 2024 10:23:10 -0500</pubDate>
-      <guid>https://yams.bot/writeups/flareon2024/checksum/</guid>
+      <guid>https://yamsbot.github.io/writeups/flareon2024/checksum/</guid>
       <description>&lt;hr&gt;
 &lt;p&gt;just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)&lt;/p&gt;
 &lt;p&gt;running the solve script satisfies all the constraints then drops the flag image in &lt;a href=&#34;https://pkg.go.dev/os#UserCacheDir&#34;&gt;&lt;code&gt;os.UserCacheDir&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
@@ -21,9 +21,9 @@
     </item>
     <item>
       <title>[Flare] sshd (extended writeup)</title>
-      <link>https://yams.bot/writeups/flareon2024/sshd/</link>
+      <link>https://yamsbot.github.io/writeups/flareon2024/sshd/</link>
       <pubDate>Wed, 13 Nov 2024 00:00:48 -0500</pubDate>
-      <guid>https://yams.bot/writeups/flareon2024/sshd/</guid>
+      <guid>https://yamsbot.github.io/writeups/flareon2024/sshd/</guid>
       <description>&lt;hr&gt;
 &lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
 &lt;p&gt;sshd was the 5th challenge in this years flare-on competition, Flare-On 11&lt;/p&gt;

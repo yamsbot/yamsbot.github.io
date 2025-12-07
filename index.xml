@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>🍠 yamsbot</title>
-    <link>https://yams.bot/</link>
+    <link>https://yamsbot.github.io/</link>
     <description>Recent content on 🍠 yamsbot</description>
-    <generator>Hugo -- 0.138.0</generator>
+    <generator>Hugo -- 0.148.1</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 12 Apr 2025 11:24:20 -0400</lastBuildDate>
-    <atom:link href="https://yams.bot/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://yamsbot.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[HTB] ARMs Race</title>
-      <link>https://yams.bot/writeups/hackthebox/arms_race/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/arms_race/</link>
       <pubDate>Sat, 12 Apr 2025 11:24:20 -0400</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/arms_race/</guid>
+      <guid>https://yamsbot.github.io/writeups/hackthebox/arms_race/</guid>
       <description>&lt;h1 id=&#34;arms-race&#34;&gt;ARMs Race&lt;/h1&gt;
 &lt;p&gt;Just wanted to make a quick writeup for this challenge because easy challenges structured in this way are pretty fun to me. Although not too challenging, it was fun to solve. This challenge also wraps up the &amp;ldquo;Easy&amp;rdquo; challenges in the active reversing category for HTB.&lt;/p&gt;
 &lt;p&gt;The challenges name is &amp;ldquo;ARMs Race&amp;rdquo;, which gives us a strong hint that the architecture is ARM. There are no files to download, just an instance to spawn and connect to.&lt;br&gt;
@@ -20,9 +20,9 @@ Connecting to the instance the end user is greeted with:&lt;/p&gt;</description>
     </item>
     <item>
       <title>[HTB] Cyber Apocalypse 2025</title>
-      <link>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/cyber_apoc2025/</link>
       <pubDate>Mon, 24 Mar 2025 21:53:04 -0400</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/cyber_apoc2025/</guid>
+      <guid>https://yamsbot.github.io/writeups/hackthebox/cyber_apoc2025/</guid>
       <description>&lt;h1 id=&#34;reversing&#34;&gt;Reversing&lt;/h1&gt;
 &lt;h2 id=&#34;sealedrune&#34;&gt;Sealedrune&lt;/h2&gt;
 &lt;p&gt;strings and base64 decode for flag&lt;/p&gt;
@@ -45,9 +45,9 @@ iVar1 = (*pcVar2)();
     </item>
     <item>
       <title>Phishing Email Analysis</title>
-      <link>https://yams.bot/random/phishingemails/</link>
+      <link>https://yamsbot.github.io/random/phishingemails/</link>
       <pubDate>Tue, 28 Jan 2025 13:28:56 -0500</pubDate>
-      <guid>https://yams.bot/random/phishingemails/</guid>
+      <guid>https://yamsbot.github.io/random/phishingemails/</guid>
       <description>&lt;h2 id=&#34;what-is-a-phishing-email&#34;&gt;What is a phishing email?&lt;/h2&gt;
 &lt;p&gt;In my words, a phishing email, or phish in general, is an attackers attempt to persuade the victim user into doing some action. This could be anything, but typically attackers are looking to persuade the victim into:&lt;/p&gt;
 &lt;ul&gt;
@@ -61,10 +61,10 @@ iVar1 = (*pcVar2)();
     </item>
     <item>
       <title>[HTB] vvm</title>
-      <link>https://yams.bot/writeups/hackthebox/vvm/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/vvm/</link>
       <pubDate>Fri, 24 Jan 2025 03:00:11 -0500</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/vvm/</guid>
-      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yams.bot/images/hackthebox/vvm/banner.png&#34;&gt;&lt;/p&gt;
+      <guid>https://yamsbot.github.io/writeups/hackthebox/vvm/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yamsbot.github.io/images/hackthebox/vvm/banner.png&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
 &lt;p&gt;&amp;ldquo;Hard&amp;rdquo; reversing challenge released about half a year ago at time of writing.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;A new startup claims to have developed an unbreakable client-side password validation system. VCs have invested millions, but I&#39;m a bit skeptical of their claim. Can you prove them wrong?&lt;/code&gt;&lt;/p&gt;
@@ -109,9 +109,9 @@ exit(1 &amp;lt;no return ...&amp;gt;
     </item>
     <item>
       <title>[HTB] SEPC</title>
-      <link>https://yams.bot/writeups/hackthebox/sepc/</link>
+      <link>https://yamsbot.github.io/writeups/hackthebox/sepc/</link>
       <pubDate>Wed, 22 Jan 2025 00:16:47 -0500</pubDate>
-      <guid>https://yams.bot/writeups/hackthebox/sepc/</guid>
+      <guid>https://yamsbot.github.io/writeups/hackthebox/sepc/</guid>
       <description>&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
 &lt;p&gt;SEPC is a &amp;ldquo;medium&amp;rdquo; linux kernel based reversing challege. SEPC stands for &amp;ldquo;Secure Enclave Password Checker&amp;rdquo;, with the challenge being featured in the 2023 HTB Business CTF.&lt;/p&gt;
 &lt;p&gt;Players are given three files:&lt;/p&gt;
@@ -123,9 +123,9 @@ run.sh              (a helper script to run the program)
     </item>
     <item>
       <title>Exploitation</title>
-      <link>https://yams.bot/random/exploitation/</link>
+      <link>https://yamsbot.github.io/random/exploitation/</link>
       <pubDate>Fri, 22 Nov 2024 02:01:24 -0500</pubDate>
-      <guid>https://yams.bot/random/exploitation/</guid>
+      <guid>https://yamsbot.github.io/random/exploitation/</guid>
       <description>&lt;hr&gt;
 &lt;h2 id=&#34;finding-offsets&#34;&gt;Finding offsets&lt;/h2&gt;
 &lt;p&gt;this may be silly, but sometimes its easy to forget things like this!&lt;/p&gt;
@@ -141,9 +141,9 @@ run.sh              (a helper script to run the program)
     </item>
     <item>
       <title>[Flare] checksum</title>
-      <link>https://yams.bot/writeups/flareon2024/checksum/</link>
+      <link>https://yamsbot.github.io/writeups/flareon2024/checksum/</link>
       <pubDate>Wed, 13 Nov 2024 10:23:10 -0500</pubDate>
-      <guid>https://yams.bot/writeups/flareon2024/checksum/</guid>
+      <guid>https://yamsbot.github.io/writeups/flareon2024/checksum/</guid>
       <description>&lt;hr&gt;
 &lt;p&gt;just dropping my solve script. for context we are given a golang compiled binary that we have to reverse to find the correct checksum :)&lt;/p&gt;
 &lt;p&gt;running the solve script satisfies all the constraints then drops the flag image in &lt;a href=&#34;https://pkg.go.dev/os#UserCacheDir&#34;&gt;&lt;code&gt;os.UserCacheDir&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
@@ -152,9 +152,9 @@ run.sh              (a helper script to run the program)
     </item>
     <item>
       <title>[Flare] sshd (extended writeup)</title>
-      <link>https://yams.bot/writeups/flareon2024/sshd/</link>
+      <link>https://yamsbot.github.io/writeups/flareon2024/sshd/</link>
       <pubDate>Wed, 13 Nov 2024 00:00:48 -0500</pubDate>
-      <guid>https://yams.bot/writeups/flareon2024/sshd/</guid>
+      <guid>https://yamsbot.github.io/writeups/flareon2024/sshd/</guid>
       <description>&lt;hr&gt;
 &lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
 &lt;p&gt;sshd was the 5th challenge in this years flare-on competition, Flare-On 11&lt;/p&gt;
@@ -164,9 +164,9 @@ run.sh              (a helper script to run the program)
     </item>
     <item>
       <title>NADCOMMMuseum</title>
-      <link>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/nadcommmuseum/</link>
       <pubDate>Tue, 12 Nov 2024 22:22:47 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/nadcommmuseum/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/nadcommmuseum/</guid>
       <description>&lt;h2 id=&#34;details&#34;&gt;Details&lt;/h2&gt;
 &lt;p&gt;Users are provided with file &lt;code&gt;evidence.flac&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;The challenge description reads:&lt;/p&gt;
@@ -176,9 +176,9 @@ Help us decode this. We know the killer is from the mid 19th century, but someho
     </item>
     <item>
       <title>Crystal Clear</title>
-      <link>https://yams.bot/writeups/uscyber2024/crystalclear/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/crystalclear/</link>
       <pubDate>Tue, 12 Nov 2024 22:20:21 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/crystalclear/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/crystalclear/</guid>
       <description>&lt;h1 id=&#34;details&#34;&gt;Details&lt;/h1&gt;
 &lt;p&gt;Crystal Clear was a reversing CTF where we had to reverse a program compiled in Crystal, a completely unknown language to me.&lt;/p&gt;
 &lt;p&gt;Anyways we find two separate arrays of bytes in memory that are xor&amp;rsquo;d against our input, byte by byte
@@ -187,9 +187,9 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>[DEFCON CHV] TUF CTF</title>
-      <link>https://yams.bot/writeups/defcon32/tufctf/</link>
+      <link>https://yamsbot.github.io/writeups/defcon32/tufctf/</link>
       <pubDate>Tue, 12 Nov 2024 20:50:10 -0500</pubDate>
-      <guid>https://yams.bot/writeups/defcon32/tufctf/</guid>
+      <guid>https://yamsbot.github.io/writeups/defcon32/tufctf/</guid>
       <description>&lt;h2 id=&#34;description&#34;&gt;Description&lt;/h2&gt;
 &lt;p&gt;The TUF CTF was featured in the DEFCON 32 car hacking village CTF. There were 2 challenges in this category that involved a TUF server misconfiguration. The 2 challenges tied together, having to solve challenge 1 which leads into challenge 2.&lt;/p&gt;
 &lt;h2 id=&#34;local-setup--general-overview&#34;&gt;Local setup &amp;amp; General overview&lt;/h2&gt;
@@ -197,9 +197,9 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>About me</title>
-      <link>https://yams.bot/about/</link>
+      <link>https://yamsbot.github.io/about/</link>
       <pubDate>Tue, 12 Nov 2024 19:48:38 -0500</pubDate>
-      <guid>https://yams.bot/about/</guid>
+      <guid>https://yamsbot.github.io/about/</guid>
       <description>&lt;hr&gt;
 &lt;p&gt;A little bit about me, I expect that this list will grow more over time&lt;/p&gt;
 &lt;h2 id=&#34;certifications&#34;&gt;Certifications&lt;/h2&gt;
@@ -227,17 +227,17 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
 &lt;h2 id=&#34;notable-ctf-achievements&#34;&gt;Notable CTF Achievements&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;1st place - &lt;a href=&#34;https://www.uscybergames.com/season-4-draft-experience#ctf&#34;&gt;US Cybergames Flag Fest&lt;/a&gt; (Fall 2024 - Solo competition)&lt;/li&gt;
-&lt;li&gt;2nd place - DEFCON 32 Car Hacking Village (&lt;a href=&#34;https://www.carhackingvillage.com/&#34;&gt;CHV&lt;/a&gt;) CTF (team: Block Harbor)&lt;/li&gt;
-&lt;li&gt;2nd place - DEFCON 31 Car Hacking Village (&lt;a href=&#34;https://www.carhackingvillage.com/&#34;&gt;CHV&lt;/a&gt;) CTF (team: Block Harbor)&lt;/li&gt;
+&lt;li&gt;2nd place - DEFCON 32 Car Hacking Village (&lt;a href=&#34;https://www.carhackingvillage.com/&#34;&gt;CHV&lt;/a&gt;) CTF (team: CANucks)&lt;/li&gt;
+&lt;li&gt;2nd place - DEFCON 31 Car Hacking Village (&lt;a href=&#34;https://www.carhackingvillage.com/&#34;&gt;CHV&lt;/a&gt;) CTF (team: CANucks)&lt;/li&gt;
 &lt;li&gt;Competed in Collegiate Cyber Defense Competition (CCDC) - Blue Team&lt;/li&gt;
 &lt;li&gt;Green Belt @ &lt;a href=&#34;https://pwn.college/belts&#34;&gt;pwn.college&lt;/a&gt; (ASU Educational Platform)&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     <item>
       <title>PinkPonyHash</title>
-      <link>https://yams.bot/writeups/uscyber2024/pinkponyhash/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/pinkponyhash/</link>
       <pubDate>Tue, 12 Nov 2024 19:23:12 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/pinkponyhash/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/pinkponyhash/</guid>
       <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;pinkponyhash is a simple php web application that tests your cookie to see if you are in the pink_pony club or not. the overall goal of the ctf is the forge your own hash that passes the check. we are able to accomplish this with a SHA-1 length extension attack. there is a repo i found: &lt;a href=&#34;https://github.com/stephenbradshaw/hlextend&#34;&gt;hlextend&lt;/a&gt; which makes this attack trivial&lt;/p&gt;
 &lt;h2 id=&#34;source-code&#34;&gt;source code&lt;/h2&gt;
@@ -298,18 +298,18 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>[USC 2024] PandaJail</title>
-      <link>https://yams.bot/writeups/uscyber2024/pandajail/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/pandajail/</link>
       <pubDate>Tue, 12 Nov 2024 19:04:41 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/pandajail/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/pandajail/</guid>
       <description>&lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;the actual description reads: &amp;ldquo;im stuck in a Pickle, can you help me out of jail?&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;this challenge was pretty fun and took me a while to solve due to the challenge being completely blackbox. the challenge gave users a python shell and the ability to execute one command. there is a strict whitelist that only allowed for the sys and pandas module to be executed, anything else would be denied. there was also a blacklist on the amount of special characters that could be used.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Scrabble</title>
-      <link>https://yams.bot/writeups/uscyber2024/scrabble/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/scrabble/</link>
       <pubDate>Tue, 12 Nov 2024 18:57:04 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/scrabble/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/scrabble/</guid>
       <description>&lt;p&gt;this is being written a few months after the CTF so bare with me&lt;/p&gt;
 &lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;we are given a file named enc.raw and a program called scrammbler that is a custom form of &amp;ldquo;encryption&amp;rdquo; (?) the goal of the ctf is to unscrammble the bytes in enc.raw. i dont have the source program anymore, but attached is the reverse of the algorithm used to generate the enc.raw file.&lt;/p&gt;
@@ -318,9 +318,9 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>Flag Terminal</title>
-      <link>https://yams.bot/writeups/uscyber2024/flagterminal/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/flagterminal/</link>
       <pubDate>Tue, 12 Nov 2024 18:31:11 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/flagterminal/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/flagterminal/</guid>
       <description>&lt;p&gt;this writeup is created months after the ctf, so bare with me&lt;/p&gt;
 &lt;h2 id=&#34;description&#34;&gt;description&lt;/h2&gt;
 &lt;p&gt;this writeup is very similar to my cache money writeup, except for starters it is not very pretty to look at. this was done during the CTF and i havent cleaned it up, and i dont plan on cleaning it up. anyways the main differences from this challenge and cache money is:&lt;/p&gt;
@@ -338,9 +338,9 @@ the result of the xor is stored in some cpu register and if != 0 at the end of t
     </item>
     <item>
       <title>Cache Money</title>
-      <link>https://yams.bot/writeups/uscyber2024/cachemoney/</link>
+      <link>https://yamsbot.github.io/writeups/uscyber2024/cachemoney/</link>
       <pubDate>Tue, 12 Nov 2024 17:03:11 -0500</pubDate>
-      <guid>https://yams.bot/writeups/uscyber2024/cachemoney/</guid>
+      <guid>https://yamsbot.github.io/writeups/uscyber2024/cachemoney/</guid>
       <description>&lt;p&gt;i am writing this a few months after the CTF ended, so bare with me&lt;/p&gt;
 &lt;h3 id=&#34;description&#34;&gt;description&lt;/h3&gt;
 &lt;p&gt;dynamic allocated misuse vulnerability using glibc version 2.31
@@ -358,9 +358,9 @@ full exploitation is achieved using tcache poisioning, overwriting &lt;code&gt;_
     </item>
     <item>
       <title>research</title>
-      <link>https://yams.bot/research/</link>
+      <link>https://yamsbot.github.io/research/</link>
       <pubDate>Tue, 12 Nov 2024 16:45:17 -0500</pubDate>
-      <guid>https://yams.bot/research/</guid>
+      <guid>https://yamsbot.github.io/research/</guid>
       <description>&lt;hr&gt;
 &lt;h4 id=&#34;coming-soon&#34;&gt;coming soon..&lt;/h4&gt;</description>
     </item>

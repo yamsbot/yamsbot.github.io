@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>random on 🍠 yamsbot</title>
-    <link>https://yams.bot/random/</link>
+    <link>https://yamsbot.github.io/random/</link>
     <description>Recent content in random on 🍠 yamsbot</description>
-    <generator>Hugo -- 0.138.0</generator>
+    <generator>Hugo -- 0.148.1</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 28 Jan 2025 13:28:56 -0500</lastBuildDate>
-    <atom:link href="https://yams.bot/random/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://yamsbot.github.io/random/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Phishing Email Analysis</title>
-      <link>https://yams.bot/random/phishingemails/</link>
+      <link>https://yamsbot.github.io/random/phishingemails/</link>
       <pubDate>Tue, 28 Jan 2025 13:28:56 -0500</pubDate>
-      <guid>https://yams.bot/random/phishingemails/</guid>
+      <guid>https://yamsbot.github.io/random/phishingemails/</guid>
       <description>&lt;h2 id=&#34;what-is-a-phishing-email&#34;&gt;What is a phishing email?&lt;/h2&gt;
 &lt;p&gt;In my words, a phishing email, or phish in general, is an attackers attempt to persuade the victim user into doing some action. This could be anything, but typically attackers are looking to persuade the victim into:&lt;/p&gt;
 &lt;ul&gt;
@@ -26,9 +26,9 @@
     </item>
     <item>
       <title>Exploitation</title>
-      <link>https://yams.bot/random/exploitation/</link>
+      <link>https://yamsbot.github.io/random/exploitation/</link>
       <pubDate>Fri, 22 Nov 2024 02:01:24 -0500</pubDate>
-      <guid>https://yams.bot/random/exploitation/</guid>
+      <guid>https://yamsbot.github.io/random/exploitation/</guid>
       <description>&lt;hr&gt;
 &lt;h2 id=&#34;finding-offsets&#34;&gt;Finding offsets&lt;/h2&gt;
 &lt;p&gt;this may be silly, but sometimes its easy to forget things like this!&lt;/p&gt;
